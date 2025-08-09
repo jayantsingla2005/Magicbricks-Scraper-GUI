@@ -202,35 +202,53 @@ class ModernMagicBricksScraper:
                 if society_element:
                     property_data.society = society_element.get_text(strip=True)
             
-            # Extract area information with enhanced fallbacks
+            # Enhanced area extraction based on research findings
             area_selectors = self.config['selectors']['area']
+            all_text = soup.get_text()
 
-            # Try super area first
-            super_area_element = soup.select_one(area_selectors['super_area'])
-            if super_area_element:
-                property_data.super_area = super_area_element.get_text(strip=True)
-
-            # Try carpet area
-            carpet_area_element = soup.select_one(area_selectors['carpet_area'])
-            if carpet_area_element:
-                property_data.carpet_area = carpet_area_element.get_text(strip=True)
-
-            # Enhanced fallback area extraction
-            if not property_data.super_area and not property_data.carpet_area:
-                # Try multiple fallback selectors
-                for fallback_selector in area_selectors['fallback']:
-                    area_element = soup.select_one(fallback_selector)
-                    if area_element:
-                        area_text = area_element.get_text(strip=True)
-                        if 'sqft' in area_text:
-                            property_data.super_area = area_text
-                            break
-
-                # If still no area found, try regex search in entire card
-                if not property_data.super_area:
-                    area_match = re.search(r'(\d+(?:,\d+)*)\s*sqft', html_content, re.IGNORECASE)
+            # Use regex patterns to find area data in the text
+            for pattern in area_selectors['regex_patterns']:
+                if 'Super Area' in pattern:
+                    super_match = re.search(pattern, all_text, re.IGNORECASE)
+                    if super_match:
+                        property_data.super_area = super_match.group(1) if super_match.groups() else super_match.group(0)
+                        break
+                elif 'Carpet Area' in pattern:
+                    carpet_match = re.search(pattern, all_text, re.IGNORECASE)
+                    if carpet_match:
+                        property_data.carpet_area = carpet_match.group(1) if carpet_match.groups() else carpet_match.group(0)
+                        break
+                else:
+                    # General sqft pattern
+                    area_match = re.search(pattern, all_text, re.IGNORECASE)
                     if area_match:
-                        property_data.super_area = f"{area_match.group(1)} sqft"
+                        # Determine if it's super area or carpet area based on context
+                        context_before = all_text[max(0, area_match.start()-50):area_match.start()]
+                        if 'super' in context_before.lower():
+                            property_data.super_area = area_match.group(0)
+                        elif 'carpet' in context_before.lower():
+                            property_data.carpet_area = area_match.group(0)
+                        else:
+                            # Default to super area if no context
+                            if not property_data.super_area:
+                                property_data.super_area = area_match.group(0)
+                        break
+
+            # If still no area found, try fallback selectors
+            if not property_data.super_area and not property_data.carpet_area:
+                for fallback_selector in area_selectors['fallback']:
+                    try:
+                        # Note: BeautifulSoup doesn't support :contains() so we'll search text
+                        if ':contains(' in fallback_selector:
+                            continue  # Skip CSS :contains() selectors
+                        area_element = soup.select_one(fallback_selector)
+                        if area_element:
+                            area_text = area_element.get_text(strip=True)
+                            if 'sqft' in area_text.lower():
+                                property_data.super_area = area_text
+                                break
+                    except Exception:
+                        continue
             
             # Extract bedrooms
             bedroom_selectors = self.config['selectors']['bedrooms']

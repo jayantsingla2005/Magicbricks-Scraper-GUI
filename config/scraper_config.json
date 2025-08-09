@@ -6,7 +6,7 @@
     "pagination_selector": ".mb-srp__pagination button[aria-label*='Next']"
   },
   "selectors": {
-    "property_cards": "div.mb-srp__card:not(.mb-srp__card__container):not(.mb-srp__card__photo)",
+    "property_cards": ".mb-srp__card",
     "title": "h2.mb-srp__card--title",
     "price": {
       "primary": ".mb-srp__card__price--amount",
@@ -19,23 +19,26 @@
       "regex": "₹[\\d.,\\s]+per sqft"
     },
     "society": {
-      "primary": ".mb-srp__card__society--name",
+      "primary": "a[href*='pdpid']",
       "fallback": [
+        "*:contains('Society') + *",
+        ".mb-srp__card__society--name",
         ".mb-srp__card__builder--name",
-        ".mb-srp__card__project--name",
-        "[class*='society']",
-        "[class*='project']",
-        "[class*='builder']"
+        ".mb-srp__card__project--name"
       ]
     },
     "area": {
-      "super_area": "[data-summary='super-area'] .mb-srp__card__summary--value",
-      "carpet_area": "[data-summary='carpet-area'] .mb-srp__card__summary--value",
+      "super_area": "*:contains('Super Area') + *",
+      "carpet_area": "*:contains('Carpet Area') + *",
       "fallback": [
-        ".mb-srp__card__summary--value:contains('sqft')",
-        ".mb-srp__card__area",
-        "[class*='area']:contains('sqft')",
-        ".mb-srp__card__details:contains('sqft')"
+        "*:contains('sqft')",
+        "*:contains('Super Area')",
+        "*:contains('Carpet Area')"
+      ],
+      "regex_patterns": [
+        "\\d+\\s*sqft",
+        "Super Area[\\s\\S]*?(\\d+\\s*sqft)",
+        "Carpet Area[\\s\\S]*?(\\d+\\s*sqft)"
       ]
     },
     "bedrooms": {
