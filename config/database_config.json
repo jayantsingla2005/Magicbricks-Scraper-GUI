@@ -1,0 +1,78 @@
+{
+  "database": {
+    "type": "sqlite",
+    "sqlite": {
+      "path": "data/magicbricks.db",
+      "enable_wal_mode": true,
+      "timeout": 30,
+      "check_same_thread": false
+    },
+    "postgresql": {
+      "host": "localhost",
+      "port": 5432,
+      "database": "magicbricks",
+      "username": "scraper_user",
+      "password": "",
+      "pool_size": 5,
+      "max_overflow": 10
+    },
+    "mysql": {
+      "host": "localhost",
+      "port": 3306,
+      "database": "magicbricks",
+      "username": "scraper_user",
+      "password": "",
+      "charset": "utf8mb4",
+      "pool_size": 5
+    }
+  },
+  "storage": {
+    "enable_database": true,
+    "enable_files": true,
+    "batch_size": 30,
+    "auto_commit": true,
+    "backup_on_error": true,
+    "retention_days": 365
+  },
+  "performance": {
+    "bulk_insert": true,
+    "use_transactions": true,
+    "index_optimization": true,
+    "vacuum_frequency": "weekly"
+  },
+  "data_quality": {
+    "validate_before_insert": true,
+    "deduplicate": true,
+    "deduplication_fields": ["title", "price", "locality"],
+    "required_fields": ["title", "price"],
+    "max_field_length": {
+      "title": 500,
+      "description": 2000,
+      "amenities": 1000
+    }
+  },
+  "export": {
+    "formats": ["csv", "json", "excel"],
+    "compression": {
+      "enable": true,
+      "format": "gzip",
+      "level": 6
+    },
+    "scheduling": {
+      "auto_export": false,
+      "frequency": "daily",
+      "time": "02:00",
+      "formats": ["csv"]
+    }
+  },
+  "monitoring": {
+    "enable_metrics": true,
+    "log_queries": false,
+    "performance_tracking": true,
+    "alert_thresholds": {
+      "storage_errors_per_hour": 10,
+      "slow_query_seconds": 5,
+      "disk_usage_percent": 90
+    }
+  }
+}

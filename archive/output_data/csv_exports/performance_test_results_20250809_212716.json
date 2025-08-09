@@ -1,0 +1,42 @@
+{
+  "test_config": {
+    "pages_tested": 3,
+    "test_url": "https://www.magicbricks.com/flats-in-gurgaon-for-sale-pppfs",
+    "timestamp": "2025-08-09T21:24:51.200502"
+  },
+  "baseline": {
+    "total_time": 65.60412740707397,
+    "properties_extracted": 90,
+    "pages_processed": 3,
+    "avg_page_time": 21.868042469024658,
+    "success": true
+  },
+  "optimized": {
+    "total_time": 67.2301025390625,
+    "properties_extracted": 90,
+    "pages_processed": 3,
+    "avg_page_time": 22.4100341796875,
+    "success": true
+  },
+  "parallel": {
+    "total_time": 12.5479154586792,
+    "properties_extracted": 0,
+    "pages_processed": 3,
+    "avg_page_time": 4.182638486226399,
+    "success": true,
+    "time_saved": 29.456433534622192,
+    "speed_improvement": "70.1%"
+  },
+  "comparison": {
+    "optimized_vs_baseline": {
+      "time_saved": -1.6259751319885254,
+      "speed_improvement": "-2.5%",
+      "faster": false
+    },
+    "parallel_vs_baseline": {
+      "time_saved": 53.056211948394775,
+      "speed_improvement": "80.9%",
+      "faster": true
+    }
+  }
+}

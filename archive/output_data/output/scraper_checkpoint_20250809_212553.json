@@ -1,0 +1,19 @@
+{
+  "timestamp": "2025-08-09T21:25:53.808521",
+  "current_page": 4,
+  "total_properties": 90,
+  "total_valid_properties": 90,
+  "consecutive_failures": 0,
+  "session_stats": {
+    "total_pages_processed": 3,
+    "total_properties_extracted": 90,
+    "total_properties_valid": 90,
+    "total_errors": 0,
+    "total_retries": 0,
+    "pages_with_errors": 0,
+    "average_page_time": 14.230806,
+    "average_properties_per_page": 0,
+    "data_quality_scores": []
+  },
+  "checkpoint_file": "output\\scraper_checkpoint_20250809_212553.json"
+}

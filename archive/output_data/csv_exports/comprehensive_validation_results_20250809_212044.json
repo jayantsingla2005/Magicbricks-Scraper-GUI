@@ -1,0 +1,54 @@
+{
+  "start_time": "2025-08-09T21:18:17.480282",
+  "test_matrix": {
+    "gurgaon": {
+      "apartments": {
+        "status": "PASSED",
+        "properties_count": 60,
+        "extraction_rates": {
+          "title": "100.0%",
+          "price": "100.0%",
+          "area": "96.7%",
+          "status": "100.0%",
+          "society": "68.3%"
+        },
+        "overall_rate": "99.2%",
+        "target_met": true
+      },
+      "houses": {
+        "status": "PASSED",
+        "properties_count": 60,
+        "extraction_rates": {
+          "title": "100.0%",
+          "price": "100.0%",
+          "area": "100.0%",
+          "status": "100.0%",
+          "society": "18.3%"
+        },
+        "overall_rate": "100.0%",
+        "target_met": true
+      },
+      "plots": {
+        "status": "PASSED",
+        "properties_count": 60,
+        "extraction_rates": {
+          "title": "100.0%",
+          "price": "100.0%",
+          "area": "100.0%",
+          "status": "100.0%",
+          "society": "33.3%"
+        },
+        "overall_rate": "100.0%",
+        "target_met": true
+      }
+    }
+  },
+  "summary": {
+    "total_tests": 3,
+    "successful_tests": 3,
+    "overall_success_rate": "100.0%",
+    "target_met": true,
+    "end_time": "2025-08-09T21:20:44.021798"
+  },
+  "overall_success": true
+}

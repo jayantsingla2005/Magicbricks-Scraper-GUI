@@ -1,0 +1,19 @@
+{
+  "metadata": {
+    "export_timestamp": "2025-08-09T21:27:16.655169",
+    "total_properties": 0,
+    "valid_properties": 0,
+    "scraping_session": {
+      "total_pages_processed": 0,
+      "total_properties_extracted": 0,
+      "total_properties_valid": 0,
+      "total_errors": 0,
+      "total_retries": 0,
+      "pages_with_errors": 0,
+      "average_page_time": 0,
+      "average_properties_per_page": 0,
+      "data_quality_scores": []
+    }
+  },
+  "properties": []
+}

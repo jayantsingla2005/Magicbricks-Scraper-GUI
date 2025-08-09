@@ -22,8 +22,18 @@ from selenium.common.exceptions import (
 )
 from bs4 import BeautifulSoup
 
-from ..models.property_model import PropertyModel
-from ..utils.logger import ScraperLogger
+try:
+    from ..models.property_model import PropertyModel
+    from ..utils.logger import ScraperLogger
+    from .enhanced_field_extractor import EnhancedFieldExtractor
+except ImportError:
+    # Fallback for direct execution
+    import sys
+    from pathlib import Path
+    sys.path.append(str(Path(__file__).parent.parent))
+    from models.property_model import PropertyModel
+    from utils.logger import ScraperLogger
+    from core.enhanced_field_extractor import EnhancedFieldExtractor
 
 
 class ModernMagicBricksScraper:
@@ -51,8 +61,11 @@ class ModernMagicBricksScraper:
         # Performance tracking
         self.page_load_times: List[float] = []
         self.extraction_times: List[float] = []
-        
-        self.logger.logger.info("🔧 Modern MagicBricks Scraper initialized")
+
+        # Initialize enhanced field extractor
+        self.enhanced_extractor = EnhancedFieldExtractor(self.config)
+
+        self.logger.logger.info("🔧 Modern MagicBricks Scraper initialized with enhanced field extraction")
     
     def _load_config(self, config_path: str) -> Dict[str, Any]:
         """Load configuration from JSON file"""
@@ -142,20 +155,24 @@ class ModernMagicBricksScraper:
         time.sleep(delay)
     
     def _extract_property_data(self, property_element, position: int) -> Optional[PropertyModel]:
-        """Extract comprehensive property data from a property card element"""
+        """Extract comprehensive property data from a property card element using enhanced extraction"""
         try:
-            property_data = PropertyModel()
-            property_data.position_on_page = position
-            property_data.page_number = self.current_page
-            
             # Get HTML content for BeautifulSoup parsing
             html_content = property_element.get_attribute('outerHTML')
             soup = BeautifulSoup(html_content, 'html.parser')
-            
-            # Extract title (required field)
-            title_element = soup.select_one(self.config['selectors']['title'])
-            if title_element:
-                property_data.title = title_element.get_text(strip=True)
+
+            # Use enhanced field extractor for improved accuracy
+            property_data = self.enhanced_extractor.extract_enhanced_property_data(soup, position)
+
+            # Set metadata
+            property_data.position_on_page = position
+            property_data.page_number = self.current_page
+
+            # Fallback to standard extraction if enhanced extraction fails
+            if not property_data.title:
+                title_element = soup.select_one(self.config['selectors']['title'])
+                if title_element:
+                    property_data.title = title_element.get_text(strip=True)
             
             # Extract price (required field)
             price_selectors = self.config['selectors']['price']
@@ -202,53 +219,82 @@ class ModernMagicBricksScraper:
                 if society_element:
                     property_data.society = society_element.get_text(strip=True)
             
-            # Enhanced area extraction based on research findings
+            # Enhanced area extraction supporting all property types (apartments, houses, plots)
             area_selectors = self.config['selectors']['area']
             all_text = soup.get_text()
+            title_text = property_data.title.lower() if property_data.title else ""
 
-            # Use regex patterns to find area data in the text
+            # Detect property type for conditional extraction
+            is_plot = any(keyword in title_text for keyword in ['plot', 'land'])
+            is_house = any(keyword in title_text for keyword in ['house', 'villa', 'independent'])
+
+            # Use regex patterns to find area data based on property type
             for pattern in area_selectors['regex_patterns']:
-                if 'Super Area' in pattern:
-                    super_match = re.search(pattern, all_text, re.IGNORECASE)
-                    if super_match:
-                        property_data.super_area = super_match.group(1) if super_match.groups() else super_match.group(0)
-                        break
-                elif 'Carpet Area' in pattern:
-                    carpet_match = re.search(pattern, all_text, re.IGNORECASE)
-                    if carpet_match:
-                        property_data.carpet_area = carpet_match.group(1) if carpet_match.groups() else carpet_match.group(0)
-                        break
-                else:
-                    # General sqft pattern
-                    area_match = re.search(pattern, all_text, re.IGNORECASE)
-                    if area_match:
-                        # Determine if it's super area or carpet area based on context
-                        context_before = all_text[max(0, area_match.start()-50):area_match.start()]
-                        if 'super' in context_before.lower():
-                            property_data.super_area = area_match.group(0)
-                        elif 'carpet' in context_before.lower():
-                            property_data.carpet_area = area_match.group(0)
-                        else:
-                            # Default to super area if no context
-                            if not property_data.super_area:
-                                property_data.super_area = area_match.group(0)
-                        break
+                match = re.search(pattern, all_text, re.IGNORECASE)
+                if match:
+                    area_value = match.group(1) if match.groups() else match.group(0)
 
-            # If still no area found, try fallback selectors
-            if not property_data.super_area and not property_data.carpet_area:
-                for fallback_selector in area_selectors['fallback']:
-                    try:
-                        # Note: BeautifulSoup doesn't support :contains() so we'll search text
-                        if ':contains(' in fallback_selector:
-                            continue  # Skip CSS :contains() selectors
-                        area_element = soup.select_one(fallback_selector)
-                        if area_element:
-                            area_text = area_element.get_text(strip=True)
-                            if 'sqft' in area_text.lower():
-                                property_data.super_area = area_text
+                    # Determine field assignment based on pattern and property type
+                    if 'Super Area' in pattern:
+                        property_data.super_area = area_value
+                        break
+                    elif 'Carpet Area' in pattern:
+                        property_data.carpet_area = area_value
+                        break
+                    elif 'Plot Area' in pattern:
+                        # For plots, store in super_area field for consistency
+                        property_data.super_area = area_value
+                        break
+                    else:
+                        # General area pattern - assign based on property type and context
+                        context_before = all_text[max(0, match.start()-100):match.start()].lower()
+
+                        if is_plot:
+                            # For plots, prefer super_area field
+                            if 'plot' in context_before:
+                                property_data.super_area = area_value
                                 break
-                    except Exception:
-                        continue
+                        elif is_house:
+                            # For houses, prefer carpet_area (based on research)
+                            if 'carpet' in context_before:
+                                property_data.carpet_area = area_value
+                                break
+                            elif 'super' in context_before:
+                                property_data.super_area = area_value
+                                break
+                            elif not property_data.carpet_area:
+                                property_data.carpet_area = area_value
+                                break
+                        else:
+                            # For apartments, use context or default to super_area
+                            if 'carpet' in context_before:
+                                property_data.carpet_area = area_value
+                                break
+                            elif 'super' in context_before:
+                                property_data.super_area = area_value
+                                break
+                            elif not property_data.super_area:
+                                property_data.super_area = area_value
+                                break
+
+            # Enhanced fallback extraction if no area found
+            if not property_data.super_area and not property_data.carpet_area:
+                # Try to find any area mention in the text
+                area_patterns = [
+                    r'(\d+[,\s]*(?:sqft|sq\.?\s*ft|sqyrd|sq\.?\s*yard|acres?))',
+                    r'area[:\s]*(\d+[,\s]*(?:sqft|sq\.?\s*ft|sqyrd|sq\.?\s*yard))'
+                ]
+
+                for pattern in area_patterns:
+                    match = re.search(pattern, all_text, re.IGNORECASE)
+                    if match:
+                        area_value = match.group(1)
+                        # Assign based on property type
+                        if is_plot or is_house:
+                            property_data.super_area = area_value
+                        else:
+                            property_data.super_area = area_value
+                        break
             
             # Extract bedrooms
             bedroom_selectors = self.config['selectors']['bedrooms']
@@ -279,8 +325,11 @@ class ModernMagicBricksScraper:
                         value = element.get_text(strip=True)
                         setattr(property_data, field, value)
 
-            # Enhanced status extraction
+            # Enhanced status extraction with conditional logic for plots
             status_config = self.config['selectors']['status']
+            title_text = property_data.title.lower() if property_data.title else ""
+            is_plot = any(keyword in title_text for keyword in status_config.get('conditional_logic', {}).get('plot_keywords', []))
+
             if isinstance(status_config, dict):
                 # Try primary selector first
                 status_element = soup.select_one(status_config['primary'])
@@ -301,6 +350,28 @@ class ModernMagicBricksScraper:
                             if status_match:
                                 property_data.status = status_match.group(0)
                                 break
+
+                    # Special handling for plots - look for transaction type
+                    if not property_data.status and is_plot:
+                        # Look for transaction-related text in plots
+                        transaction_patterns = [
+                            r'Transaction[:\s]*(\w+)',
+                            r'(Resale|New|Available)',
+                            r'Type[:\s]*(\w+)'
+                        ]
+
+                        for pattern in transaction_patterns:
+                            match = re.search(pattern, html_content, re.IGNORECASE)
+                            if match:
+                                found_status = match.group(1) if match.groups() else match.group(0)
+                                # Map plot status using configuration
+                                plot_mapping = status_config.get('conditional_logic', {}).get('plot_status_mapping', {})
+                                property_data.status = plot_mapping.get(found_status, found_status)
+                                break
+
+                    # Final fallback for plots
+                    if not property_data.status and is_plot:
+                        property_data.status = "Available"  # Default for plots
             else:
                 # Legacy single selector
                 status_element = soup.select_one(status_config)

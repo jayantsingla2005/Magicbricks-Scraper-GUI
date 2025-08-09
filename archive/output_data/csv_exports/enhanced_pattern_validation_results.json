@@ -1,0 +1,227 @@
+{
+  "area_results": {
+    "apartments": {
+      "total": 5,
+      "matched": 5,
+      "details": [
+        {
+          "text": "Super Area 1500 sqft",
+          "matched": true,
+          "pattern": "Super Area[\\s\\S]*?(\\d+(?:,\\d+)*[\\s]*(?:sqft|sq\\.?\\s*ft))",
+          "extracted": "1500 sqft"
+        },
+        {
+          "text": "Carpet Area 1200 sqft",
+          "matched": true,
+          "pattern": "Carpet Area[\\s\\S]*?(\\d+(?:,\\d+)*[\\s]*(?:sqft|sq\\.?\\s*ft|sqyrd|sq\\.?\\s*yard))",
+          "extracted": "1200 sqft"
+        },
+        {
+          "text": "Built-up Area: 1800 sqft",
+          "matched": true,
+          "pattern": "\\d+(?:,\\d+)*[\\s]*(?:sqft|sq\\.?\\s*ft)",
+          "extracted": "1800 sqft"
+        },
+        {
+          "text": "Super Area: 2,423 sqft",
+          "matched": true,
+          "pattern": "Super Area[\\s\\S]*?(\\d+(?:,\\d+)*[\\s]*(?:sqft|sq\\.?\\s*ft))",
+          "extracted": "2,423 sqft"
+        },
+        {
+          "text": "Carpet Area: 1,850 sq ft",
+          "matched": true,
+          "pattern": "Carpet Area[\\s\\S]*?(\\d+(?:,\\d+)*[\\s]*(?:sqft|sq\\.?\\s*ft|sqyrd|sq\\.?\\s*yard))",
+          "extracted": "1,850 sq ft"
+        }
+      ]
+    },
+    "houses": {
+      "total": 5,
+      "matched": 5,
+      "details": [
+        {
+          "text": "Carpet Area 800 sqft",
+          "matched": true,
+          "pattern": "Carpet Area[\\s\\S]*?(\\d+(?:,\\d+)*[\\s]*(?:sqft|sq\\.?\\s*ft|sqyrd|sq\\.?\\s*yard))",
+          "extracted": "800 sqft"
+        },
+        {
+          "text": "Super Area 1500 sqft",
+          "matched": true,
+          "pattern": "Super Area[\\s\\S]*?(\\d+(?:,\\d+)*[\\s]*(?:sqft|sq\\.?\\s*ft))",
+          "extracted": "1500 sqft"
+        },
+        {
+          "text": "Carpet Area 151 sqyrd",
+          "matched": true,
+          "pattern": "Carpet Area[\\s\\S]*?(\\d+(?:,\\d+)*[\\s]*(?:sqft|sq\\.?\\s*ft|sqyrd|sq\\.?\\s*yard))",
+          "extracted": "151 sqyrd"
+        },
+        {
+          "text": "Built-up Area: 200 sq yard",
+          "matched": true,
+          "pattern": "\\d+(?:,\\d+)*[\\s]*(?:sqyrd|sq\\.?\\s*yard)",
+          "extracted": "200 sq yard"
+        },
+        {
+          "text": "Carpet Area: 1,200 sq ft",
+          "matched": true,
+          "pattern": "Carpet Area[\\s\\S]*?(\\d+(?:,\\d+)*[\\s]*(?:sqft|sq\\.?\\s*ft|sqyrd|sq\\.?\\s*yard))",
+          "extracted": "1,200 sq ft"
+        }
+      ]
+    },
+    "plots": {
+      "total": 5,
+      "matched": 5,
+      "details": [
+        {
+          "text": "Plot Area 900 sqft",
+          "matched": true,
+          "pattern": "Plot Area[\\s\\S]*?(\\d+(?:,\\d+)*[\\s]*(?:sqft|sq\\.?\\s*ft|sqyrd|sq\\.?\\s*yard|acres?))",
+          "extracted": "900 sqft"
+        },
+        {
+          "text": "Plot Area 4521 sqft",
+          "matched": true,
+          "pattern": "Plot Area[\\s\\S]*?(\\d+(?:,\\d+)*[\\s]*(?:sqft|sq\\.?\\s*ft|sqyrd|sq\\.?\\s*yard|acres?))",
+          "extracted": "4521 sqft"
+        },
+        {
+          "text": "Plot Area: 1,200 sq ft",
+          "matched": true,
+          "pattern": "Plot Area[\\s\\S]*?(\\d+(?:,\\d+)*[\\s]*(?:sqft|sq\\.?\\s*ft|sqyrd|sq\\.?\\s*yard|acres?))",
+          "extracted": "1,200 sq ft"
+        },
+        {
+          "text": "Plot Area 2 acres",
+          "matched": true,
+          "pattern": "Plot Area[\\s\\S]*?(\\d+(?:,\\d+)*[\\s]*(?:sqft|sq\\.?\\s*ft|sqyrd|sq\\.?\\s*yard|acres?))",
+          "extracted": "2 acres"
+        },
+        {
+          "text": "Land Area: 500 sqyrd",
+          "matched": true,
+          "pattern": "\\d+(?:,\\d+)*[\\s]*(?:sqyrd|sq\\.?\\s*yard)",
+          "extracted": "500 sqyrd"
+        }
+      ]
+    }
+  },
+  "status_results": {
+    "apartments": {
+      "total": 5,
+      "matched": 5,
+      "details": [
+        {
+          "text": "Ready to Move",
+          "matched": true,
+          "pattern": "Ready to Move",
+          "extracted": "Ready to Move"
+        },
+        {
+          "text": "Under Construction",
+          "matched": true,
+          "pattern": "Under Construction",
+          "extracted": "Under Construction"
+        },
+        {
+          "text": "New Launch",
+          "matched": true,
+          "pattern": "New Launch",
+          "extracted": "New Launch"
+        },
+        {
+          "text": "Possession by Dec '25",
+          "matched": true,
+          "pattern": "Possession by \\w+ '\\d+",
+          "extracted": "Possession by Dec '25"
+        },
+        {
+          "text": "Ready to Move In",
+          "matched": true,
+          "pattern": "Ready to Move",
+          "extracted": "Ready to Move"
+        }
+      ]
+    },
+    "houses": {
+      "total": 5,
+      "matched": 5,
+      "details": [
+        {
+          "text": "Ready to Move",
+          "matched": true,
+          "pattern": "Ready to Move",
+          "extracted": "Ready to Move"
+        },
+        {
+          "text": "Under Construction",
+          "matched": true,
+          "pattern": "Under Construction",
+          "extracted": "Under Construction"
+        },
+        {
+          "text": "New Property",
+          "matched": true,
+          "pattern": "New Property",
+          "extracted": "New Property"
+        },
+        {
+          "text": "Resale",
+          "matched": true,
+          "pattern": "Resale",
+          "extracted": "Resale"
+        },
+        {
+          "text": "Immediate Possession",
+          "matched": true,
+          "pattern": "Immediate Possession",
+          "extracted": "Immediate Possession"
+        }
+      ]
+    },
+    "plots": {
+      "total": 5,
+      "matched": 5,
+      "details": [
+        {
+          "text": "Transaction: Resale",
+          "matched": true,
+          "pattern": "Resale",
+          "extracted": "Resale"
+        },
+        {
+          "text": "Type: New",
+          "matched": true,
+          "pattern": "(Resale|New|Available)",
+          "extracted": "New"
+        },
+        {
+          "text": "Available for Sale",
+          "matched": true,
+          "pattern": "Available",
+          "extracted": "Available"
+        },
+        {
+          "text": "Resale Plot",
+          "matched": true,
+          "pattern": "Resale",
+          "extracted": "Resale"
+        },
+        {
+          "text": "New Development",
+          "matched": true,
+          "pattern": "(Resale|New|Available)",
+          "extracted": "New"
+        }
+      ]
+    }
+  },
+  "summary": {
+    "area_success_rate": 100.0,
+    "status_success_rate": 100.0,
+    "overall_status": "PASSED"
+  }
+}

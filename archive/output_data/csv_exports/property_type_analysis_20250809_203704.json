@@ -1,0 +1,20 @@
+{
+  "Apartments": {
+    "error": "No property cards found"
+  },
+  "Houses": {
+    "error": "No property cards found"
+  },
+  "Villas": {
+    "error": "No property cards found"
+  },
+  "Builder Floors": {
+    "error": "No property cards found"
+  },
+  "Plots": {
+    "error": "No property cards found"
+  },
+  "Penthouses": {
+    "error": "No property cards found"
+  }
+}

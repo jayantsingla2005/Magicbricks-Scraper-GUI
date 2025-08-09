@@ -1,0 +1,150 @@
+{
+  "phase2": {
+    "enabled": true,
+    "description": "Phase II detailed property page scraping configuration",
+    "version": "1.0"
+  },
+  "url_discovery": {
+    "max_listing_pages": 50,
+    "urls_per_page_target": 30,
+    "max_queue_size": 10000,
+    "discovery_delay_min": 3,
+    "discovery_delay_max": 6,
+    "url_patterns": [
+      "/propertydetail/",
+      "/property-detail/",
+      "pdpid="
+    ],
+    "exclude_patterns": [
+      "/builder/",
+      "/project/",
+      "/locality/",
+      "/advertisement"
+    ]
+  },
+  "detailed_scraping": {
+    "max_workers": 3,
+    "worker_delay_min": 2,
+    "worker_delay_max": 5,
+    "page_load_timeout": 30,
+    "max_retries": 2,
+    "retry_delay": 10,
+    "batch_size": 50
+  },
+  "selectors": {
+    "property_details": {
+      "overview": ".mb-ldp__dtls__body, .property-overview, .prop-details",
+      "price_details": ".mb-ldp__price__dtls, .price-details, .pricing-info",
+      "amenities": ".mb-ldp__amenities, .amenities-list, .features-list",
+      "location": ".mb-ldp__location, .location-details, .address-info",
+      "floor_plan": ".mb-ldp__floorplan, .floor-plan, .layout-info",
+      "gallery": ".mb-ldp__gallery, .property-gallery, .image-gallery"
+    },
+    "detailed_fields": {
+      "property_id": "[data-testid='property-id'], .property-id, .prop-id",
+      "rera_id": "[data-testid='rera-id'], .rera-id, .rera-number",
+      "builder_name": ".mb-ldp__builder__name, .builder-name, .developer-name",
+      "project_details": ".mb-ldp__project__dtls, .project-details, .project-info",
+      "possession_date": ".mb-ldp__possession, .possession-date, .ready-date",
+      "price_breakdown": ".mb-ldp__price__breakdown, .price-breakdown, .cost-details",
+      "maintenance_charges": ".mb-ldp__maintenance, .maintenance-cost, .monthly-charges",
+      "booking_amount": ".mb-ldp__booking, .booking-amount, .token-amount",
+      "loan_details": ".mb-ldp__loan, .loan-info, .financing-details",
+      "nearby_places": ".mb-ldp__nearby, .nearby-places, .locality-info",
+      "connectivity": ".mb-ldp__connectivity, .transport-connectivity, .access-info",
+      "schools": ".mb-ldp__schools, .nearby-schools, .education-facilities",
+      "hospitals": ".mb-ldp__hospitals, .nearby-hospitals, .medical-facilities",
+      "shopping": ".mb-ldp__shopping, .nearby-shopping, .retail-facilities"
+    },
+    "listing_metadata": {
+      "title": "h2, .mb-srp__card__title, .property-title",
+      "price": "[class*='price'], .property-price",
+      "locality": "[class*='locality'], [class*='location'], .property-location",
+      "area": "[class*='area'], .property-area",
+      "bedrooms": "[class*='bedroom'], .bedrooms, .bhk-info"
+    }
+  },
+  "data_extraction": {
+    "required_fields": [
+      "source_url",
+      "extracted_at",
+      "extraction_success"
+    ],
+    "optional_fields": [
+      "property_id",
+      "rera_id",
+      "builder_name",
+      "possession_date",
+      "price_breakdown",
+      "maintenance_charges",
+      "booking_amount",
+      "detailed_amenities",
+      "latitude",
+      "longitude",
+      "detailed_address",
+      "nearby_schools",
+      "nearby_hospitals",
+      "nearby_shopping",
+      "connectivity_details",
+      "loan_details",
+      "project_details"
+    ],
+    "text_processing": {
+      "clean_whitespace": true,
+      "remove_extra_spaces": true,
+      "normalize_currency": true,
+      "extract_numbers": true
+    }
+  },
+  "database": {
+    "detailed_properties_table": "detailed_properties",
+    "enable_indexing": true,
+    "indexes": [
+      "source_url",
+      "property_id",
+      "builder_name",
+      "extracted_at"
+    ],
+    "backup_frequency": "daily",
+    "cleanup_failed_extractions": true
+  },
+  "quality_control": {
+    "min_extraction_success_rate": 0.8,
+    "max_consecutive_failures": 10,
+    "validate_urls": true,
+    "check_duplicates": true,
+    "data_completeness_threshold": 0.6
+  },
+  "monitoring": {
+    "log_progress_interval": 50,
+    "save_checkpoint_interval": 100,
+    "performance_metrics": [
+      "urls_discovered_per_minute",
+      "detailed_pages_scraped_per_minute",
+      "extraction_success_rate",
+      "average_page_load_time",
+      "queue_processing_rate"
+    ],
+    "alerts": {
+      "low_success_rate": 0.7,
+      "high_error_rate": 0.3,
+      "queue_overflow": 0.9,
+      "worker_timeout": 300
+    }
+  },
+  "export": {
+    "formats": ["json", "csv", "excel"],
+    "include_metadata": true,
+    "compress_output": true,
+    "split_large_files": true,
+    "max_file_size_mb": 100
+  },
+  "scheduling": {
+    "enable_scheduling": false,
+    "schedule_type": "weekly",
+    "schedule_time": "02:00",
+    "schedule_days": ["sunday"],
+    "auto_cleanup": true,
+    "retention_days": 30
+  }
+}

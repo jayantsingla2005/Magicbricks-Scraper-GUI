@@ -1,0 +1,30 @@
+{
+  "start_time": "2025-08-09T21:14:55.083221",
+  "test_matrix": {
+    "gurgaon": {
+      "apartments": {
+        "status": "FAILED",
+        "error": "No properties found",
+        "properties_count": 0
+      },
+      "houses": {
+        "status": "FAILED",
+        "error": "No properties found",
+        "properties_count": 0
+      },
+      "plots": {
+        "status": "FAILED",
+        "error": "No properties found",
+        "properties_count": 0
+      }
+    }
+  },
+  "summary": {
+    "total_tests": 3,
+    "successful_tests": 0,
+    "overall_success_rate": "0.0%",
+    "target_met": false,
+    "end_time": "2025-08-09T21:17:13.166259"
+  },
+  "overall_success": false
+}

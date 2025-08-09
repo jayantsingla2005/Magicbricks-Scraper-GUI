@@ -1,0 +1,31 @@
+{
+  "timestamp": "2025-08-09T20:17:32.229857",
+  "property_cards_analyzed": 0,
+  "html_samples": [],
+  "selector_analysis": {
+    "area_effectiveness": {
+      "total_cards": 0,
+      "super_area_selector_success": 0,
+      "carpet_area_selector_success": 0,
+      "cards_with_sqft_data": 0,
+      "super_area_success_rate": 0,
+      "carpet_area_success_rate": 0,
+      "sqft_data_availability": 0
+    },
+    "society_effectiveness": {
+      "total_cards": 0,
+      "primary_selector_success": 0,
+      "fallback_selector_success": 0,
+      "any_society_data_found": 0,
+      "primary_success_rate": 0,
+      "overall_success_rate": 0
+    }
+  },
+  "data_patterns": {},
+  "property_type_patterns": {},
+  "field_locations": {
+    "area": [],
+    "society": []
+  },
+  "missing_data_analysis": {}
+}

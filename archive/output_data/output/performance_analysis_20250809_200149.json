@@ -1,0 +1,56 @@
+{
+  "analysis_date": "2025-08-09T20:01:49.777676",
+  "test_scope": {
+    "pages": 15,
+    "properties": 450
+  },
+  "data_quality": {
+    "total_properties": 450,
+    "field_completeness": {
+      "title": 100.0,
+      "price": 100.0,
+      "property_type": 100.0,
+      "bedrooms": 90.66666666666666,
+      "super_area": 49.55555555555556,
+      "society": 59.77777777777777,
+      "locality": 83.11111111111111,
+      "furnishing": 90.88888888888889,
+      "status": 79.33333333333333,
+      "owner_name": 100.0
+    },
+    "avg_completeness": 85.33333333333334,
+    "property_types": {
+      "Apartment": 253,
+      "Independent Floor": 105,
+      "House": 43,
+      "Plot": 38,
+      "Villa": 11
+    },
+    "price_range": {
+      "min": 330000.0,
+      "max": 295000000.0,
+      "avg": 29177044.444444444
+    }
+  },
+  "performance": {
+    "session_stats": {
+      "total_pages_processed": 15,
+      "total_properties_extracted": 450,
+      "total_properties_valid": 450,
+      "total_errors": 0,
+      "total_retries": 0,
+      "pages_with_errors": 0,
+      "average_page_time": 14.167161599999996,
+      "average_properties_per_page": 0,
+      "data_quality_scores": []
+    },
+    "properties_per_minute": 127.0543846976377,
+    "estimated_full_time_hours": 3.9353226666666656
+  },
+  "anti_scraping": {
+    "resistance_score": 100,
+    "blocking_detected": false,
+    "captcha_encountered": false,
+    "rate_limiting": false
+  }
+}

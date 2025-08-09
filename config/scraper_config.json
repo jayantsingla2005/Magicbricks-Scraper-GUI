@@ -30,16 +30,30 @@
     "area": {
       "super_area": "*:contains('Super Area') + *",
       "carpet_area": "*:contains('Carpet Area') + *",
+      "plot_area": "*:contains('Plot Area') + *",
       "fallback": [
         "*:contains('sqft')",
+        "*:contains('sqyrd')",
         "*:contains('Super Area')",
-        "*:contains('Carpet Area')"
+        "*:contains('Carpet Area')",
+        "*:contains('Plot Area')"
       ],
       "regex_patterns": [
-        "\\d+\\s*sqft",
-        "Super Area[\\s\\S]*?(\\d+\\s*sqft)",
-        "Carpet Area[\\s\\S]*?(\\d+\\s*sqft)"
-      ]
+        "Super Area[\\s\\S]*?(\\d+(?:,\\d+)*[\\s]*(?:sqft|sq\\.?\\s*ft))",
+        "Carpet Area[\\s\\S]*?(\\d+(?:,\\d+)*[\\s]*(?:sqft|sq\\.?\\s*ft|sqyrd|sq\\.?\\s*yard))",
+        "Plot Area[\\s\\S]*?(\\d+(?:,\\d+)*[\\s]*(?:sqft|sq\\.?\\s*ft|sqyrd|sq\\.?\\s*yard|acres?))",
+        "\\d+(?:,\\d+)*[\\s]*(?:sqft|sq\\.?\\s*ft)",
+        "\\d+(?:,\\d+)*[\\s]*(?:sqyrd|sq\\.?\\s*yard)",
+        "\\d+(?:,\\d+)*[\\s]*acres?"
+      ],
+      "property_type_mapping": {
+        "apartment": ["super_area", "carpet_area"],
+        "house": ["carpet_area", "super_area"],
+        "plot": ["plot_area"],
+        "land": ["plot_area"],
+        "villa": ["super_area", "carpet_area"],
+        "floor": ["super_area", "carpet_area"]
+      }
     },
     "bedrooms": {
       "primary": "[data-summary='bedrooms'] .mb-srp__card__summary--value",
@@ -62,10 +76,27 @@
       "regex_patterns": [
         "Ready to Move",
         "Poss\\. by \\w+ '\\d+",
+        "Possession by \\w+ '\\d+",
         "Under Construction",
         "New Property",
-        "Resale"
-      ]
+        "New Launch",
+        "Resale",
+        "Immediate Possession",
+        "Available"
+      ],
+      "plot_alternatives": [
+        "*:contains('Transaction')",
+        "*:contains('Resale')",
+        "*:contains('New')"
+      ],
+      "conditional_logic": {
+        "plot_keywords": ["Plot", "Land", "plot", "land"],
+        "plot_status_mapping": {
+          "Resale": "Resale Plot",
+          "New": "New Plot",
+          "Transaction": "Available"
+        }
+      }
     },
     "facing": "[data-summary='facing'] .mb-srp__card__summary--value",
     "overlooking": "[data-summary='overlooking'] .mb-srp__card__summary--value",
@@ -119,6 +150,31 @@
     "react_render_wait": 3,
     "element_wait_timeout": 10,
     "page_timeout": 30
+  },
+  "performance": {
+    "enable_optimization": true,
+    "parallel_processing": {
+      "enabled": false,
+      "max_workers": 2,
+      "batch_size": 3
+    },
+    "browser_optimization": {
+      "headless": false,
+      "disable_images": true,
+      "disable_css": false,
+      "disable_javascript": false,
+      "page_load_strategy": "normal"
+    },
+    "optimized_delays": {
+      "page_load_min": 2,
+      "page_load_max": 4,
+      "between_requests_min": 1,
+      "between_requests_max": 3,
+      "react_render_wait": 2,
+      "element_wait_timeout": 8,
+      "page_timeout": 20,
+      "smart_waiting": true
+    }
   },
   "retry": {
     "max_retries": 3,

@@ -1,0 +1,226 @@
+{
+  "research_targets": [
+    {
+      "name": "Apartments/Flats in Gurgaon",
+      "url": "https://www.magicbricks.com/flats-in-gurgaon-for-sale-pppfs",
+      "property_type": "Apartments/Flats",
+      "location": "Gurgaon",
+      "price_range": "All",
+      "expected_challenges": [
+        "High density listings",
+        "Varied area units",
+        "Different furnishing states"
+      ],
+      "sample_size": 5
+    },
+    {
+      "name": "Apartments/Flats in Mumbai",
+      "url": "https://www.magicbricks.com/flats-in-mumbai-for-sale-pppfs",
+      "property_type": "Apartments/Flats",
+      "location": "Mumbai",
+      "price_range": "All",
+      "expected_challenges": [
+        "High density listings",
+        "Varied area units",
+        "Different furnishing states"
+      ],
+      "sample_size": 5
+    },
+    {
+      "name": "Apartments/Flats in Bangalore",
+      "url": "https://www.magicbricks.com/flats-in-bangalore-for-sale-pppfs",
+      "property_type": "Apartments/Flats",
+      "location": "Bangalore",
+      "price_range": "All",
+      "expected_challenges": [
+        "High density listings",
+        "Varied area units",
+        "Different furnishing states"
+      ],
+      "sample_size": 5
+    },
+    {
+      "name": "Independent Houses in Gurgaon",
+      "url": "https://www.magicbricks.com/independent-house-for-sale-in-gurgaon-pppfs",
+      "property_type": "Independent Houses",
+      "location": "Gurgaon",
+      "price_range": "All",
+      "expected_challenges": [
+        "Larger area units",
+        "Plot size vs built-up area",
+        "Different ownership types"
+      ],
+      "sample_size": 5
+    },
+    {
+      "name": "Independent Houses in Delhi",
+      "url": "https://www.magicbricks.com/independent-house-for-sale-in-delhi-pppfs",
+      "property_type": "Independent Houses",
+      "location": "Delhi",
+      "price_range": "All",
+      "expected_challenges": [
+        "Larger area units",
+        "Plot size vs built-up area",
+        "Different ownership types"
+      ],
+      "sample_size": 5
+    },
+    {
+      "name": "Independent Houses in Noida",
+      "url": "https://www.magicbricks.com/independent-house-for-sale-in-noida-pppfs",
+      "property_type": "Independent Houses",
+      "location": "Noida",
+      "price_range": "All",
+      "expected_challenges": [
+        "Larger area units",
+        "Plot size vs built-up area",
+        "Different ownership types"
+      ],
+      "sample_size": 5
+    },
+    {
+      "name": "Villas in Gurgaon",
+      "url": "https://www.magicbricks.com/villa-for-sale-in-gurgaon-pppfs",
+      "property_type": "Villas",
+      "location": "Gurgaon",
+      "price_range": "All",
+      "expected_challenges": [
+        "Premium pricing format",
+        "Complex area descriptions",
+        "Luxury amenities"
+      ],
+      "sample_size": 5
+    },
+    {
+      "name": "Villas in Mumbai",
+      "url": "https://www.magicbricks.com/villa-for-sale-in-mumbai-pppfs",
+      "property_type": "Villas",
+      "location": "Mumbai",
+      "price_range": "All",
+      "expected_challenges": [
+        "Premium pricing format",
+        "Complex area descriptions",
+        "Luxury amenities"
+      ],
+      "sample_size": 5
+    },
+    {
+      "name": "Villas in Pune",
+      "url": "https://www.magicbricks.com/villa-for-sale-in-pune-pppfs",
+      "property_type": "Villas",
+      "location": "Pune",
+      "price_range": "All",
+      "expected_challenges": [
+        "Premium pricing format",
+        "Complex area descriptions",
+        "Luxury amenities"
+      ],
+      "sample_size": 5
+    },
+    {
+      "name": "Builder Floors in Gurgaon",
+      "url": "https://www.magicbricks.com/builder-floor-for-sale-in-gurgaon-pppfs",
+      "property_type": "Builder Floors",
+      "location": "Gurgaon",
+      "price_range": "All",
+      "expected_challenges": [
+        "Floor-specific pricing",
+        "Shared ownership",
+        "Construction status"
+      ],
+      "sample_size": 5
+    },
+    {
+      "name": "Builder Floors in Delhi",
+      "url": "https://www.magicbricks.com/builder-floor-for-sale-in-delhi-pppfs",
+      "property_type": "Builder Floors",
+      "location": "Delhi",
+      "price_range": "All",
+      "expected_challenges": [
+        "Floor-specific pricing",
+        "Shared ownership",
+        "Construction status"
+      ],
+      "sample_size": 5
+    },
+    {
+      "name": "Plots/Land in Gurgaon",
+      "url": "https://www.magicbricks.com/residential-plots-land-for-sale-in-gurgaon-pppfs",
+      "property_type": "Plots/Land",
+      "location": "Gurgaon",
+      "price_range": "All",
+      "expected_challenges": [
+        "Area in sq yards/acres",
+        "No built-up area",
+        "Different approval status"
+      ],
+      "sample_size": 5
+    },
+    {
+      "name": "Plots/Land in Noida",
+      "url": "https://www.magicbricks.com/residential-plots-land-for-sale-in-noida-pppfs",
+      "property_type": "Plots/Land",
+      "location": "Noida",
+      "price_range": "All",
+      "expected_challenges": [
+        "Area in sq yards/acres",
+        "No built-up area",
+        "Different approval status"
+      ],
+      "sample_size": 5
+    },
+    {
+      "name": "Penthouses in Gurgaon",
+      "url": "https://www.magicbricks.com/penthouse-for-sale-in-gurgaon-pppfs",
+      "property_type": "Penthouses",
+      "location": "Gurgaon",
+      "price_range": "All",
+      "expected_challenges": [
+        "Premium layouts",
+        "Terrace area",
+        "High-end amenities"
+      ],
+      "sample_size": 5
+    },
+    {
+      "name": "Penthouses in Mumbai",
+      "url": "https://www.magicbricks.com/penthouse-for-sale-in-mumbai-pppfs",
+      "property_type": "Penthouses",
+      "location": "Mumbai",
+      "price_range": "All",
+      "expected_challenges": [
+        "Premium layouts",
+        "Terrace area",
+        "High-end amenities"
+      ],
+      "sample_size": 5
+    }
+  ],
+  "summary": {
+    "total_targets": 15,
+    "property_types": [
+      "Villas",
+      "Plots/Land",
+      "Independent Houses",
+      "Apartments/Flats",
+      "Builder Floors",
+      "Penthouses"
+    ],
+    "locations": [
+      "Pune",
+      "Mumbai",
+      "Bangalore",
+      "Gurgaon",
+      "Noida",
+      "Delhi"
+    ],
+    "estimated_pages": 75,
+    "estimated_properties": 2250,
+    "research_phases": [
+      "Phase 1: Property Type Sampling",
+      "Phase 2: Location Variation Analysis",
+      "Phase 3: Edge Case Discovery",
+      "Phase 4: Comprehensive Validation"
+    ]
+  }
+}
