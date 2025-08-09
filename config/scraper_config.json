@@ -1,0 +1,117 @@
+{
+  "website": {
+    "base_url": "https://www.magicbricks.com/property-for-sale-in-gurgaon-pppfs",
+    "properties_per_page": 30,
+    "max_pages": 1000,
+    "pagination_selector": ".mb-srp__pagination button[aria-label*='Next']"
+  },
+  "selectors": {
+    "property_cards": "div.mb-srp__card:not(.mb-srp__card__container):not(.mb-srp__card__photo)",
+    "title": "h2.mb-srp__card--title",
+    "price": {
+      "primary": ".mb-srp__card__price--amount",
+      "fallback": "[class*='price'] span:contains('₹')",
+      "regex": "₹[\\d.,\\s]+(?:Cr|Lakh|crore|lakh)?"
+    },
+    "price_per_sqft": {
+      "primary": ".mb-srp__card__price--per-unit",
+      "fallback": "[class*='price']:contains('per sqft')",
+      "regex": "₹[\\d.,\\s]+per sqft"
+    },
+    "society": ".mb-srp__card__society--name",
+    "area": {
+      "super_area": "[data-summary='super-area'] .mb-srp__card__summary--value",
+      "carpet_area": "[data-summary='carpet-area'] .mb-srp__card__summary--value",
+      "fallback": ".mb-srp__card__summary--value:contains('sqft')"
+    },
+    "bedrooms": {
+      "primary": "[data-summary='bedrooms'] .mb-srp__card__summary--value",
+      "fallback": ".mb-srp__card--title",
+      "regex": "(\\d+)\\s*BHK"
+    },
+    "bathrooms": "[data-summary='bathrooms'] .mb-srp__card__summary--value",
+    "floor": "[data-summary='floor'] .mb-srp__card__summary--value",
+    "furnishing": "[data-summary='furnishing'] .mb-srp__card__summary--value",
+    "status": "[data-summary='status'] .mb-srp__card__summary--value",
+    "facing": "[data-summary='facing'] .mb-srp__card__summary--value",
+    "overlooking": "[data-summary='overlooking'] .mb-srp__card__summary--value",
+    "ownership": "[data-summary='ownership'] .mb-srp__card__summary--value",
+    "parking": "[data-summary='parking'] .mb-srp__card__summary--value",
+    "balcony": "[data-summary='balcony'] .mb-srp__card__summary--value",
+    "age": "[data-summary='age'] .mb-srp__card__summary--value",
+    "transaction_type": "[data-summary='transaction'] .mb-srp__card__summary--value",
+    "possession_date": "[data-summary='possession'] .mb-srp__card__summary--value",
+    "image": "img.mb-srp__card__photo__fig--graphic",
+    "property_url": "a[href*='propertyDetails'], a[href*='property']",
+    "owner_info": ".mb-srp__card__ads--name",
+    "contact_button": ".mb-srp__card__contact button, [class*='contact'] button",
+    "description": ".mb-srp__card__description p, .mb-srp__card__summary__description"
+  },
+  "browser": {
+    "headless": true,
+    "user_agents": [
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/121.0",
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    ],
+    "viewport_sizes": [
+      {"width": 1920, "height": 1080},
+      {"width": 1366, "height": 768},
+      {"width": 1536, "height": 864},
+      {"width": 1440, "height": 900}
+    ],
+    "chrome_options": [
+      "--no-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-blink-features=AutomationControlled",
+      "--exclude-switches=enable-automation",
+      "--disable-extensions-file-access-check",
+      "--disable-extensions-http-throttling",
+      "--disable-extensions-except",
+      "--disable-plugins-discovery",
+      "--disable-preconnect",
+      "--disable-sync",
+      "--no-first-run",
+      "--no-default-browser-check",
+      "--disable-default-apps"
+    ]
+  },
+  "delays": {
+    "page_load_min": 3,
+    "page_load_max": 7,
+    "between_requests_min": 2,
+    "between_requests_max": 5,
+    "react_render_wait": 3,
+    "element_wait_timeout": 10,
+    "page_timeout": 30
+  },
+  "retry": {
+    "max_retries": 3,
+    "backoff_factor": 2,
+    "max_consecutive_failures": 5,
+    "circuit_breaker_threshold": 10
+  },
+  "output": {
+    "csv_filename": "magicbricks_properties_{timestamp}.csv",
+    "json_filename": "magicbricks_properties_{timestamp}.json",
+    "checkpoint_filename": "scraper_checkpoint_{timestamp}.json",
+    "log_filename": "scraper_log_{timestamp}.log",
+    "export_directory": "output",
+    "checkpoint_interval": 50
+  },
+  "logging": {
+    "level": "INFO",
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    "console_output": true,
+    "file_output": true,
+    "detailed_progress": true,
+    "performance_metrics": true
+  },
+  "data_validation": {
+    "required_fields": ["title", "price"],
+    "price_range": {"min": 100000, "max": 1000000000},
+    "area_range": {"min": 100, "max": 50000},
+    "duplicate_check_fields": ["title", "society", "price", "area"]
+  }
+}
