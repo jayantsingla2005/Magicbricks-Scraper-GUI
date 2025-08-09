@@ -1,0 +1,69 @@
+PROPERTY TYPE PATTERN ANALYSIS SUMMARY
+============================================================
+
+PROPERTY TYPE OVERVIEW:
+------------------------------
+APARTMENT:
+  Samples: 20
+  Unique Classes: 46
+  Avg Classes/Card: 70.8
+
+HOUSE:
+  Samples: 12
+  Unique Classes: 46
+  Avg Classes/Card: 72.2
+
+FLOOR:
+  Samples: 20
+  Unique Classes: 46
+  Avg Classes/Card: 70.8
+
+PLOT:
+  Samples: 17
+  Unique Classes: 46
+  Avg Classes/Card: 71.3
+
+FIELD AVAILABILITY BY TYPE:
+------------------------------
+APARTMENT:
+  price: 100.0%
+  area: 100.0%
+  bedrooms: 100.0%
+  bathrooms: 100.0%
+  floor: 100.0%
+
+HOUSE:
+  price: 100.0%
+  area: 100.0%
+  bedrooms: 100.0%
+  bathrooms: 100.0%
+  balconies: 100.0%
+
+FLOOR:
+  price: 100.0%
+  area: 100.0%
+  bedrooms: 100.0%
+  bathrooms: 100.0%
+  floor: 100.0%
+
+PLOT:
+  price: 100.0%
+  area: 100.0%
+  age: 100.0%
+  floor: 88.2%
+  facing: 88.2%
+
+TOP RECOMMENDATIONS:
+------------------------------
+APARTMENT:
+  - apartment selectors need improvement for: title
+
+HOUSE:
+  - house selectors need improvement for: title
+
+FLOOR:
+  - floor selectors need improvement for: title
+
+PLOT:
+  - plot selectors need improvement for: title
+

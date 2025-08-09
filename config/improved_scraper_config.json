@@ -1,0 +1,145 @@
+{
+  "selectors": {
+    "property_card": ".mb-srp__card",
+    "title": ".mb-srp__card--title a",
+    "price": ".mb-srp__card__price--amount",
+    "area": ".mb-srp__card__price--size",
+    "status": ".mb-srp__card__summary__list--item",
+    "locality": ".mb-srp__card__ads--locality",
+    "society": ".mb-srp__card__society",
+    "summary_values": ".mb-srp__card__summary--value",
+    "summary_labels": ".mb-srp__card__summary--label",
+    "summary_items": ".mb-srp__card__summary__list--item",
+    "property_url": ".mb-srp__card--title a",
+    "bedrooms": ".mb-srp__card__summary--value",
+    "bathrooms": ".mb-srp__card__summary--value",
+    "balconies": ".mb-srp__card__summary--value",
+    "furnishing": ".mb-srp__card__summary--value",
+    "floor": ".mb-srp__card__summary--value",
+    "total_floors": ".mb-srp__card__summary--value",
+    "age": ".mb-srp__card__summary--value",
+    "facing": ".mb-srp__card__summary--value",
+    "parking": ".mb-srp__card__summary--value",
+    "super_area": ".mb-srp__card__summary--value",
+    "property_type": ".mb-srp__card__summary--value",
+    "transaction_type": ".mb-srp__card__summary--value",
+    "possession": ".mb-srp__card__summary--value",
+    "city": ".mb-srp__card__ads--locality"
+  },
+  "extraction_methods": {
+    "title": "text_content",
+    "price": "text_with_regex",
+    "area": "text_with_regex",
+    "super_area": "text_with_regex",
+    "bedrooms": "text_with_regex",
+    "bathrooms": "text_with_regex",
+    "balconies": "text_with_regex",
+    "furnishing": "text_content",
+    "floor": "text_with_regex",
+    "total_floors": "text_with_regex",
+    "age": "text_with_regex",
+    "facing": "text_content",
+    "parking": "text_with_regex",
+    "status": "text_content",
+    "society": "text_content",
+    "locality": "text_content",
+    "city": "text_content",
+    "property_type": "text_content",
+    "transaction_type": "text_content",
+    "possession": "text_content",
+    "property_url": "href_attribute"
+  },
+  "validation_patterns": {
+    "price": [
+      "₹[\\d,.]+(lac|lakh|cr|crore)",
+      "₹[\\d,.]+"
+    ],
+    "area": [
+      "\\d+\\s*(sqft|sq\\.?ft|square feet)",
+      "\\d+\\s*sqft"
+    ],
+    "super_area": [
+      "\\d+\\s*(sqft|sq\\.?ft)",
+      "super.*\\d+"
+    ],
+    "bedrooms": [
+      "\\d+\\s*bhk",
+      "\\d+\\s*(bed|bedroom)"
+    ],
+    "bathrooms": [
+      "\\d+\\s*(bath|bathroom)",
+      "\\d+\\s*bath"
+    ],
+    "balconies": [
+      "\\d+\\s*(balcon|balcony)",
+      "\\d+\\s*balcon"
+    ],
+    "floor": [
+      "\\d+\\s*(floor|flr)",
+      "(ground|basement|\\d+)\\s*floor"
+    ],
+    "total_floors": [
+      "out of \\d+",
+      "of \\d+",
+      "\\d+\\s*floors?"
+    ],
+    "age": [
+      "\\d+\\s*(year|yr)",
+      "(new|ready|under)"
+    ],
+    "parking": [
+      "\\d+\\s*(car|parking)",
+      "(covered|open)\\s*parking"
+    ],
+    "status": [
+      "(ready|under construction|new launch|resale)"
+    ],
+    "property_url": [
+      "/[a-zA-Z0-9\\-]+\\-pdpid\\-[a-zA-Z0-9]+"
+    ]
+  },
+  "fallback_selectors": {
+    "title": [
+      ".mb-srp__card--title a",
+      ".mb-srp__card--title",
+      "h2 a",
+      "h3 a"
+    ],
+    "price": [
+      ".mb-srp__card__price--amount",
+      ".price",
+      ".amount",
+      ".cost"
+    ],
+    "area": [
+      ".mb-srp__card__price--size",
+      ".area",
+      ".size",
+      ".sqft"
+    ],
+    "locality": [
+      ".mb-srp__card__ads--locality",
+      ".locality",
+      ".location",
+      ".address"
+    ],
+    "society": [
+      ".mb-srp__card__society",
+      ".society",
+      ".project",
+      ".complex"
+    ],
+    "status": [
+      ".mb-srp__card__summary__list--item",
+      ".status",
+      ".possession",
+      ".ready"
+    ]
+  },
+  "metadata": {
+    "based_on_analysis": true,
+    "analysis_date": "2025-08-10",
+    "confidence_level": "high",
+    "website_structure": "mb-srp BEM naming convention"
+  }
+}

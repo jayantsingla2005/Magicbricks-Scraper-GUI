@@ -1,0 +1,267 @@
+{
+  "timestamp": "2025-08-10T00:10:12.983338",
+  "pages_tested": 3,
+  "properties_tested": 90,
+  "field_performance": {
+    "title": {
+      "field_name": "title",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    },
+    "price": {
+      "field_name": "price",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "₹1.96 Cr",
+        "₹1.42 Cr",
+        "₹5.50 Cr",
+        "₹3.30 Cr",
+        "₹4.80 Cr",
+        "₹59 Lac",
+        "₹85 Lac",
+        "₹20 Cr",
+        "₹1.45 Cr",
+        "₹2.15 Cr"
+      ],
+      "extraction_issues": []
+    },
+    "area": {
+      "field_name": "area",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "₹28,121 per sqft",
+        "₹12,566 per sqft",
+        "₹13,095 per sqft",
+        "₹15,207 per sqft",
+        "₹19,810 per sqft",
+        "₹9,233 per sqft",
+        "₹13,323 per sqft",
+        "₹56,673 per sqft",
+        "₹13,564 per sqft",
+        "₹12,655 per sqft"
+      ],
+      "extraction_issues": []
+    },
+    "super_area": {
+      "field_name": "super_area",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft",
+        "1550 sqft",
+        "2423 sqft",
+        "543 sqft",
+        "250 sqft",
+        "3175 sqft",
+        "800 sqft",
+        "1569 sqft"
+      ],
+      "extraction_issues": []
+    },
+    "bedrooms": {
+      "field_name": "bedrooms",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    },
+    "bathrooms": {
+      "field_name": "bathrooms",
+      "total_cards_tested": 90,
+      "successful_extractions": 85,
+      "failed_extractions": 5,
+      "success_rate": 94.44444444444444,
+      "sample_values": [
+        "2",
+        "2",
+        "3",
+        "3",
+        "4",
+        "2",
+        "2",
+        "6",
+        "8",
+        "3"
+      ],
+      "extraction_issues": []
+    },
+    "society": {
+      "field_name": "society",
+      "total_cards_tested": 90,
+      "successful_extractions": 58,
+      "failed_extractions": 32,
+      "success_rate": 64.44444444444444,
+      "sample_values": [
+        "The Serenas",
+        "Suncity Vatsal Valley",
+        "M3M Crown Phase 1",
+        "Sobha City",
+        "Signature Global City 93",
+        "Adani M2K Oyster Grande",
+        "Signature Global Park 4 and 5",
+        "Krisumi Waterside Residences",
+        "ATS Kocoon",
+        "Green Homes"
+      ],
+      "extraction_issues": []
+    },
+    "locality": {
+      "field_name": "locality",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    },
+    "status": {
+      "field_name": "status",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "Super Area697 sqft",
+        "Carpet Area975 sqft",
+        "Carpet Area3200 sqft",
+        "Carpet Area1550 sqft",
+        "Super Area2423 sqft",
+        "Carpet Area543 sqft",
+        "Carpet Area250 sqft",
+        "Carpet Area3175 sqft",
+        "Carpet Area800 sqft",
+        "Carpet Area1569 sqft"
+      ],
+      "extraction_issues": []
+    },
+    "property_type": {
+      "field_name": "property_type",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft",
+        "1550 sqft",
+        "2423 sqft",
+        "543 sqft",
+        "250 sqft",
+        "3175 sqft",
+        "800 sqft",
+        "1569 sqft"
+      ],
+      "extraction_issues": []
+    },
+    "property_url": {
+      "field_name": "property_url",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    }
+  },
+  "overall_performance": {
+    "total_fields_tested": 11,
+    "fields_above_70_percent": 6,
+    "overall_success_percentage": 54.54545454545454,
+    "average_success_rate": 59.898989898989896,
+    "median_success_rate": 94.44444444444444,
+    "min_success_rate": 0.0,
+    "max_success_rate": 100.0
+  },
+  "comparison_with_old": {},
+  "recommendations": [
+    {
+      "field": "title",
+      "priority": "high",
+      "action": "requires_improvement",
+      "description": "title has low performance (0.0%) and needs improvement"
+    },
+    {
+      "field": "price",
+      "priority": "low",
+      "action": "maintain_current_selector",
+      "description": "price has excellent performance (100.0%)"
+    },
+    {
+      "field": "area",
+      "priority": "low",
+      "action": "maintain_current_selector",
+      "description": "area has excellent performance (100.0%)"
+    },
+    {
+      "field": "super_area",
+      "priority": "low",
+      "action": "maintain_current_selector",
+      "description": "super_area has excellent performance (100.0%)"
+    },
+    {
+      "field": "bedrooms",
+      "priority": "high",
+      "action": "requires_improvement",
+      "description": "bedrooms has low performance (0.0%) and needs improvement"
+    },
+    {
+      "field": "bathrooms",
+      "priority": "low",
+      "action": "maintain_current_selector",
+      "description": "bathrooms has excellent performance (94.4%)"
+    },
+    {
+      "field": "society",
+      "priority": "high",
+      "action": "requires_improvement",
+      "description": "society has low performance (64.4%) and needs improvement"
+    },
+    {
+      "field": "locality",
+      "priority": "high",
+      "action": "requires_improvement",
+      "description": "locality has low performance (0.0%) and needs improvement"
+    },
+    {
+      "field": "status",
+      "priority": "low",
+      "action": "maintain_current_selector",
+      "description": "status has excellent performance (100.0%)"
+    },
+    {
+      "field": "property_type",
+      "priority": "low",
+      "action": "maintain_current_selector",
+      "description": "property_type has excellent performance (100.0%)"
+    },
+    {
+      "field": "property_url",
+      "priority": "high",
+      "action": "requires_improvement",
+      "description": "property_url has low performance (0.0%) and needs improvement"
+    },
+    {
+      "field": "overall",
+      "priority": "high",
+      "action": "comprehensive_review",
+      "description": "Overall performance needs improvement (59.9%). Comprehensive selector review required."
+    }
+  ]
+}

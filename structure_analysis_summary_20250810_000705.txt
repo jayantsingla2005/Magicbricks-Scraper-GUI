@@ -1,0 +1,31 @@
+HTML STRUCTURE ANALYSIS SUMMARY
+==================================================
+
+Pages Analyzed: 2
+Total Cards Analyzed: 82
+
+RECOMMENDED SELECTORS:
+------------------------------
+title: a (confidence: 12)
+price: .mb-srp__card__price--amount (confidence: 8)
+area: .mb-srp__card__price--size (confidence: 8)
+super_area: .mb-srp__card (confidence: 8)
+bedrooms: .mb-srp__card (confidence: 8)
+bathrooms: NEEDS INVESTIGATION
+society: .mb-srp__card (confidence: 8)
+locality: li (confidence: 8)
+status: .mb-srp__card__summary__list--item (confidence: 15)
+property_type: NEEDS INVESTIGATION
+
+CLASS NAME PATTERNS:
+------------------------------
+mb-srp__card__summary__list--item: 564 occurrences
+mb-srp__card__summary--label: 564 occurrences
+mb-srp__card__summary--value: 564 occurrences
+rupees: 60 occurrences
+mb-srp__card__summary__list: 50 occurrences
+mb-srp__card__summary__action: 50 occurrences
+mb-srp__card--title: 40 occurrences
+mb-srp__card__share--icon: 40 occurrences
+mb-srp__card__sort--icon: 40 occurrences
+mb-srp__card__summary: 40 occurrences

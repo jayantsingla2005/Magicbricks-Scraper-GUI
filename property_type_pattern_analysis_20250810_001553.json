@@ -1,0 +1,907 @@
+{
+  "timestamp": "2025-08-10T00:14:17.499239",
+  "property_type_analysis": {},
+  "structural_differences": {
+    "apartment": {
+      "sample_count": 20,
+      "top_classes": [
+        [
+          "mb-srp__card__summary__list--item",
+          190
+        ],
+        [
+          "mb-srp__card__summary--label",
+          190
+        ],
+        [
+          "mb-srp__card__summary--value",
+          190
+        ],
+        [
+          "rupees",
+          40
+        ],
+        [
+          "mb-srp__action--btn",
+          40
+        ],
+        [
+          "medium",
+          40
+        ],
+        [
+          "mb-srp__card__container",
+          20
+        ],
+        [
+          "mb-srp__card__photo",
+          20
+        ],
+        [
+          "mb-srp__card__photo__fig",
+          20
+        ],
+        [
+          "mb-srp__card__photo__fig--count",
+          20
+        ]
+      ],
+      "top_tags": [
+        [
+          "div",
+          968
+        ],
+        [
+          "span",
+          225
+        ],
+        [
+          "img",
+          20
+        ],
+        [
+          "h2",
+          20
+        ],
+        [
+          "p",
+          20
+        ],
+        [
+          "script",
+          20
+        ],
+        [
+          "a",
+          12
+        ],
+        [
+          "br",
+          4
+        ]
+      ],
+      "content_patterns": {
+        "has_bhk": 20,
+        "has_area": 20,
+        "has_floor_info": 20,
+        "has_parking": 13
+      },
+      "unique_classes": 46,
+      "avg_classes_per_card": 70.85
+    },
+    "house": {
+      "sample_count": 12,
+      "top_classes": [
+        [
+          "mb-srp__card__summary__list--item",
+          119
+        ],
+        [
+          "mb-srp__card__summary--label",
+          119
+        ],
+        [
+          "mb-srp__card__summary--value",
+          119
+        ],
+        [
+          "rupees",
+          24
+        ],
+        [
+          "mb-srp__action--btn",
+          24
+        ],
+        [
+          "medium",
+          24
+        ],
+        [
+          "mb-srp__card__container",
+          12
+        ],
+        [
+          "mb-srp__card__photo",
+          12
+        ],
+        [
+          "mb-srp__card__photo__fig",
+          12
+        ],
+        [
+          "mb-srp__card__photo__fig--count",
+          12
+        ]
+      ],
+      "top_tags": [
+        [
+          "div",
+          596
+        ],
+        [
+          "span",
+          136
+        ],
+        [
+          "img",
+          12
+        ],
+        [
+          "h2",
+          12
+        ],
+        [
+          "p",
+          12
+        ],
+        [
+          "script",
+          12
+        ],
+        [
+          "br",
+          6
+        ],
+        [
+          "a",
+          4
+        ]
+      ],
+      "content_patterns": {
+        "has_bhk": 12,
+        "has_area": 12,
+        "has_floor_info": 10,
+        "has_parking": 10
+      },
+      "unique_classes": 46,
+      "avg_classes_per_card": 72.25
+    },
+    "floor": {
+      "sample_count": 20,
+      "top_classes": [
+        [
+          "mb-srp__card__summary__list--item",
+          190
+        ],
+        [
+          "mb-srp__card__summary--label",
+          190
+        ],
+        [
+          "mb-srp__card__summary--value",
+          190
+        ],
+        [
+          "rupees",
+          40
+        ],
+        [
+          "mb-srp__action--btn",
+          40
+        ],
+        [
+          "medium",
+          40
+        ],
+        [
+          "mb-srp__card__container",
+          20
+        ],
+        [
+          "mb-srp__card__photo",
+          20
+        ],
+        [
+          "mb-srp__card__photo__fig",
+          20
+        ],
+        [
+          "mb-srp__card__photo__fig--count",
+          20
+        ]
+      ],
+      "top_tags": [
+        [
+          "div",
+          968
+        ],
+        [
+          "span",
+          225
+        ],
+        [
+          "img",
+          20
+        ],
+        [
+          "h2",
+          20
+        ],
+        [
+          "p",
+          20
+        ],
+        [
+          "script",
+          20
+        ],
+        [
+          "a",
+          12
+        ],
+        [
+          "br",
+          4
+        ]
+      ],
+      "content_patterns": {
+        "has_bhk": 20,
+        "has_area": 20,
+        "has_floor_info": 20,
+        "has_parking": 13
+      },
+      "unique_classes": 46,
+      "avg_classes_per_card": 70.85
+    },
+    "plot": {
+      "sample_count": 17,
+      "top_classes": [
+        [
+          "mb-srp__card__summary__list--item",
+          161
+        ],
+        [
+          "mb-srp__card__summary--label",
+          161
+        ],
+        [
+          "mb-srp__card__summary--value",
+          161
+        ],
+        [
+          "rupees",
+          34
+        ],
+        [
+          "mb-srp__action--btn",
+          34
+        ],
+        [
+          "medium",
+          34
+        ],
+        [
+          "mb-srp__card__container",
+          17
+        ],
+        [
+          "mb-srp__card__photo",
+          17
+        ],
+        [
+          "mb-srp__card__photo__fig",
+          17
+        ],
+        [
+          "mb-srp__card__photo__fig--count",
+          17
+        ]
+      ],
+      "top_tags": [
+        [
+          "div",
+          832
+        ],
+        [
+          "span",
+          193
+        ],
+        [
+          "img",
+          17
+        ],
+        [
+          "h2",
+          17
+        ],
+        [
+          "p",
+          17
+        ],
+        [
+          "script",
+          13
+        ],
+        [
+          "a",
+          7
+        ],
+        [
+          "br",
+          4
+        ]
+      ],
+      "content_patterns": {
+        "has_bhk": 13,
+        "has_area": 17,
+        "has_floor_info": 15,
+        "has_parking": 9
+      },
+      "unique_classes": 46,
+      "avg_classes_per_card": 71.29411764705883
+    }
+  },
+  "field_availability_by_type": {
+    "apartment": {
+      "price": {
+        "count": 20,
+        "total_samples": 20,
+        "availability_percentage": 100.0
+      },
+      "area": {
+        "count": 20,
+        "total_samples": 20,
+        "availability_percentage": 100.0
+      },
+      "bedrooms": {
+        "count": 20,
+        "total_samples": 20,
+        "availability_percentage": 100.0
+      },
+      "bathrooms": {
+        "count": 20,
+        "total_samples": 20,
+        "availability_percentage": 100.0
+      },
+      "balconies": {
+        "count": 16,
+        "total_samples": 20,
+        "availability_percentage": 80.0
+      },
+      "furnishing": {
+        "count": 18,
+        "total_samples": 20,
+        "availability_percentage": 90.0
+      },
+      "floor": {
+        "count": 20,
+        "total_samples": 20,
+        "availability_percentage": 100.0
+      },
+      "parking": {
+        "count": 16,
+        "total_samples": 20,
+        "availability_percentage": 80.0
+      },
+      "age": {
+        "count": 18,
+        "total_samples": 20,
+        "availability_percentage": 90.0
+      },
+      "facing": {
+        "count": 14,
+        "total_samples": 20,
+        "availability_percentage": 70.0
+      }
+    },
+    "house": {
+      "price": {
+        "count": 12,
+        "total_samples": 12,
+        "availability_percentage": 100.0
+      },
+      "area": {
+        "count": 12,
+        "total_samples": 12,
+        "availability_percentage": 100.0
+      },
+      "bedrooms": {
+        "count": 12,
+        "total_samples": 12,
+        "availability_percentage": 100.0
+      },
+      "bathrooms": {
+        "count": 12,
+        "total_samples": 12,
+        "availability_percentage": 100.0
+      },
+      "balconies": {
+        "count": 12,
+        "total_samples": 12,
+        "availability_percentage": 100.0
+      },
+      "furnishing": {
+        "count": 12,
+        "total_samples": 12,
+        "availability_percentage": 100.0
+      },
+      "floor": {
+        "count": 10,
+        "total_samples": 12,
+        "availability_percentage": 83.33333333333334
+      },
+      "parking": {
+        "count": 12,
+        "total_samples": 12,
+        "availability_percentage": 100.0
+      },
+      "age": {
+        "count": 12,
+        "total_samples": 12,
+        "availability_percentage": 100.0
+      },
+      "facing": {
+        "count": 12,
+        "total_samples": 12,
+        "availability_percentage": 100.0
+      }
+    },
+    "floor": {
+      "price": {
+        "count": 20,
+        "total_samples": 20,
+        "availability_percentage": 100.0
+      },
+      "area": {
+        "count": 20,
+        "total_samples": 20,
+        "availability_percentage": 100.0
+      },
+      "bedrooms": {
+        "count": 20,
+        "total_samples": 20,
+        "availability_percentage": 100.0
+      },
+      "bathrooms": {
+        "count": 20,
+        "total_samples": 20,
+        "availability_percentage": 100.0
+      },
+      "balconies": {
+        "count": 16,
+        "total_samples": 20,
+        "availability_percentage": 80.0
+      },
+      "furnishing": {
+        "count": 18,
+        "total_samples": 20,
+        "availability_percentage": 90.0
+      },
+      "floor": {
+        "count": 20,
+        "total_samples": 20,
+        "availability_percentage": 100.0
+      },
+      "parking": {
+        "count": 16,
+        "total_samples": 20,
+        "availability_percentage": 80.0
+      },
+      "age": {
+        "count": 18,
+        "total_samples": 20,
+        "availability_percentage": 90.0
+      },
+      "facing": {
+        "count": 14,
+        "total_samples": 20,
+        "availability_percentage": 70.0
+      }
+    },
+    "plot": {
+      "price": {
+        "count": 17,
+        "total_samples": 17,
+        "availability_percentage": 100.0
+      },
+      "area": {
+        "count": 17,
+        "total_samples": 17,
+        "availability_percentage": 100.0
+      },
+      "bedrooms": {
+        "count": 13,
+        "total_samples": 17,
+        "availability_percentage": 76.47058823529412
+      },
+      "bathrooms": {
+        "count": 13,
+        "total_samples": 17,
+        "availability_percentage": 76.47058823529412
+      },
+      "balconies": {
+        "count": 11,
+        "total_samples": 17,
+        "availability_percentage": 64.70588235294117
+      },
+      "furnishing": {
+        "count": 12,
+        "total_samples": 17,
+        "availability_percentage": 70.58823529411765
+      },
+      "floor": {
+        "count": 15,
+        "total_samples": 17,
+        "availability_percentage": 88.23529411764706
+      },
+      "parking": {
+        "count": 14,
+        "total_samples": 17,
+        "availability_percentage": 82.35294117647058
+      },
+      "age": {
+        "count": 17,
+        "total_samples": 17,
+        "availability_percentage": 100.0
+      },
+      "facing": {
+        "count": 15,
+        "total_samples": 17,
+        "availability_percentage": 88.23529411764706
+      }
+    }
+  },
+  "selector_effectiveness_by_type": {
+    "apartment": {
+      "title": {
+        "selector": ".mb-srp__card--title a",
+        "success_count": 0,
+        "total_samples": 20,
+        "effectiveness_percentage": 0.0
+      },
+      "price": {
+        "selector": ".mb-srp__card__price--amount",
+        "success_count": 20,
+        "total_samples": 20,
+        "effectiveness_percentage": 100.0
+      },
+      "area": {
+        "selector": ".mb-srp__card__price--size",
+        "success_count": 20,
+        "total_samples": 20,
+        "effectiveness_percentage": 100.0
+      },
+      "bedrooms": {
+        "selector": ".mb-srp__card__summary--value",
+        "success_count": 20,
+        "total_samples": 20,
+        "effectiveness_percentage": 100.0
+      },
+      "bathrooms": {
+        "selector": ".mb-srp__card__summary--value",
+        "success_count": 20,
+        "total_samples": 20,
+        "effectiveness_percentage": 100.0
+      }
+    },
+    "house": {
+      "title": {
+        "selector": ".mb-srp__card--title a",
+        "success_count": 0,
+        "total_samples": 12,
+        "effectiveness_percentage": 0.0
+      },
+      "price": {
+        "selector": ".mb-srp__card__price--amount",
+        "success_count": 12,
+        "total_samples": 12,
+        "effectiveness_percentage": 100.0
+      },
+      "area": {
+        "selector": ".mb-srp__card__price--size",
+        "success_count": 12,
+        "total_samples": 12,
+        "effectiveness_percentage": 100.0
+      },
+      "bedrooms": {
+        "selector": ".mb-srp__card__summary--value",
+        "success_count": 12,
+        "total_samples": 12,
+        "effectiveness_percentage": 100.0
+      },
+      "bathrooms": {
+        "selector": ".mb-srp__card__summary--value",
+        "success_count": 12,
+        "total_samples": 12,
+        "effectiveness_percentage": 100.0
+      }
+    },
+    "floor": {
+      "title": {
+        "selector": ".mb-srp__card--title a",
+        "success_count": 0,
+        "total_samples": 20,
+        "effectiveness_percentage": 0.0
+      },
+      "price": {
+        "selector": ".mb-srp__card__price--amount",
+        "success_count": 20,
+        "total_samples": 20,
+        "effectiveness_percentage": 100.0
+      },
+      "area": {
+        "selector": ".mb-srp__card__price--size",
+        "success_count": 20,
+        "total_samples": 20,
+        "effectiveness_percentage": 100.0
+      },
+      "bedrooms": {
+        "selector": ".mb-srp__card__summary--value",
+        "success_count": 20,
+        "total_samples": 20,
+        "effectiveness_percentage": 100.0
+      },
+      "bathrooms": {
+        "selector": ".mb-srp__card__summary--value",
+        "success_count": 20,
+        "total_samples": 20,
+        "effectiveness_percentage": 100.0
+      }
+    },
+    "plot": {
+      "title": {
+        "selector": ".mb-srp__card--title a",
+        "success_count": 0,
+        "total_samples": 17,
+        "effectiveness_percentage": 0.0
+      },
+      "price": {
+        "selector": ".mb-srp__card__price--amount",
+        "success_count": 17,
+        "total_samples": 17,
+        "effectiveness_percentage": 100.0
+      },
+      "area": {
+        "selector": ".mb-srp__card__price--size",
+        "success_count": 17,
+        "total_samples": 17,
+        "effectiveness_percentage": 100.0
+      },
+      "bedrooms": {
+        "selector": ".mb-srp__card__summary--value",
+        "success_count": 17,
+        "total_samples": 17,
+        "effectiveness_percentage": 100.0
+      },
+      "bathrooms": {
+        "selector": ".mb-srp__card__summary--value",
+        "success_count": 17,
+        "total_samples": 17,
+        "effectiveness_percentage": 100.0
+      }
+    }
+  },
+  "recommendations_by_type": {
+    "apartment": [
+      {
+        "category": "structure",
+        "priority": "low",
+        "recommendation": "apartment has rich HTML structure (70.8 avg classes). Good for detailed extraction.",
+        "action": "leverage_rich_structure"
+      },
+      {
+        "category": "field_availability",
+        "priority": "low",
+        "recommendation": "apartment has excellent availability for: price, area, bedrooms",
+        "action": "maintain_current_approach",
+        "strong_fields": [
+          "price",
+          "area",
+          "bedrooms",
+          "bathrooms",
+          "furnishing",
+          "floor",
+          "age"
+        ]
+      },
+      {
+        "category": "selector_effectiveness",
+        "priority": "high",
+        "recommendation": "apartment selectors need improvement for: title",
+        "action": "optimize_selectors",
+        "affected_selectors": [
+          "title"
+        ]
+      },
+      {
+        "category": "selector_effectiveness",
+        "priority": "low",
+        "recommendation": "apartment selectors work well for: price, area, bedrooms, bathrooms",
+        "action": "maintain_selectors",
+        "effective_selectors": [
+          "price",
+          "area",
+          "bedrooms",
+          "bathrooms"
+        ]
+      }
+    ],
+    "house": [
+      {
+        "category": "structure",
+        "priority": "low",
+        "recommendation": "house has rich HTML structure (72.2 avg classes). Good for detailed extraction.",
+        "action": "leverage_rich_structure"
+      },
+      {
+        "category": "field_availability",
+        "priority": "low",
+        "recommendation": "house has excellent availability for: price, area, bedrooms",
+        "action": "maintain_current_approach",
+        "strong_fields": [
+          "price",
+          "area",
+          "bedrooms",
+          "bathrooms",
+          "balconies",
+          "furnishing",
+          "floor",
+          "parking",
+          "age",
+          "facing"
+        ]
+      },
+      {
+        "category": "selector_effectiveness",
+        "priority": "high",
+        "recommendation": "house selectors need improvement for: title",
+        "action": "optimize_selectors",
+        "affected_selectors": [
+          "title"
+        ]
+      },
+      {
+        "category": "selector_effectiveness",
+        "priority": "low",
+        "recommendation": "house selectors work well for: price, area, bedrooms, bathrooms",
+        "action": "maintain_selectors",
+        "effective_selectors": [
+          "price",
+          "area",
+          "bedrooms",
+          "bathrooms"
+        ]
+      }
+    ],
+    "floor": [
+      {
+        "category": "structure",
+        "priority": "low",
+        "recommendation": "floor has rich HTML structure (70.8 avg classes). Good for detailed extraction.",
+        "action": "leverage_rich_structure"
+      },
+      {
+        "category": "field_availability",
+        "priority": "low",
+        "recommendation": "floor has excellent availability for: price, area, bedrooms",
+        "action": "maintain_current_approach",
+        "strong_fields": [
+          "price",
+          "area",
+          "bedrooms",
+          "bathrooms",
+          "furnishing",
+          "floor",
+          "age"
+        ]
+      },
+      {
+        "category": "selector_effectiveness",
+        "priority": "high",
+        "recommendation": "floor selectors need improvement for: title",
+        "action": "optimize_selectors",
+        "affected_selectors": [
+          "title"
+        ]
+      },
+      {
+        "category": "selector_effectiveness",
+        "priority": "low",
+        "recommendation": "floor selectors work well for: price, area, bedrooms, bathrooms",
+        "action": "maintain_selectors",
+        "effective_selectors": [
+          "price",
+          "area",
+          "bedrooms",
+          "bathrooms"
+        ]
+      }
+    ],
+    "plot": [
+      {
+        "category": "structure",
+        "priority": "low",
+        "recommendation": "plot has rich HTML structure (71.3 avg classes). Good for detailed extraction.",
+        "action": "leverage_rich_structure"
+      },
+      {
+        "category": "field_availability",
+        "priority": "low",
+        "recommendation": "plot has excellent availability for: price, area, floor",
+        "action": "maintain_current_approach",
+        "strong_fields": [
+          "price",
+          "area",
+          "floor",
+          "parking",
+          "age",
+          "facing"
+        ]
+      },
+      {
+        "category": "selector_effectiveness",
+        "priority": "high",
+        "recommendation": "plot selectors need improvement for: title",
+        "action": "optimize_selectors",
+        "affected_selectors": [
+          "title"
+        ]
+      },
+      {
+        "category": "selector_effectiveness",
+        "priority": "low",
+        "recommendation": "plot selectors work well for: price, area, bedrooms, bathrooms",
+        "action": "maintain_selectors",
+        "effective_selectors": [
+          "price",
+          "area",
+          "bedrooms",
+          "bathrooms"
+        ]
+      }
+    ],
+    "villa": [],
+    "cross_type": [
+      {
+        "category": "consistency",
+        "priority": "medium",
+        "recommendation": "All property types share 10 common classes. Universal selectors possible.",
+        "action": "develop_universal_selectors",
+        "common_classes": [
+          "rupees",
+          "mb-srp__card__container",
+          "mb-srp__card__photo",
+          "mb-srp__card__summary--value",
+          "mb-srp__action--btn",
+          "mb-srp__card__summary__list--item",
+          "mb-srp__card__photo__fig--count",
+          "medium",
+          "mb-srp__card__summary--label",
+          "mb-srp__card__photo__fig"
+        ]
+      },
+      {
+        "category": "field_consistency",
+        "priority": "low",
+        "recommendation": "Fields consistently available across types: age, area, floor, price",
+        "action": "prioritize_consistent_fields",
+        "consistent_fields": [
+          "age",
+          "area",
+          "floor",
+          "price"
+        ]
+      }
+    ]
+  }
+}
