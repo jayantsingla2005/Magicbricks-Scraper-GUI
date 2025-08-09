@@ -1,0 +1,181 @@
+{
+  "timestamp": "2025-08-10T00:31:41.193779",
+  "pages_analyzed": 3,
+  "properties_analyzed": 75,
+  "unit_patterns_found": {
+    "area_units": {
+      "sqft": 72,
+      "sqm": 1
+    },
+    "price_units": {
+      "sqft": 70,
+      "cr": 55,
+      "lac": 20
+    },
+    "measurement_standards": {
+      "carpet area": 46,
+      "super area": 18,
+      "plot area": 7
+    }
+  },
+  "unit_frequency_analysis": {
+    "area_units": {
+      "total_occurrences": 73,
+      "unique_units": 2,
+      "most_common": [
+        [
+          "sqft",
+          72
+        ],
+        [
+          "sqm",
+          1
+        ]
+      ],
+      "percentages": {
+        "sqft": 98.63013698630137,
+        "sqm": 1.36986301369863
+      }
+    },
+    "price_units": {
+      "total_occurrences": 145,
+      "unique_units": 3,
+      "most_common": [
+        [
+          "sqft",
+          70
+        ],
+        [
+          "cr",
+          55
+        ],
+        [
+          "lac",
+          20
+        ]
+      ],
+      "percentages": {
+        "cr": 37.93103448275862,
+        "sqft": 48.275862068965516,
+        "lac": 13.793103448275861
+      }
+    },
+    "measurement_standards": {
+      "total_occurrences": 71,
+      "unique_standards": 3,
+      "most_common": [
+        [
+          "carpet area",
+          46
+        ],
+        [
+          "super area",
+          18
+        ],
+        [
+          "plot area",
+          7
+        ]
+      ],
+      "percentages": {
+        "super area": 25.352112676056336,
+        "carpet area": 64.7887323943662,
+        "plot area": 9.859154929577464
+      }
+    }
+  },
+  "parsing_challenges": {
+    "common_issues": {
+      "missing_currency_symbol": 75,
+      "unconventional_format": 56,
+      "ambiguous_sq_unit": 6
+    },
+    "problematic_patterns": [],
+    "edge_cases": [],
+    "standardization_needs": []
+  },
+  "standardization_recommendations": {
+    "area_unit_standardization": [],
+    "price_unit_standardization": [],
+    "measurement_standardization": [],
+    "parsing_improvements": [
+      {
+        "issue": "missing_currency_symbol",
+        "frequency": 75,
+        "recommendation": "Add fallback patterns for prices without ₹ symbol",
+        "priority": "medium"
+      },
+      {
+        "issue": "ambiguous_sq_unit",
+        "frequency": 6,
+        "recommendation": "Improve regex patterns to handle ambiguous sq units",
+        "priority": "high"
+      }
+    ],
+    "implementation_priorities": [
+      {
+        "priority": 1,
+        "category": "area_units",
+        "focus": "most_common_units",
+        "units": [
+          "sqft",
+          "sqm"
+        ],
+        "recommendation": "Prioritize robust extraction for most common area units"
+      },
+      {
+        "priority": 1,
+        "category": "price_units",
+        "focus": "most_common_units",
+        "units": [
+          "sqft",
+          "cr"
+        ],
+        "recommendation": "Prioritize robust extraction for most common price units"
+      },
+      {
+        "priority": 2,
+        "category": "standardization",
+        "focus": "unit_normalization",
+        "recommendation": "Implement unit normalization rules for consistent output"
+      },
+      {
+        "priority": 3,
+        "category": "edge_cases",
+        "focus": "parsing_improvements",
+        "recommendation": "Handle edge cases and ambiguous formats"
+      }
+    ]
+  },
+  "extraction_patterns": {
+    "area_extraction": {
+      "primary_patterns": [
+        "(\\d+(?:,\\d+)*(?:\\.\\d+)?)\\s*(?:sqft|sq\\.?\\s*ft|square\\s*feet?)"
+      ],
+      "fallback_patterns": [],
+      "normalization_rules": {
+        "sq ft": "sqft",
+        "square feet": "sqft",
+        "sq.ft": "sqft",
+        "sq yards": "sq_yards",
+        "square yards": "sq_yards"
+      }
+    },
+    "price_extraction": {
+      "primary_patterns": [
+        "₹\\s*(\\d+(?:\\.\\d+)?)\\s*(?:cr|crore)",
+        "₹\\s*(\\d+(?:\\.\\d+)?)\\s*(?:lac|lakh)"
+      ],
+      "fallback_patterns": [],
+      "normalization_rules": {
+        "lakh": "lac",
+        "crore": "cr"
+      }
+    },
+    "measurement_extraction": {
+      "primary_patterns": [],
+      "fallback_patterns": [],
+      "normalization_rules": {}
+    }
+  }
+}

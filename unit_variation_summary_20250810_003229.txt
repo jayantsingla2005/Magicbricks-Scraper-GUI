@@ -1,0 +1,47 @@
+UNIT TYPE VARIATION RESEARCH SUMMARY
+==================================================
+
+Pages Analyzed: 3
+Properties Analyzed: 75
+
+UNIT PATTERNS FOUND:
+-------------------------
+AREA_UNITS:
+  sqft: 72 occurrences
+  sqm: 1 occurrences
+
+PRICE_UNITS:
+  sqft: 70 occurrences
+  cr: 55 occurrences
+  lac: 20 occurrences
+
+MEASUREMENT_STANDARDS:
+  carpet area: 46 occurrences
+  super area: 18 occurrences
+  plot area: 7 occurrences
+
+FREQUENCY ANALYSIS:
+-------------------------
+AREA_UNITS:
+  Total occurrences: 73
+  Unique units: 2
+  sqft: 72 (98.6%)
+  sqm: 1 (1.4%)
+
+PRICE_UNITS:
+  Total occurrences: 145
+  Unique units: 3
+  sqft: 70 (48.3%)
+  cr: 55 (37.9%)
+  lac: 20 (13.8%)
+
+MEASUREMENT_STANDARDS:
+  Total occurrences: 71
+  Unique units: 0
+  carpet area: 46 (64.8%)
+  super area: 18 (25.4%)
+  plot area: 7 (9.9%)
+
+TOP RECOMMENDATIONS:
+-------------------------
+- Improve regex patterns to handle ambiguous sq units
