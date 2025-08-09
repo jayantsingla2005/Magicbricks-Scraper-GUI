@@ -19,8 +19,8 @@ from dataclasses import dataclass, asdict
 from pathlib import Path
 import subprocess
 import smtplib
-from email.mime.text import MimeText
-from email.mime.multipart import MimeMultipart
+from email.mime.text import MIMEText as MimeText
+from email.mime.multipart import MIMEMultipart as MimeMultipart
 import sqlite3
 import yaml
 
@@ -196,7 +196,9 @@ class ProductionMonitor:
             try:
                 # Test database connection
                 conn = sqlite3.connect('magicbricks_enhanced.db', timeout=5)
-                conn.execute('SELECT 1')
+                cursor = conn.cursor()
+                cursor.execute('SELECT 1')
+                cursor.close()
                 conn.close()
                 health_status['checks']['database'] = 'healthy'
             except Exception as e:

@@ -2,7 +2,7 @@
   "website": {
     "base_url": "https://www.magicbricks.com/property-for-sale-in-gurgaon-pppfs",
     "properties_per_page": 30,
-    "max_pages": 1000,
+    "max_pages": 200,
     "pagination_selector": ".mb-srp__pagination button[aria-label*='Next']"
   },
   "selectors": {
@@ -154,9 +154,9 @@
   "performance": {
     "enable_optimization": true,
     "parallel_processing": {
-      "enabled": false,
-      "max_workers": 2,
-      "batch_size": 3
+      "enabled": true,
+      "max_workers": 4,
+      "batch_size": 5
     },
     "browser_optimization": {
       "headless": false,
