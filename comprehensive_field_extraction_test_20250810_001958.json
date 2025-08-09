@@ -1,0 +1,826 @@
+{
+  "timestamp": "2025-08-10T00:19:24.349186",
+  "pages_tested": 3,
+  "properties_tested": 90,
+  "original_performance": {
+    "title": {
+      "field_name": "title",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "2 BHK Apartment for Sale in Sector 36 Sohna Gurgaon",
+        "2 BHK Apartment for Sale in Gwal Pahari Gurgaon",
+        "4 BHK Apartment for Sale in Sector 81 Gurgaon",
+        "3 BHK Apartment for Sale in Sector 111 Gurgaon",
+        "4 BHK Apartment for Sale in Sector 108 Gurgaon"
+      ],
+      "extraction_issues": []
+    },
+    "price": {
+      "field_name": "price",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    },
+    "area": {
+      "field_name": "area",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    },
+    "super_area": {
+      "field_name": "super_area",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    },
+    "bedrooms": {
+      "field_name": "bedrooms",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    },
+    "bathrooms": {
+      "field_name": "bathrooms",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    },
+    "balconies": {
+      "field_name": "balconies",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    },
+    "furnishing": {
+      "field_name": "furnishing",
+      "total_cards_tested": 90,
+      "successful_extractions": 83,
+      "failed_extractions": 7,
+      "success_rate": 92.22222222222223,
+      "sample_values": [
+        "Furnished",
+        "Semi-Furnished",
+        "Unfurnished",
+        "Semi-Furnished",
+        "Unfurnished"
+      ],
+      "extraction_issues": []
+    },
+    "floor": {
+      "field_name": "floor",
+      "total_cards_tested": 90,
+      "successful_extractions": 83,
+      "failed_extractions": 7,
+      "success_rate": 92.22222222222223,
+      "sample_values": [
+        "7 out of 12",
+        "2 out of 4",
+        "3 out of 15",
+        "3 out of 30",
+        "6 out of 24"
+      ],
+      "extraction_issues": []
+    },
+    "total_floors": {
+      "field_name": "total_floors",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    },
+    "age": {
+      "field_name": "age",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    },
+    "facing": {
+      "field_name": "facing",
+      "total_cards_tested": 90,
+      "successful_extractions": 54,
+      "failed_extractions": 36,
+      "success_rate": 60.0,
+      "sample_values": [
+        "South -West",
+        "East",
+        "North - East",
+        "South -West",
+        "North - East"
+      ],
+      "extraction_issues": []
+    },
+    "parking": {
+      "field_name": "parking",
+      "total_cards_tested": 90,
+      "successful_extractions": 33,
+      "failed_extractions": 57,
+      "success_rate": 36.666666666666664,
+      "sample_values": [
+        "1 Covered,",
+        "1 Covered",
+        "200 Open",
+        "3 Covered,",
+        "2 Covered,"
+      ],
+      "extraction_issues": []
+    },
+    "status": {
+      "field_name": "status",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    },
+    "society": {
+      "field_name": "society",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    },
+    "locality": {
+      "field_name": "locality",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    },
+    "city": {
+      "field_name": "city",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    },
+    "property_type": {
+      "field_name": "property_type",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    },
+    "transaction_type": {
+      "field_name": "transaction_type",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "Resale",
+        "Resale",
+        "Resale",
+        "Resale",
+        "Resale"
+      ],
+      "extraction_issues": []
+    },
+    "possession": {
+      "field_name": "possession",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    },
+    "property_url": {
+      "field_name": "property_url",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    }
+  },
+  "improved_performance": {
+    "title": {
+      "field_name": "title",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    },
+    "price": {
+      "field_name": "price",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "₹1.96 Cr",
+        "₹1.42 Cr",
+        "₹5.50 Cr",
+        "₹3.30 Cr",
+        "₹4.80 Cr"
+      ],
+      "extraction_issues": []
+    },
+    "area": {
+      "field_name": "area",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "₹28,121 per sqft",
+        "₹12,566 per sqft",
+        "₹13,095 per sqft",
+        "₹15,207 per sqft",
+        "₹19,810 per sqft"
+      ],
+      "extraction_issues": []
+    },
+    "super_area": {
+      "field_name": "super_area",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft",
+        "1550 sqft",
+        "2423 sqft"
+      ],
+      "extraction_issues": []
+    },
+    "bedrooms": {
+      "field_name": "bedrooms",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft",
+        "1550 sqft",
+        "2423 sqft"
+      ],
+      "extraction_issues": []
+    },
+    "bathrooms": {
+      "field_name": "bathrooms",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft",
+        "1550 sqft",
+        "2423 sqft"
+      ],
+      "extraction_issues": []
+    },
+    "balconies": {
+      "field_name": "balconies",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft",
+        "1550 sqft",
+        "2423 sqft"
+      ],
+      "extraction_issues": []
+    },
+    "furnishing": {
+      "field_name": "furnishing",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft",
+        "1550 sqft",
+        "2423 sqft"
+      ],
+      "extraction_issues": []
+    },
+    "floor": {
+      "field_name": "floor",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft",
+        "1550 sqft",
+        "2423 sqft"
+      ],
+      "extraction_issues": []
+    },
+    "total_floors": {
+      "field_name": "total_floors",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft",
+        "1550 sqft",
+        "2423 sqft"
+      ],
+      "extraction_issues": []
+    },
+    "age": {
+      "field_name": "age",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft",
+        "1550 sqft",
+        "2423 sqft"
+      ],
+      "extraction_issues": []
+    },
+    "facing": {
+      "field_name": "facing",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft",
+        "1550 sqft",
+        "2423 sqft"
+      ],
+      "extraction_issues": []
+    },
+    "parking": {
+      "field_name": "parking",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft",
+        "1550 sqft",
+        "2423 sqft"
+      ],
+      "extraction_issues": []
+    },
+    "status": {
+      "field_name": "status",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "Super Area697 sqft",
+        "Carpet Area975 sqft",
+        "Carpet Area3200 sqft",
+        "Carpet Area1550 sqft",
+        "Super Area2423 sqft"
+      ],
+      "extraction_issues": []
+    },
+    "society": {
+      "field_name": "society",
+      "total_cards_tested": 90,
+      "successful_extractions": 58,
+      "failed_extractions": 32,
+      "success_rate": 64.44444444444444,
+      "sample_values": [
+        "The Serenas",
+        "Suncity Vatsal Valley",
+        "M3M Crown Phase 1",
+        "Sobha City",
+        "Signature Global City 93"
+      ],
+      "extraction_issues": []
+    },
+    "locality": {
+      "field_name": "locality",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    },
+    "city": {
+      "field_name": "city",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    },
+    "property_type": {
+      "field_name": "property_type",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft",
+        "1550 sqft",
+        "2423 sqft"
+      ],
+      "extraction_issues": []
+    },
+    "transaction_type": {
+      "field_name": "transaction_type",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft",
+        "1550 sqft",
+        "2423 sqft"
+      ],
+      "extraction_issues": []
+    },
+    "possession": {
+      "field_name": "possession",
+      "total_cards_tested": 90,
+      "successful_extractions": 90,
+      "failed_extractions": 0,
+      "success_rate": 100.0,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft",
+        "1550 sqft",
+        "2423 sqft"
+      ],
+      "extraction_issues": []
+    },
+    "property_url": {
+      "field_name": "property_url",
+      "total_cards_tested": 90,
+      "successful_extractions": 0,
+      "failed_extractions": 90,
+      "success_rate": 0.0,
+      "sample_values": [],
+      "extraction_issues": []
+    }
+  },
+  "comparison_analysis": {
+    "title": {
+      "original_success_rate": 100.0,
+      "improved_success_rate": 0.0,
+      "absolute_improvement": -100.0,
+      "percentage_improvement": -100.0,
+      "status": "declined"
+    },
+    "price": {
+      "original_success_rate": 0.0,
+      "improved_success_rate": 100.0,
+      "absolute_improvement": 100.0,
+      "percentage_improvement": 0,
+      "status": "improved"
+    },
+    "area": {
+      "original_success_rate": 0.0,
+      "improved_success_rate": 100.0,
+      "absolute_improvement": 100.0,
+      "percentage_improvement": 0,
+      "status": "improved"
+    },
+    "super_area": {
+      "original_success_rate": 0.0,
+      "improved_success_rate": 100.0,
+      "absolute_improvement": 100.0,
+      "percentage_improvement": 0,
+      "status": "improved"
+    },
+    "bedrooms": {
+      "original_success_rate": 0.0,
+      "improved_success_rate": 100.0,
+      "absolute_improvement": 100.0,
+      "percentage_improvement": 0,
+      "status": "improved"
+    },
+    "bathrooms": {
+      "original_success_rate": 0.0,
+      "improved_success_rate": 100.0,
+      "absolute_improvement": 100.0,
+      "percentage_improvement": 0,
+      "status": "improved"
+    },
+    "balconies": {
+      "original_success_rate": 0.0,
+      "improved_success_rate": 100.0,
+      "absolute_improvement": 100.0,
+      "percentage_improvement": 0,
+      "status": "improved"
+    },
+    "furnishing": {
+      "original_success_rate": 92.22222222222223,
+      "improved_success_rate": 100.0,
+      "absolute_improvement": 7.7777777777777715,
+      "percentage_improvement": 8.433734939759029,
+      "status": "improved"
+    },
+    "floor": {
+      "original_success_rate": 92.22222222222223,
+      "improved_success_rate": 100.0,
+      "absolute_improvement": 7.7777777777777715,
+      "percentage_improvement": 8.433734939759029,
+      "status": "improved"
+    },
+    "total_floors": {
+      "original_success_rate": 0.0,
+      "improved_success_rate": 100.0,
+      "absolute_improvement": 100.0,
+      "percentage_improvement": 0,
+      "status": "improved"
+    },
+    "age": {
+      "original_success_rate": 0.0,
+      "improved_success_rate": 100.0,
+      "absolute_improvement": 100.0,
+      "percentage_improvement": 0,
+      "status": "improved"
+    },
+    "facing": {
+      "original_success_rate": 60.0,
+      "improved_success_rate": 100.0,
+      "absolute_improvement": 40.0,
+      "percentage_improvement": 66.66666666666666,
+      "status": "improved"
+    },
+    "parking": {
+      "original_success_rate": 36.666666666666664,
+      "improved_success_rate": 100.0,
+      "absolute_improvement": 63.333333333333336,
+      "percentage_improvement": 172.72727272727275,
+      "status": "improved"
+    },
+    "status": {
+      "original_success_rate": 0.0,
+      "improved_success_rate": 100.0,
+      "absolute_improvement": 100.0,
+      "percentage_improvement": 0,
+      "status": "improved"
+    },
+    "society": {
+      "original_success_rate": 0.0,
+      "improved_success_rate": 64.44444444444444,
+      "absolute_improvement": 64.44444444444444,
+      "percentage_improvement": 0,
+      "status": "improved"
+    },
+    "locality": {
+      "original_success_rate": 0.0,
+      "improved_success_rate": 0.0,
+      "absolute_improvement": 0.0,
+      "percentage_improvement": 0,
+      "status": "unchanged"
+    },
+    "city": {
+      "original_success_rate": 0.0,
+      "improved_success_rate": 0.0,
+      "absolute_improvement": 0.0,
+      "percentage_improvement": 0,
+      "status": "unchanged"
+    },
+    "property_type": {
+      "original_success_rate": 0.0,
+      "improved_success_rate": 100.0,
+      "absolute_improvement": 100.0,
+      "percentage_improvement": 0,
+      "status": "improved"
+    },
+    "transaction_type": {
+      "original_success_rate": 100.0,
+      "improved_success_rate": 100.0,
+      "absolute_improvement": 0.0,
+      "percentage_improvement": 0.0,
+      "status": "unchanged"
+    },
+    "possession": {
+      "original_success_rate": 0.0,
+      "improved_success_rate": 100.0,
+      "absolute_improvement": 100.0,
+      "percentage_improvement": 0,
+      "status": "improved"
+    },
+    "property_url": {
+      "original_success_rate": 0.0,
+      "improved_success_rate": 0.0,
+      "absolute_improvement": 0.0,
+      "percentage_improvement": 0,
+      "status": "unchanged"
+    }
+  },
+  "field_improvements": {
+    "top_improvements": [
+      [
+        "price",
+        100.0
+      ],
+      [
+        "area",
+        100.0
+      ],
+      [
+        "super_area",
+        100.0
+      ],
+      [
+        "bedrooms",
+        100.0
+      ],
+      [
+        "bathrooms",
+        100.0
+      ]
+    ],
+    "significant_regressions": [
+      [
+        "title",
+        -100.0
+      ]
+    ]
+  },
+  "overall_metrics": {
+    "original_average": 22.91005291005291,
+    "improved_average": 79.25925925925925,
+    "overall_improvement": 56.34920634920634,
+    "fields_tested": 21,
+    "properties_tested": 90,
+    "pages_tested": 3
+  },
+  "validation_results": {
+    "priority_fields_improved": 3,
+    "total_fields_improved": 16,
+    "total_fields_declined": 1,
+    "average_improvement": 56.34920634920635,
+    "meets_expectations": true,
+    "validation_details": {
+      "title": {
+        "improvement": -100.0,
+        "meets_target": false,
+        "priority_field": false
+      },
+      "price": {
+        "improvement": 100.0,
+        "meets_target": true,
+        "priority_field": false
+      },
+      "area": {
+        "improvement": 100.0,
+        "meets_target": true,
+        "priority_field": false
+      },
+      "super_area": {
+        "improvement": 100.0,
+        "meets_target": true,
+        "priority_field": true
+      },
+      "bedrooms": {
+        "improvement": 100.0,
+        "meets_target": true,
+        "priority_field": false
+      },
+      "bathrooms": {
+        "improvement": 100.0,
+        "meets_target": true,
+        "priority_field": false
+      },
+      "balconies": {
+        "improvement": 100.0,
+        "meets_target": true,
+        "priority_field": false
+      },
+      "furnishing": {
+        "improvement": 7.7777777777777715,
+        "meets_target": true,
+        "priority_field": false
+      },
+      "floor": {
+        "improvement": 7.7777777777777715,
+        "meets_target": true,
+        "priority_field": false
+      },
+      "total_floors": {
+        "improvement": 100.0,
+        "meets_target": true,
+        "priority_field": false
+      },
+      "age": {
+        "improvement": 100.0,
+        "meets_target": true,
+        "priority_field": false
+      },
+      "facing": {
+        "improvement": 40.0,
+        "meets_target": true,
+        "priority_field": false
+      },
+      "parking": {
+        "improvement": 63.333333333333336,
+        "meets_target": true,
+        "priority_field": false
+      },
+      "status": {
+        "improvement": 100.0,
+        "meets_target": true,
+        "priority_field": true
+      },
+      "society": {
+        "improvement": 64.44444444444444,
+        "meets_target": true,
+        "priority_field": true
+      },
+      "locality": {
+        "improvement": 0.0,
+        "meets_target": true,
+        "priority_field": false
+      },
+      "city": {
+        "improvement": 0.0,
+        "meets_target": true,
+        "priority_field": false
+      },
+      "property_type": {
+        "improvement": 100.0,
+        "meets_target": true,
+        "priority_field": false
+      },
+      "transaction_type": {
+        "improvement": 0.0,
+        "meets_target": true,
+        "priority_field": false
+      },
+      "possession": {
+        "improvement": 100.0,
+        "meets_target": true,
+        "priority_field": false
+      },
+      "property_url": {
+        "improvement": 0.0,
+        "meets_target": true,
+        "priority_field": false
+      }
+    }
+  }
+}

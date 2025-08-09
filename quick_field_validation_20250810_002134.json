@@ -1,0 +1,256 @@
+{
+  "timestamp": "2025-08-10T00:21:23.078255",
+  "properties_tested": 20,
+  "original_performance": {
+    "title": {
+      "success_rate": 0.0,
+      "successful": 0,
+      "total": 20,
+      "sample_values": []
+    },
+    "price": {
+      "success_rate": 100.0,
+      "successful": 20,
+      "total": 20,
+      "sample_values": [
+        "₹1.96 Cr",
+        "₹1.42 Cr",
+        "₹5.50 Cr"
+      ]
+    },
+    "area": {
+      "success_rate": 100.0,
+      "successful": 20,
+      "total": 20,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft"
+      ]
+    },
+    "super_area": {
+      "success_rate": 100.0,
+      "successful": 20,
+      "total": 20,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft"
+      ]
+    },
+    "bedrooms": {
+      "success_rate": 100.0,
+      "successful": 20,
+      "total": 20,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft"
+      ]
+    },
+    "bathrooms": {
+      "success_rate": 100.0,
+      "successful": 20,
+      "total": 20,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft"
+      ]
+    },
+    "society": {
+      "success_rate": 60.0,
+      "successful": 12,
+      "total": 20,
+      "sample_values": [
+        "The Serenas",
+        "Suncity Vatsal Valley",
+        "M3M Crown Phase 1"
+      ]
+    },
+    "locality": {
+      "success_rate": 0.0,
+      "successful": 0,
+      "total": 20,
+      "sample_values": []
+    },
+    "status": {
+      "success_rate": 100.0,
+      "successful": 20,
+      "total": 20,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft"
+      ]
+    },
+    "property_url": {
+      "success_rate": 0.0,
+      "successful": 0,
+      "total": 20,
+      "sample_values": []
+    }
+  },
+  "improved_performance": {
+    "title": {
+      "success_rate": 0.0,
+      "successful": 0,
+      "total": 20,
+      "sample_values": []
+    },
+    "price": {
+      "success_rate": 100.0,
+      "successful": 20,
+      "total": 20,
+      "sample_values": [
+        "₹1.96 Cr",
+        "₹1.42 Cr",
+        "₹5.50 Cr"
+      ]
+    },
+    "area": {
+      "success_rate": 100.0,
+      "successful": 20,
+      "total": 20,
+      "sample_values": [
+        "₹28,121 per sqft",
+        "₹12,566 per sqft",
+        "₹13,095 per sqft"
+      ]
+    },
+    "super_area": {
+      "success_rate": 100.0,
+      "successful": 20,
+      "total": 20,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft"
+      ]
+    },
+    "bedrooms": {
+      "success_rate": 100.0,
+      "successful": 20,
+      "total": 20,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft"
+      ]
+    },
+    "bathrooms": {
+      "success_rate": 100.0,
+      "successful": 20,
+      "total": 20,
+      "sample_values": [
+        "697 sqft",
+        "975 sqft",
+        "3200 sqft"
+      ]
+    },
+    "society": {
+      "success_rate": 60.0,
+      "successful": 12,
+      "total": 20,
+      "sample_values": [
+        "The Serenas",
+        "Suncity Vatsal Valley",
+        "M3M Crown Phase 1"
+      ]
+    },
+    "locality": {
+      "success_rate": 0.0,
+      "successful": 0,
+      "total": 20,
+      "sample_values": []
+    },
+    "status": {
+      "success_rate": 100.0,
+      "successful": 20,
+      "total": 20,
+      "sample_values": [
+        "Super Area697 sqft",
+        "Carpet Area975 sqft",
+        "Carpet Area3200 sqft"
+      ]
+    },
+    "property_url": {
+      "success_rate": 0.0,
+      "successful": 0,
+      "total": 20,
+      "sample_values": []
+    }
+  },
+  "improvements": {
+    "title": {
+      "original_rate": 0.0,
+      "improved_rate": 0.0,
+      "absolute_improvement": 0.0,
+      "percentage_improvement": 0,
+      "status": "unchanged"
+    },
+    "price": {
+      "original_rate": 100.0,
+      "improved_rate": 100.0,
+      "absolute_improvement": 0.0,
+      "percentage_improvement": 0.0,
+      "status": "unchanged"
+    },
+    "area": {
+      "original_rate": 100.0,
+      "improved_rate": 100.0,
+      "absolute_improvement": 0.0,
+      "percentage_improvement": 0.0,
+      "status": "unchanged"
+    },
+    "super_area": {
+      "original_rate": 100.0,
+      "improved_rate": 100.0,
+      "absolute_improvement": 0.0,
+      "percentage_improvement": 0.0,
+      "status": "unchanged"
+    },
+    "bedrooms": {
+      "original_rate": 100.0,
+      "improved_rate": 100.0,
+      "absolute_improvement": 0.0,
+      "percentage_improvement": 0.0,
+      "status": "unchanged"
+    },
+    "bathrooms": {
+      "original_rate": 100.0,
+      "improved_rate": 100.0,
+      "absolute_improvement": 0.0,
+      "percentage_improvement": 0.0,
+      "status": "unchanged"
+    },
+    "society": {
+      "original_rate": 60.0,
+      "improved_rate": 60.0,
+      "absolute_improvement": 0.0,
+      "percentage_improvement": 0.0,
+      "status": "unchanged"
+    },
+    "locality": {
+      "original_rate": 0.0,
+      "improved_rate": 0.0,
+      "absolute_improvement": 0.0,
+      "percentage_improvement": 0,
+      "status": "unchanged"
+    },
+    "status": {
+      "original_rate": 100.0,
+      "improved_rate": 100.0,
+      "absolute_improvement": 0.0,
+      "percentage_improvement": 0.0,
+      "status": "unchanged"
+    },
+    "property_url": {
+      "original_rate": 0.0,
+      "improved_rate": 0.0,
+      "absolute_improvement": 0.0,
+      "percentage_improvement": 0,
+      "status": "unchanged"
+    }
+  }
+}
