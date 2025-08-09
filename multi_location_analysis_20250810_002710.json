@@ -1,0 +1,309 @@
+{
+  "timestamp": "2025-08-10T00:25:54.779756",
+  "cities_analyzed": 4,
+  "total_properties_analyzed": 120,
+  "city_performance": {},
+  "regional_analysis": {
+    "NCR": {
+      "cities": [
+        "gurgaon"
+      ],
+      "total_properties": 30,
+      "avg_field_performance": {
+        "title": 0.0,
+        "price": 100.0,
+        "area": 100.0,
+        "super_area": 100.0,
+        "bedrooms": 100.0,
+        "bathrooms": 100.0,
+        "society": 53.333333333333336,
+        "locality": 0.0,
+        "status": 100.0,
+        "property_type": 100.0
+      },
+      "overall_avg_performance": 75.33333333333333
+    },
+    "West": {
+      "cities": [
+        "mumbai",
+        "pune"
+      ],
+      "total_properties": 60,
+      "avg_field_performance": {
+        "title": 0.0,
+        "price": 100.0,
+        "area": 90.0,
+        "super_area": 100.0,
+        "bedrooms": 100.0,
+        "bathrooms": 100.0,
+        "society": 66.66666666666666,
+        "locality": 0.0,
+        "status": 100.0,
+        "property_type": 100.0
+      },
+      "overall_avg_performance": 75.66666666666667
+    },
+    "South": {
+      "cities": [
+        "bangalore"
+      ],
+      "total_properties": 30,
+      "avg_field_performance": {
+        "title": 0.0,
+        "price": 100.0,
+        "area": 100.0,
+        "super_area": 100.0,
+        "bedrooms": 100.0,
+        "bathrooms": 100.0,
+        "society": 56.666666666666664,
+        "locality": 0.0,
+        "status": 100.0,
+        "property_type": 100.0
+      },
+      "overall_avg_performance": 75.66666666666667
+    }
+  },
+  "price_range_analysis": {
+    "total_properties_with_price": 120,
+    "range_distribution": {
+      "mid": {
+        "count": 49,
+        "percentage": 40.833333333333336
+      },
+      "premium": {
+        "count": 25,
+        "percentage": 20.833333333333336
+      },
+      "budget": {
+        "count": 44,
+        "percentage": 36.666666666666664
+      },
+      "luxury": {
+        "count": 2,
+        "percentage": 1.6666666666666667
+      }
+    },
+    "dominant_range": "mid"
+  },
+  "selector_consistency": {
+    "title": {
+      "average_success_rate": 0.0,
+      "min_success_rate": 0.0,
+      "max_success_rate": 0.0,
+      "success_rate_range": 0.0,
+      "consistency_score": 100.0,
+      "city_performances": {
+        "gurgaon": 0.0,
+        "mumbai": 0.0,
+        "bangalore": 0.0,
+        "pune": 0.0
+      }
+    },
+    "price": {
+      "average_success_rate": 100.0,
+      "min_success_rate": 100.0,
+      "max_success_rate": 100.0,
+      "success_rate_range": 0.0,
+      "consistency_score": 100.0,
+      "city_performances": {
+        "gurgaon": 100.0,
+        "mumbai": 100.0,
+        "bangalore": 100.0,
+        "pune": 100.0
+      }
+    },
+    "area": {
+      "average_success_rate": 95.0,
+      "min_success_rate": 80.0,
+      "max_success_rate": 100.0,
+      "success_rate_range": 20.0,
+      "consistency_score": 80.0,
+      "city_performances": {
+        "gurgaon": 100.0,
+        "mumbai": 80.0,
+        "bangalore": 100.0,
+        "pune": 100.0
+      }
+    },
+    "super_area": {
+      "average_success_rate": 100.0,
+      "min_success_rate": 100.0,
+      "max_success_rate": 100.0,
+      "success_rate_range": 0.0,
+      "consistency_score": 100.0,
+      "city_performances": {
+        "gurgaon": 100.0,
+        "mumbai": 100.0,
+        "bangalore": 100.0,
+        "pune": 100.0
+      }
+    },
+    "bedrooms": {
+      "average_success_rate": 100.0,
+      "min_success_rate": 100.0,
+      "max_success_rate": 100.0,
+      "success_rate_range": 0.0,
+      "consistency_score": 100.0,
+      "city_performances": {
+        "gurgaon": 100.0,
+        "mumbai": 100.0,
+        "bangalore": 100.0,
+        "pune": 100.0
+      }
+    },
+    "bathrooms": {
+      "average_success_rate": 100.0,
+      "min_success_rate": 100.0,
+      "max_success_rate": 100.0,
+      "success_rate_range": 0.0,
+      "consistency_score": 100.0,
+      "city_performances": {
+        "gurgaon": 100.0,
+        "mumbai": 100.0,
+        "bangalore": 100.0,
+        "pune": 100.0
+      }
+    },
+    "society": {
+      "average_success_rate": 60.83333333333333,
+      "min_success_rate": 53.333333333333336,
+      "max_success_rate": 70.0,
+      "success_rate_range": 16.666666666666664,
+      "consistency_score": 83.33333333333334,
+      "city_performances": {
+        "gurgaon": 53.333333333333336,
+        "mumbai": 70.0,
+        "bangalore": 56.666666666666664,
+        "pune": 63.33333333333333
+      }
+    },
+    "locality": {
+      "average_success_rate": 0.0,
+      "min_success_rate": 0.0,
+      "max_success_rate": 0.0,
+      "success_rate_range": 0.0,
+      "consistency_score": 100.0,
+      "city_performances": {
+        "gurgaon": 0.0,
+        "mumbai": 0.0,
+        "bangalore": 0.0,
+        "pune": 0.0
+      }
+    },
+    "status": {
+      "average_success_rate": 100.0,
+      "min_success_rate": 100.0,
+      "max_success_rate": 100.0,
+      "success_rate_range": 0.0,
+      "consistency_score": 100.0,
+      "city_performances": {
+        "gurgaon": 100.0,
+        "mumbai": 100.0,
+        "bangalore": 100.0,
+        "pune": 100.0
+      }
+    },
+    "property_type": {
+      "average_success_rate": 100.0,
+      "min_success_rate": 100.0,
+      "max_success_rate": 100.0,
+      "success_rate_range": 0.0,
+      "consistency_score": 100.0,
+      "city_performances": {
+        "gurgaon": 100.0,
+        "mumbai": 100.0,
+        "bangalore": 100.0,
+        "pune": 100.0
+      }
+    }
+  },
+  "regional_variations": {
+    "high_variation_fields": [],
+    "low_variation_fields": [
+      {
+        "field": "title",
+        "consistency_score": 100.0,
+        "success_range": 0.0
+      },
+      {
+        "field": "price",
+        "consistency_score": 100.0,
+        "success_range": 0.0
+      },
+      {
+        "field": "super_area",
+        "consistency_score": 100.0,
+        "success_range": 0.0
+      },
+      {
+        "field": "bedrooms",
+        "consistency_score": 100.0,
+        "success_range": 0.0
+      },
+      {
+        "field": "bathrooms",
+        "consistency_score": 100.0,
+        "success_range": 0.0
+      },
+      {
+        "field": "locality",
+        "consistency_score": 100.0,
+        "success_range": 0.0
+      },
+      {
+        "field": "status",
+        "consistency_score": 100.0,
+        "success_range": 0.0
+      },
+      {
+        "field": "property_type",
+        "consistency_score": 100.0,
+        "success_range": 0.0
+      }
+    ],
+    "regional_performance_differences": {
+      "best_performing_region": "West",
+      "worst_performing_region": "NCR",
+      "performance_gap": 0.3333333333333428,
+      "regional_averages": {
+        "NCR": 75.33333333333333,
+        "West": 75.66666666666667,
+        "South": 75.66666666666667
+      }
+    },
+    "overall_consistency": {
+      "average_consistency_score": 96.33333333333333,
+      "average_success_range": 3.6666666666666665,
+      "fields_with_high_consistency": 8,
+      "fields_with_low_consistency": 0,
+      "total_fields_tested": 10
+    }
+  },
+  "recommendations": [
+    {
+      "category": "consistency",
+      "priority": "low",
+      "recommendation": "Excellent selector consistency across cities (96.3%). Current selectors are universally effective.",
+      "action": "maintain_current_selectors"
+    },
+    {
+      "category": "regional_performance",
+      "priority": "low",
+      "recommendation": "Minimal performance gap (0.3%) between regions. Good consistency.",
+      "action": "maintain_current_approach"
+    },
+    {
+      "category": "price_range",
+      "priority": "low",
+      "recommendation": "Dominant price range is mid. Ensure selectors work well for this segment.",
+      "action": "validate_dominant_price_range",
+      "dominant_range": "mid"
+    },
+    {
+      "category": "coverage",
+      "priority": "low",
+      "recommendation": "Good geographical coverage with 4 cities analyzed.",
+      "action": "maintain_multi_city_validation"
+    }
+  ]
+}

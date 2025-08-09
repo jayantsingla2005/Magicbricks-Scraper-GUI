@@ -1,0 +1,33 @@
+MULTI-LOCATION ANALYSIS SUMMARY
+==================================================
+
+Cities Analyzed: 4
+Total Properties: 120
+
+REGIONAL PERFORMANCE:
+-------------------------
+NCR:
+  Cities: gurgaon
+  Properties: 30
+  Avg Performance: 75.3%
+
+WEST:
+  Cities: mumbai, pune
+  Properties: 60
+  Avg Performance: 75.7%
+
+SOUTH:
+  Cities: bangalore
+  Properties: 30
+  Avg Performance: 75.7%
+
+SELECTOR CONSISTENCY:
+-------------------------
+title: 100.0% consistency
+price: 100.0% consistency
+super_area: 100.0% consistency
+bedrooms: 100.0% consistency
+bathrooms: 100.0% consistency
+
+TOP RECOMMENDATIONS:
+-------------------------
