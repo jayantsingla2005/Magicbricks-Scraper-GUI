@@ -1,0 +1,52 @@
+{
+  "timestamp": "2025-08-10T01:15:50.947352",
+  "city_scores": {
+    "Gurgaon": {
+      "overall_score": 70.0,
+      "liquidity_score": 100,
+      "diversity_score": 100,
+      "stability_score": 0,
+      "metrics": {
+        "avg_price_lakhs": 85.0,
+        "median_price_lakhs": 85.0,
+        "avg_price_per_sqft": 7083.33,
+        "inventory_count": "1",
+        "property_types": "1"
+      },
+      "ranking": 1
+    }
+  },
+  "locality_scores": {},
+  "investment_opportunities": [],
+  "market_trends": {
+    "property_type_trends": {
+      "APARTMENT": 1
+    },
+    "bedroom_preferences": {
+      "3": 1
+    },
+    "price_segments": {
+      "budget": 0,
+      "mid_range": 1,
+      "premium": 0,
+      "luxury": 0
+    },
+    "size_preferences": {
+      "compact": 0,
+      "medium": 0,
+      "large": 1,
+      "premium": 0
+    }
+  },
+  "methodology": {
+    "scoring_factors": [
+      "Price appreciation potential",
+      "Market liquidity (inventory)",
+      "Price per sqft competitiveness",
+      "Property type diversity",
+      "Market activity level"
+    ],
+    "data_points": 1,
+    "cities_analyzed": 1
+  }
+}

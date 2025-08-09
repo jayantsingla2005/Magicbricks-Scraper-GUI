@@ -1,0 +1,108 @@
+# Production Configuration for MagicBricks Scraper
+# Comprehensive production deployment settings
+
+# Environment Settings
+environment: "production"
+debug_mode: false
+log_level: "INFO"
+
+# Scraping Configuration
+max_concurrent_sessions: 4
+max_pages_per_session: 100
+max_properties_per_session: 3000
+session_timeout_minutes: 180
+
+# Scheduling Configuration
+weekly_schedule:
+  - "monday 02:00"
+  - "friday 02:00"
+daily_schedule: null  # Set to "02:00" for daily runs
+maintenance_window: "sunday 01:00-04:00"
+
+# Monitoring Configuration
+health_check_interval: 300  # 5 minutes
+performance_alert_threshold: 80.0  # CPU/Memory %
+error_rate_threshold: 5.0  # Error rate %
+
+# Scaling Configuration
+auto_scaling_enabled: true
+min_workers: 2
+max_workers: 8
+scale_up_threshold: 70.0  # CPU %
+scale_down_threshold: 30.0  # CPU %
+
+# Storage Configuration
+data_retention_days: 90
+backup_enabled: true
+backup_schedule: "daily 03:00"
+
+# Notification Configuration
+email_notifications: true
+email_recipients:
+  - "admin@company.com"
+  - "devops@company.com"
+slack_webhook: null  # Set webhook URL for Slack notifications
+
+# Advanced Configuration
+database_config:
+  connection_pool_size: 10
+  connection_timeout: 30
+  query_timeout: 60
+  backup_compression: true
+
+security_config:
+  api_key_rotation_days: 30
+  log_encryption: false
+  audit_logging: true
+
+performance_config:
+  cache_enabled: true
+  cache_ttl_minutes: 60
+  batch_size: 100
+  parallel_processing: true
+
+# City-specific Configuration
+target_cities:
+  primary:
+    - "gurgaon"
+    - "mumbai"
+    - "bangalore"
+    - "delhi"
+  secondary:
+    - "pune"
+    - "hyderabad"
+    - "chennai"
+    - "kolkata"
+
+# Property Type Configuration
+target_property_types:
+  residential:
+    - "apartment"
+    - "house"
+    - "villa"
+    - "floor"
+  investment:
+    - "plot"
+    - "penthouse"
+    - "studio"
+
+# Quality Assurance Configuration
+quality_config:
+  min_data_completeness: 70.0  # Minimum % for acceptance
+  max_error_rate: 5.0  # Maximum error rate %
+  validation_sample_size: 100  # Properties to validate
+  auto_retry_failed: true
+
+# Deployment Configuration
+deployment_config:
+  health_check_url: "/health"
+  metrics_endpoint: "/metrics"
+  admin_interface: true
+  api_documentation: true
+  
+# Resource Limits
+resource_limits:
+  max_memory_gb: 8
+  max_cpu_cores: 4
+  max_disk_gb: 100
+  max_network_mbps: 100

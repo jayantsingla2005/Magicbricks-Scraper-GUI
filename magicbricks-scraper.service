@@ -1,0 +1,14 @@
+[Unit]
+Description=MagicBricks Scraper Production System
+After=network.target
+
+[Service]
+Type=simple
+User=magicbricks
+WorkingDirectory=/path/to/magicbricks/scraper
+ExecStart=/path/to/magicbricks/scraper/start_production.sh
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
