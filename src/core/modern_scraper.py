@@ -182,26 +182,55 @@ class ModernMagicBricksScraper:
                 if price_sqft_match:
                     property_data.price_per_sqft = price_sqft_match.group(0)
             
-            # Extract society/project name
-            society_element = soup.select_one(self.config['selectors']['society'])
-            if society_element:
-                property_data.society = society_element.get_text(strip=True)
+            # Extract society/project name with enhanced fallbacks
+            society_selectors = self.config['selectors']['society']
+            if isinstance(society_selectors, dict):
+                # Try primary selector first
+                society_element = soup.select_one(society_selectors['primary'])
+                if society_element:
+                    property_data.society = society_element.get_text(strip=True)
+                else:
+                    # Try fallback selectors
+                    for fallback_selector in society_selectors['fallback']:
+                        society_element = soup.select_one(fallback_selector)
+                        if society_element:
+                            property_data.society = society_element.get_text(strip=True)
+                            break
+            else:
+                # Legacy single selector
+                society_element = soup.select_one(society_selectors)
+                if society_element:
+                    property_data.society = society_element.get_text(strip=True)
             
-            # Extract area information
+            # Extract area information with enhanced fallbacks
             area_selectors = self.config['selectors']['area']
+
+            # Try super area first
             super_area_element = soup.select_one(area_selectors['super_area'])
             if super_area_element:
                 property_data.super_area = super_area_element.get_text(strip=True)
-            
+
+            # Try carpet area
             carpet_area_element = soup.select_one(area_selectors['carpet_area'])
             if carpet_area_element:
                 property_data.carpet_area = carpet_area_element.get_text(strip=True)
-            
-            # Fallback area extraction
+
+            # Enhanced fallback area extraction
             if not property_data.super_area and not property_data.carpet_area:
-                area_element = soup.select_one(area_selectors['fallback'])
-                if area_element:
-                    property_data.super_area = area_element.get_text(strip=True)
+                # Try multiple fallback selectors
+                for fallback_selector in area_selectors['fallback']:
+                    area_element = soup.select_one(fallback_selector)
+                    if area_element:
+                        area_text = area_element.get_text(strip=True)
+                        if 'sqft' in area_text:
+                            property_data.super_area = area_text
+                            break
+
+                # If still no area found, try regex search in entire card
+                if not property_data.super_area:
+                    area_match = re.search(r'(\d+(?:,\d+)*)\s*sqft', html_content, re.IGNORECASE)
+                    if area_match:
+                        property_data.super_area = f"{area_match.group(1)} sqft"
             
             # Extract bedrooms
             bedroom_selectors = self.config['selectors']['bedrooms']
@@ -218,19 +247,47 @@ class ModernMagicBricksScraper:
                     if bedroom_match:
                         property_data.bedrooms = int(bedroom_match.group(1))
             
-            # Extract other property details
+            # Extract other property details with enhanced handling
             detail_fields = [
-                'bathrooms', 'floor', 'furnishing', 'status', 'facing',
+                'bathrooms', 'floor', 'furnishing', 'facing',
                 'overlooking', 'ownership', 'parking', 'balcony', 'age',
                 'transaction_type', 'possession_date'
             ]
-            
+
             for field in detail_fields:
                 if field in self.config['selectors']:
                     element = soup.select_one(self.config['selectors'][field])
                     if element:
                         value = element.get_text(strip=True)
                         setattr(property_data, field, value)
+
+            # Enhanced status extraction
+            status_config = self.config['selectors']['status']
+            if isinstance(status_config, dict):
+                # Try primary selector first
+                status_element = soup.select_one(status_config['primary'])
+                if status_element:
+                    property_data.status = status_element.get_text(strip=True)
+                else:
+                    # Try fallback selectors
+                    for fallback_selector in status_config['fallback']:
+                        status_element = soup.select_one(fallback_selector)
+                        if status_element:
+                            property_data.status = status_element.get_text(strip=True)
+                            break
+
+                    # If still no status, try regex patterns on entire card
+                    if not property_data.status:
+                        for pattern in status_config['regex_patterns']:
+                            status_match = re.search(pattern, html_content, re.IGNORECASE)
+                            if status_match:
+                                property_data.status = status_match.group(0)
+                                break
+            else:
+                # Legacy single selector
+                status_element = soup.select_one(status_config)
+                if status_element:
+                    property_data.status = status_element.get_text(strip=True)
             
             # Extract image information
             image_element = soup.select_one(self.config['selectors']['image'])

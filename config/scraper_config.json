@@ -18,11 +18,25 @@
       "fallback": "[class*='price']:contains('per sqft')",
       "regex": "₹[\\d.,\\s]+per sqft"
     },
-    "society": ".mb-srp__card__society--name",
+    "society": {
+      "primary": ".mb-srp__card__society--name",
+      "fallback": [
+        ".mb-srp__card__builder--name",
+        ".mb-srp__card__project--name",
+        "[class*='society']",
+        "[class*='project']",
+        "[class*='builder']"
+      ]
+    },
     "area": {
       "super_area": "[data-summary='super-area'] .mb-srp__card__summary--value",
       "carpet_area": "[data-summary='carpet-area'] .mb-srp__card__summary--value",
-      "fallback": ".mb-srp__card__summary--value:contains('sqft')"
+      "fallback": [
+        ".mb-srp__card__summary--value:contains('sqft')",
+        ".mb-srp__card__area",
+        "[class*='area']:contains('sqft')",
+        ".mb-srp__card__details:contains('sqft')"
+      ]
     },
     "bedrooms": {
       "primary": "[data-summary='bedrooms'] .mb-srp__card__summary--value",
@@ -32,7 +46,24 @@
     "bathrooms": "[data-summary='bathrooms'] .mb-srp__card__summary--value",
     "floor": "[data-summary='floor'] .mb-srp__card__summary--value",
     "furnishing": "[data-summary='furnishing'] .mb-srp__card__summary--value",
-    "status": "[data-summary='status'] .mb-srp__card__summary--value",
+    "status": {
+      "primary": "[data-summary='status'] .mb-srp__card__summary--value",
+      "fallback": [
+        ".mb-srp__card__status",
+        "[class*='status']",
+        ".mb-srp__card__possession",
+        "[class*='possession']",
+        ".mb-srp__card__ready",
+        "[class*='ready']"
+      ],
+      "regex_patterns": [
+        "Ready to Move",
+        "Poss\\. by \\w+ '\\d+",
+        "Under Construction",
+        "New Property",
+        "Resale"
+      ]
+    },
     "facing": "[data-summary='facing'] .mb-srp__card__summary--value",
     "overlooking": "[data-summary='overlooking'] .mb-srp__card__summary--value",
     "ownership": "[data-summary='ownership'] .mb-srp__card__summary--value",
