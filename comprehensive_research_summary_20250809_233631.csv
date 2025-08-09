@@ -1,0 +1,21 @@
+Metric,Value
+Total Properties Analyzed,50
+Successful Analyses,50
+Failed Analyses,0
+
+Data Section,Overall Availability %
+amenities,100.0%
+floor_plan,100.0%
+neighborhood,100.0%
+pricing_details,100.0%
+project_info,100.0%
+specifications,76.0%
+location_details,100.0%
+images,100.0%
+
+Property Type,Count,Avg Sections Found,Success Rate %
+apartment,39,7.8,100.0%
+house,3,7.7,100.0%
+plot,2,7.5,100.0%
+villa,1,7.0,100.0%
+floor,5,7.6,100.0%
