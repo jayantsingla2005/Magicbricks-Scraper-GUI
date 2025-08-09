@@ -1,0 +1,1604 @@
+{
+  "metadata": {
+    "start_time": "2025-08-09T22:40:26.578892",
+    "end_time": "2025-08-09T22:42:08.113662",
+    "total_properties_analyzed": 10,
+    "successful_analyses": 10,
+    "failed_analyses": 0
+  },
+  "property_analyses": [
+    {
+      "url": "https://www.magicbricks.com/vipul-greens-sector-48-gurgaon-pdpid-4d4235303030333036",
+      "url_data": {
+        "url": "https://www.magicbricks.com/vipul-greens-sector-48-gurgaon-pdpid-4d4235303030333036",
+        "title": "4 BHK Apartment for Sale in Sector 48 Gurgaon",
+        "price": "₹3.09 Cr₹16306 per sqft",
+        "property_type": "4 BHK Apartment for Sale in Sector 48 Gurgaon",
+        "locality": "Sector 48",
+        "source_file": "magicbricks_properties.csv"
+      },
+      "timestamp": "2025-08-09T22:40:34.495776",
+      "page_load_time": 3.0111730098724365,
+      "page_accessible": true,
+      "page_size_kb": 1200.234375,
+      "data_sections_analysis": {
+        "amenities": {
+          "found": true,
+          "indicators": [
+            "text:amenities",
+            "class:amenities",
+            "text:feature",
+            "text:facilities",
+            "text:club",
+            "text:gym",
+            "text:pool"
+          ],
+          "content_sample": ""
+        },
+        "floor_plan": {
+          "found": true,
+          "indicators": [
+            "text:floor",
+            "text:plan",
+            "class:plan",
+            "class:layout",
+            "text:room",
+            "text:bhk",
+            "class:bhk"
+          ],
+          "content_sample": "Vipul GreensSohna Road, GurgaonRead Reviews4.5By The Vipul Group₹2.70 Cr-₹3.68 Cr3,4 BHK Flats , Pen | Vipul GreensSohna Road, GurgaonRead Reviews4.5By The Vipul Group₹2.70 Cr-₹3.68 Cr3,4 BHK Flats , Pen"
+        },
+        "neighborhood": {
+          "found": true,
+          "indicators": [
+            "text:nearby",
+            "class:nearby",
+            "text:locality",
+            "text:neighborhood",
+            "text:schools",
+            "text:hospital"
+          ],
+          "content_sample": "What's NearbyShow on Map | What's Nearby"
+        },
+        "pricing_details": {
+          "found": true,
+          "indicators": [
+            "text:price",
+            "class:price",
+            "text:cost",
+            "text:payment",
+            "text:emi",
+            "class:emi",
+            "text:charges",
+            "text:registration"
+          ],
+          "content_sample": "₹2.70 Cr-₹3.68 Cr3,4 BHK Flats , PenthouseReady To MoveSee Price Trend₹2.35 LacEMIView Phone No.Cont | ₹2.70 Cr-₹3.68 Cr3,4 BHK Flats , PenthouseReady To MoveSee Price Trend₹2.35 LacEMI"
+        },
+        "project_info": {
+          "found": true,
+          "indicators": [
+            "text:project",
+            "class:project",
+            "text:builder",
+            "class:builder",
+            "text:developer",
+            "class:developer",
+            "text:rera",
+            "text:possession",
+            "text:ready"
+          ],
+          "content_sample": "HomeProjects in GurgaonProjects in Sohna Road, GurgaonVipul Greens | More about Vipul GreensVipul Green is one of the best and beautiful residential project by the Vipul"
+        },
+        "specifications": {
+          "found": true,
+          "indicators": [
+            "text:specification",
+            "text:details",
+            "class:details",
+            "text:construction",
+            "text:flooring"
+          ],
+          "content_sample": "3,4 BHK Flats , PenthouseReady To MoveSee Price Trend₹2.35 LacEMI | Call For PriceDdjaySohna Road2 BHK"
+        },
+        "location_details": {
+          "found": true,
+          "indicators": [
+            "text:location",
+            "class:location",
+            "text:address",
+            "class:address",
+            "text:map",
+            "class:map",
+            "class:direction"
+          ],
+          "content_sample": "Sohna Road, Gurgaon | Sector 48, Gurgaon"
+        },
+        "images": {
+          "found": true,
+          "indicators": [
+            "text:image",
+            "class:image",
+            "text:photo",
+            "class:gallery"
+          ],
+          "content_sample": "Project Review by Expert67 Photos | Project Review by Expert"
+        }
+      },
+      "structure_analysis": {
+        "total_elements": 3489,
+        "div_count": 1636,
+        "section_count": 4,
+        "image_count": 93,
+        "link_count": 240,
+        "form_count": 1,
+        "script_count": 39,
+        "has_main_content": true
+      },
+      "content_quality": {
+        "total_text_length": 37389,
+        "word_count": 5421,
+        "has_substantial_content": true,
+        "has_property_details": true,
+        "has_contact_info": true,
+        "has_price_info": true
+      },
+      "extraction_opportunities": {
+        "structured_data": false,
+        "json_ld": true,
+        "meta_properties": [
+          "og:title",
+          "og:description",
+          "og:site_name",
+          "og:image",
+          "og:type"
+        ],
+        "data_attributes": [],
+        "api_endpoints": []
+      },
+      "sections_found": 8,
+      "total_analysis_time": 6.573521852493286
+    },
+    {
+      "url": "https://www.magicbricks.com/signature-global-park-4-and-5-sohna-sector-36-gurgaon-pdpid-4d4235323036343435",
+      "url_data": {
+        "url": "https://www.magicbricks.com/signature-global-park-4-and-5-sohna-sector-36-gurgaon-pdpid-4d4235323036343435",
+        "title": "3 BHK Apartment for Sale in Sector 36 Sohna Gurgaon",
+        "price": "₹1.30 Cr₹12026 per sqft",
+        "property_type": "3 BHK Apartment for Sale in Sector 36 Sohna Gurgaon",
+        "locality": "Sector 36 Sohna",
+        "source_file": "magicbricks_properties.csv"
+      },
+      "timestamp": "2025-08-09T22:40:43.324377",
+      "page_load_time": 3.0249226093292236,
+      "page_accessible": true,
+      "page_size_kb": 1366.505859375,
+      "data_sections_analysis": {
+        "amenities": {
+          "found": true,
+          "indicators": [
+            "text:amenities",
+            "class:amenities",
+            "text:feature",
+            "text:facilities",
+            "text:club",
+            "text:gym",
+            "text:pool"
+          ],
+          "content_sample": ""
+        },
+        "floor_plan": {
+          "found": true,
+          "indicators": [
+            "text:floor",
+            "class:floor",
+            "text:plan",
+            "class:plan",
+            "text:layout",
+            "class:layout",
+            "text:room",
+            "text:bhk",
+            "class:bhk"
+          ],
+          "content_sample": "Unit & Floor PlansAll1081 Sq-ft1120 Sq-ft1020 Sq-ft951 Sq-ft1050 Sq-ft840 Sq-ft1120 sq.ft1153 Sq-ft1 | All1081 Sq-ft1120 Sq-ft1020 Sq-ft951 Sq-ft1050 Sq-ft840 Sq-ft1120 sq.ft1153 Sq-ft1439 Sq-ft1120 Sq-f"
+        },
+        "neighborhood": {
+          "found": true,
+          "indicators": [
+            "text:nearby",
+            "class:nearby",
+            "text:locality",
+            "text:neighborhood",
+            "text:surrounding",
+            "text:schools",
+            "text:hospital"
+          ],
+          "content_sample": "What's NearbyShow on Map | What's Nearby"
+        },
+        "pricing_details": {
+          "found": true,
+          "indicators": [
+            "text:price",
+            "class:price",
+            "text:cost",
+            "text:payment",
+            "text:emi",
+            "class:emi",
+            "text:charges",
+            "text:registration"
+          ],
+          "content_sample": "₹1.25 Cr -₹1.40 CrBrochure2 BHK Flats , Builder FloorReady To MoveSee Price Trend₹1.09 LacEMIEstimat | ₹1.25 Cr -₹1.40 CrBrochure2 BHK Flats , Builder FloorReady To MoveSee Price Trend₹1.09 LacEMI"
+        },
+        "project_info": {
+          "found": true,
+          "indicators": [
+            "text:project",
+            "class:project",
+            "text:builder",
+            "class:builder",
+            "text:developer",
+            "class:developer",
+            "text:rera",
+            "class:rera",
+            "text:possession",
+            "text:ready"
+          ],
+          "content_sample": "HomeProjects in GurgaonProjects in Sector 36 Sohna, GurgaonSignature Global Park 4 and 5 | More about Signature Global Park 4 and 5Live in a rich home, in the lap of nature. Situated in the l"
+        },
+        "specifications": {
+          "found": true,
+          "indicators": [
+            "text:specification",
+            "text:details",
+            "class:details",
+            "text:construction",
+            "text:material"
+          ],
+          "content_sample": "2 BHK Flats , Builder FloorReady To MoveSee Price Trend₹1.09 LacEMI | ₹1.25 Cr - 2.01 CrROF Normanton ParkSector 36 Sohna"
+        },
+        "location_details": {
+          "found": true,
+          "indicators": [
+            "text:location",
+            "class:location",
+            "text:address",
+            "class:address",
+            "text:map",
+            "class:map",
+            "class:direction"
+          ],
+          "content_sample": "Sector 36 Sohna, Gurgaon | Unit No.101, Ground Floor, Tower-A,Signature Tower South City-1, Gurugram, Haryana 122 001, India"
+        },
+        "images": {
+          "found": true,
+          "indicators": [
+            "class:image",
+            "text:photo",
+            "class:gallery"
+          ],
+          "content_sample": "Project Review by Expert53 Photos | Project Review by Expert"
+        }
+      },
+      "structure_analysis": {
+        "total_elements": 4073,
+        "div_count": 2084,
+        "section_count": 4,
+        "image_count": 140,
+        "link_count": 240,
+        "form_count": 1,
+        "script_count": 39,
+        "has_main_content": true
+      },
+      "content_quality": {
+        "total_text_length": 53138,
+        "word_count": 7765,
+        "has_substantial_content": true,
+        "has_property_details": true,
+        "has_contact_info": true,
+        "has_price_info": true
+      },
+      "extraction_opportunities": {
+        "structured_data": false,
+        "json_ld": true,
+        "meta_properties": [
+          "og:title",
+          "og:description",
+          "og:site_name",
+          "og:image",
+          "og:type"
+        ],
+        "data_attributes": [],
+        "api_endpoints": []
+      },
+      "sections_found": 8,
+      "total_analysis_time": 4.947772264480591
+    },
+    {
+      "url": "https://www.magicbricks.com/signature-global-city-93-sector-93-gurgaon-pdpid-4d4235333933373231",
+      "url_data": {
+        "url": "https://www.magicbricks.com/signature-global-city-93-sector-93-gurgaon-pdpid-4d4235333933373231",
+        "title": "1 BHK Apartment for Sale in Sector 93 Gurgaon",
+        "price": "₹59 Lac₹9233 per sqft",
+        "property_type": "1 BHK Apartment for Sale in Sector 93 Gurgaon",
+        "locality": "Sector 93",
+        "source_file": "magicbricks_properties.csv"
+      },
+      "timestamp": "2025-08-09T22:40:55.545777",
+      "page_load_time": 3.3451950550079346,
+      "page_accessible": true,
+      "page_size_kb": 1284.892578125,
+      "data_sections_analysis": {
+        "amenities": {
+          "found": true,
+          "indicators": [
+            "text:amenities",
+            "class:amenities",
+            "text:facilities",
+            "text:club",
+            "text:pool"
+          ],
+          "content_sample": ""
+        },
+        "floor_plan": {
+          "found": true,
+          "indicators": [
+            "text:floor",
+            "class:floor",
+            "text:plan",
+            "class:plan",
+            "text:layout",
+            "class:layout",
+            "text:room",
+            "class:room",
+            "text:bhk",
+            "class:bhk"
+          ],
+          "content_sample": "Unit & Floor PlansAll1335 sq.ft1118 sq.ft1140 sq.ft1235 sq.ft1273 sq.ft1328 sq.ft1420 sq.ft1496 sq.f | All1335 sq.ft1118 sq.ft1140 sq.ft1235 sq.ft1273 sq.ft1328 sq.ft1420 sq.ft1496 sq.ft1510 sq.ft1530 sq"
+        },
+        "neighborhood": {
+          "found": true,
+          "indicators": [
+            "text:nearby",
+            "class:nearby",
+            "text:locality",
+            "class:locality",
+            "text:surrounding",
+            "text:schools",
+            "text:hospital"
+          ],
+          "content_sample": "What's NearbyShow on Map | What's Nearby"
+        },
+        "pricing_details": {
+          "found": true,
+          "indicators": [
+            "text:price",
+            "class:price",
+            "text:cost",
+            "text:payment",
+            "text:emi",
+            "class:emi",
+            "text:charges",
+            "text:registration"
+          ],
+          "content_sample": "₹1.52 Cr -₹2.42 CrBrochureBuilder FloorPossessionNov'27See Price Trend₹1.32 LacEMIDownload BrochureC | ₹1.52 Cr -₹2.42 CrBrochureBuilder FloorPossessionNov'27See Price Trend₹1.32 LacEMI"
+        },
+        "project_info": {
+          "found": true,
+          "indicators": [
+            "text:project",
+            "class:project",
+            "text:builder",
+            "class:builder",
+            "text:developer",
+            "class:developer",
+            "text:rera",
+            "class:rera",
+            "text:possession",
+            "text:ready"
+          ],
+          "content_sample": "HomeProjects in GurgaonProjects in Sector 93, GurgaonSignature Global City 93 | More about Signature Global City 93The Complex & Premium Floors are designed by AEDAS, an architectu"
+        },
+        "specifications": {
+          "found": true,
+          "indicators": [
+            "text:specification",
+            "text:details",
+            "class:details",
+            "text:construction",
+            "text:material"
+          ],
+          "content_sample": "Builder FloorPossessionNov'27See Price Trend₹1.32 LacEMI | ₹1.37 Cr - 3.19 CrAshiana AmarahSector 933 BHK"
+        },
+        "location_details": {
+          "found": true,
+          "indicators": [
+            "text:location",
+            "class:location",
+            "text:address",
+            "class:address",
+            "text:map",
+            "class:map",
+            "class:direction"
+          ],
+          "content_sample": "Sector 93, Gurgaon | Unit No.101, Ground Floor, Tower-A,Signature Tower South City-1, Gurugram, Haryana 122 001, India"
+        },
+        "images": {
+          "found": true,
+          "indicators": [
+            "class:image",
+            "text:photo",
+            "class:gallery",
+            "text:picture"
+          ],
+          "content_sample": "Project Review by Expert53 Photos | Project Review by Expert"
+        }
+      },
+      "structure_analysis": {
+        "total_elements": 3666,
+        "div_count": 1724,
+        "section_count": 4,
+        "image_count": 140,
+        "link_count": 243,
+        "form_count": 1,
+        "script_count": 39,
+        "has_main_content": true
+      },
+      "content_quality": {
+        "total_text_length": 46287,
+        "word_count": 6762,
+        "has_substantial_content": true,
+        "has_property_details": true,
+        "has_contact_info": true,
+        "has_price_info": true
+      },
+      "extraction_opportunities": {
+        "structured_data": false,
+        "json_ld": true,
+        "meta_properties": [
+          "og:title",
+          "og:description",
+          "og:site_name",
+          "og:image",
+          "og:type"
+        ],
+        "data_attributes": [],
+        "api_endpoints": []
+      },
+      "sections_found": 8,
+      "total_analysis_time": 6.736292362213135
+    },
+    {
+      "url": "https://www.magicbricks.com/signature-the-roselia-sector-95a-gurgaon-pdpid-4d4235303937303835",
+      "url_data": {
+        "url": "https://www.magicbricks.com/signature-the-roselia-sector-95a-gurgaon-pdpid-4d4235303937303835",
+        "title": "2 BHK Apartment for Sale in Sector 95A, Pataudi Road Gurgaon",
+        "price": "₹82 Lac₹12538 per sqft",
+        "property_type": "2 BHK Apartment for Sale in Sector 95A, Pataudi Road Gurgaon",
+        "locality": "",
+        "source_file": "magicbricks_properties.csv"
+      },
+      "timestamp": "2025-08-09T22:41:05.285033",
+      "page_load_time": 3.2940280437469482,
+      "page_accessible": true,
+      "page_size_kb": 1154.169921875,
+      "data_sections_analysis": {
+        "amenities": {
+          "found": true,
+          "indicators": [
+            "text:amenities",
+            "class:amenities",
+            "text:feature",
+            "text:facilities",
+            "text:club",
+            "text:pool"
+          ],
+          "content_sample": ""
+        },
+        "floor_plan": {
+          "found": true,
+          "indicators": [
+            "text:floor",
+            "text:plan",
+            "class:plan",
+            "text:layout",
+            "class:layout",
+            "text:room",
+            "text:bhk",
+            "class:bhk"
+          ],
+          "content_sample": "Signature The RoseliaSector 95A, GurgaonRead Reviews4By Signature GlobalRERARERA ID:GGM/2018/18₹51.7 | Signature The RoseliaSector 95A, GurgaonRead Reviews4By Signature GlobalRERARERA ID:GGM/2018/18₹51.7"
+        },
+        "neighborhood": {
+          "found": true,
+          "indicators": [
+            "text:nearby",
+            "class:nearby",
+            "text:locality",
+            "text:neighborhood",
+            "text:surrounding",
+            "text:schools",
+            "text:hospital"
+          ],
+          "content_sample": "What's NearbyShow on Map | What's Nearby"
+        },
+        "pricing_details": {
+          "found": true,
+          "indicators": [
+            "text:price",
+            "class:price",
+            "text:cost",
+            "text:payment",
+            "text:emi",
+            "class:emi",
+            "text:charges",
+            "text:registration"
+          ],
+          "content_sample": "₹51.7 Lac-₹70.5 LacBrochure2 BHK FlatsReady To MoveSee Price Trend₹44.9KEMIEstimated Rent:₹11,000 -₹ | ₹51.7 Lac-₹70.5 LacBrochure2 BHK FlatsReady To MoveSee Price Trend₹44.9KEMI"
+        },
+        "project_info": {
+          "found": true,
+          "indicators": [
+            "text:project",
+            "class:project",
+            "text:builder",
+            "class:builder",
+            "text:developer",
+            "class:developer",
+            "text:rera",
+            "class:rera",
+            "text:possession",
+            "text:ready"
+          ],
+          "content_sample": "HomeProjects in GurgaonProjects in Sector 95A, GurgaonSignature The Roselia | More about Signature The RoseliaThe Roselia developed by Signature Global, Sector 95A, Gurgaon is a "
+        },
+        "specifications": {
+          "found": true,
+          "indicators": [
+            "text:specification",
+            "text:details",
+            "class:details",
+            "text:construction",
+            "text:material",
+            "text:flooring"
+          ],
+          "content_sample": "2 BHK FlatsReady To MoveSee Price Trend₹44.9KEMI | Call For PriceJms PrimelandSector 95A, Pataudi Road2 BHK"
+        },
+        "location_details": {
+          "found": true,
+          "indicators": [
+            "text:location",
+            "class:location",
+            "text:address",
+            "class:address",
+            "text:map",
+            "class:map",
+            "class:direction"
+          ],
+          "content_sample": "Sector 95A, Gurgaon | Unit No.101, Ground Floor, Tower-A,Signature Tower South City-1, Gurugram, Haryana 122 001, India"
+        },
+        "images": {
+          "found": true,
+          "indicators": [
+            "class:image",
+            "text:photo",
+            "class:gallery"
+          ],
+          "content_sample": "Project Review by Expert44 Photos | Project Review by Expert"
+        }
+      },
+      "structure_analysis": {
+        "total_elements": 3072,
+        "div_count": 1307,
+        "section_count": 4,
+        "image_count": 83,
+        "link_count": 236,
+        "form_count": 1,
+        "script_count": 39,
+        "has_main_content": true
+      },
+      "content_quality": {
+        "total_text_length": 37728,
+        "word_count": 5345,
+        "has_substantial_content": true,
+        "has_property_details": true,
+        "has_contact_info": true,
+        "has_price_info": true
+      },
+      "extraction_opportunities": {
+        "structured_data": false,
+        "json_ld": true,
+        "meta_properties": [
+          "og:title",
+          "og:description",
+          "og:site_name",
+          "og:image",
+          "og:type"
+        ],
+        "data_attributes": [],
+        "api_endpoints": []
+      },
+      "sections_found": 8,
+      "total_analysis_time": 4.794348478317261
+    },
+    {
+      "url": "https://www.magicbricks.com/m3m-crown-phase-1-sector-111-gurgaon-pdpid-4d4235333933333337",
+      "url_data": {
+        "url": "https://www.magicbricks.com/m3m-crown-phase-1-sector-111-gurgaon-pdpid-4d4235333933333337",
+        "title": "3 BHK Apartment for Sale in Sector 111 Gurgaon",
+        "price": "₹3.30 Cr₹15207 per sqft",
+        "property_type": "3 BHK Apartment for Sale in Sector 111 Gurgaon",
+        "locality": "Sector 111",
+        "source_file": "magicbricks_properties.csv"
+      },
+      "timestamp": "2025-08-09T22:41:14.563591",
+      "page_load_time": 3.3934171199798584,
+      "page_accessible": true,
+      "page_size_kb": 1260.22265625,
+      "data_sections_analysis": {
+        "amenities": {
+          "found": true,
+          "indicators": [
+            "text:amenities",
+            "class:amenities",
+            "text:feature",
+            "text:facilities",
+            "text:club",
+            "text:gym",
+            "text:pool"
+          ],
+          "content_sample": ""
+        },
+        "floor_plan": {
+          "found": true,
+          "indicators": [
+            "text:floor",
+            "class:floor",
+            "text:plan",
+            "class:plan",
+            "text:layout",
+            "class:layout",
+            "text:room",
+            "class:room",
+            "text:bhk",
+            "class:bhk"
+          ],
+          "content_sample": "Unit & Floor PlansAll1605 sq.ft1665 sq.ft1825 sq.ft1895 sq.ft2080 sq.ft2170 sq.ft1550 Sq-ft1555 Sq-f | All1605 sq.ft1665 sq.ft1825 sq.ft1895 sq.ft2080 sq.ft2170 sq.ft1550 Sq-ft1555 Sq-ft1605 Sq-ft1640 Sq"
+        },
+        "neighborhood": {
+          "found": true,
+          "indicators": [
+            "text:nearby",
+            "class:nearby",
+            "text:locality",
+            "text:surrounding",
+            "text:schools",
+            "text:hospital"
+          ],
+          "content_sample": "What's NearbyShow on Map | What's Nearby"
+        },
+        "pricing_details": {
+          "found": true,
+          "indicators": [
+            "text:price",
+            "class:price",
+            "text:cost",
+            "text:payment",
+            "text:emi",
+            "class:emi",
+            "text:charges",
+            "text:registration"
+          ],
+          "content_sample": "₹2.88 Cr -₹4.80 CrBrochure3,4 BHK FlatsPossessionJan'28See Price Trend₹2.5 LacEMIDownload BrochureCo | ₹2.88 Cr -₹4.80 CrBrochure3,4 BHK FlatsPossessionJan'28See Price Trend₹2.5 LacEMI"
+        },
+        "project_info": {
+          "found": true,
+          "indicators": [
+            "text:project",
+            "class:project",
+            "text:builder",
+            "class:builder",
+            "text:developer",
+            "class:developer",
+            "text:rera",
+            "class:rera",
+            "text:possession",
+            "text:ready"
+          ],
+          "content_sample": "HomeProjects in GurgaonProjects in Sector 111, GurgaonM3M Crown Phase 1 | More about M3M Crown Phase 1For those looking to buy a residential property, here comes one of the c"
+        },
+        "specifications": {
+          "found": true,
+          "indicators": [
+            "text:specification",
+            "text:details",
+            "class:details",
+            "text:construction"
+          ],
+          "content_sample": "3,4 BHK FlatsPossessionJan'28See Price Trend₹2.5 LacEMI | ₹1.40 Cr - 3.02 CrManor One KashishSector 111"
+        },
+        "location_details": {
+          "found": true,
+          "indicators": [
+            "text:location",
+            "class:location",
+            "text:address",
+            "class:address",
+            "text:map",
+            "class:map",
+            "class:direction"
+          ],
+          "content_sample": "Sector 111, Gurgaon | M3M India Pvt. Ltd, 23rd Floor, Windsor IT Park, A-1, Sector-125, Noida - 201301"
+        },
+        "images": {
+          "found": true,
+          "indicators": [
+            "class:image",
+            "text:photo",
+            "class:gallery"
+          ],
+          "content_sample": "Project Review by Expert28 Photos | Project Review by Expert"
+        }
+      },
+      "structure_analysis": {
+        "total_elements": 4433,
+        "div_count": 2165,
+        "section_count": 4,
+        "image_count": 150,
+        "link_count": 245,
+        "form_count": 1,
+        "script_count": 39,
+        "has_main_content": true
+      },
+      "content_quality": {
+        "total_text_length": 45362,
+        "word_count": 6517,
+        "has_substantial_content": true,
+        "has_property_details": true,
+        "has_contact_info": true,
+        "has_price_info": true
+      },
+      "extraction_opportunities": {
+        "structured_data": false,
+        "json_ld": true,
+        "meta_properties": [
+          "og:title",
+          "og:description",
+          "og:site_name",
+          "og:image",
+          "og:type"
+        ],
+        "data_attributes": [],
+        "api_endpoints": []
+      },
+      "sections_found": 8,
+      "total_analysis_time": 5.625060796737671
+    },
+    {
+      "url": "https://www.magicbricks.com/godrej-nature-plus-sohna-sector-33-gurgaon-pdpid-4d4235313132333731",
+      "url_data": {
+        "url": "https://www.magicbricks.com/godrej-nature-plus-sohna-sector-33-gurgaon-pdpid-4d4235313132333731",
+        "title": "2 BHK Apartment for Sale in Sector 33 Sohna Gurgaon",
+        "price": "₹1.65 Cr₹11913 per sqft",
+        "property_type": "2 BHK Apartment for Sale in Sector 33 Sohna Gurgaon",
+        "locality": "Sector 33 Sohna",
+        "source_file": "magicbricks_properties.csv"
+      },
+      "timestamp": "2025-08-09T22:41:26.369174",
+      "page_load_time": 3.342468500137329,
+      "page_accessible": true,
+      "page_size_kb": 1510.2421875,
+      "data_sections_analysis": {
+        "amenities": {
+          "found": true,
+          "indicators": [
+            "text:amenities",
+            "class:amenities",
+            "text:feature",
+            "text:facilities",
+            "text:club",
+            "text:gym",
+            "text:pool"
+          ],
+          "content_sample": ""
+        },
+        "floor_plan": {
+          "found": true,
+          "indicators": [
+            "text:floor",
+            "class:floor",
+            "text:plan",
+            "class:plan",
+            "text:layout",
+            "class:layout",
+            "text:room",
+            "class:room",
+            "text:bhk",
+            "class:bhk"
+          ],
+          "content_sample": "Unit & Floor PlansAll1406 sq.ft1557 sq.ft1671 sq.ft1929 sq.ft1996 sq.ft1385 sq.ft1528 sq.ft2 Bathroo | All1406 sq.ft1557 sq.ft1671 sq.ft1929 sq.ft1996 sq.ft1385 sq.ft1528 sq.ft2 Bathrooms2 BalconiesSuper"
+        },
+        "neighborhood": {
+          "found": true,
+          "indicators": [
+            "text:nearby",
+            "class:nearby",
+            "text:locality",
+            "text:surrounding",
+            "text:schools",
+            "text:hospital"
+          ],
+          "content_sample": "What's NearbyShow on Map | What's Nearby"
+        },
+        "pricing_details": {
+          "found": true,
+          "indicators": [
+            "text:price",
+            "class:price",
+            "text:payment",
+            "text:emi",
+            "class:emi",
+            "text:charges",
+            "text:registration"
+          ],
+          "content_sample": "₹1.47 Cr -₹2.12 CrBrochure2,3 BHK FlatsPossessionJan'28See Price Trend₹1.28 LacEMIDownload BrochureC | ₹1.47 Cr -₹2.12 CrBrochure2,3 BHK FlatsPossessionJan'28See Price Trend₹1.28 LacEMI"
+        },
+        "project_info": {
+          "found": true,
+          "indicators": [
+            "text:project",
+            "class:project",
+            "text:builder",
+            "class:builder",
+            "text:developer",
+            "class:developer",
+            "text:rera",
+            "class:rera",
+            "text:possession",
+            "text:ready"
+          ],
+          "content_sample": "HomeProjects in GurgaonProjects in Sector 33 Sohna, GurgaonGodrej Nature Plus | More about Godrej Nature PlusIntroducing a house that has been meticulously planned with your family"
+        },
+        "specifications": {
+          "found": true,
+          "indicators": [
+            "text:specification",
+            "text:details",
+            "class:details",
+            "text:construction",
+            "text:flooring"
+          ],
+          "content_sample": "2,3 BHK FlatsPossessionJan'28See Price Trend₹1.28 LacEMI | ₹1.41 Cr - 2.15 CrGodrej SerenitySector 33 Sohna"
+        },
+        "location_details": {
+          "found": true,
+          "indicators": [
+            "text:location",
+            "class:location",
+            "text:address",
+            "class:address",
+            "text:map",
+            "class:map",
+            "class:direction"
+          ],
+          "content_sample": "Sector 33 Sohna, Gurgaon | Sector 106, Gurgaon"
+        },
+        "images": {
+          "found": true,
+          "indicators": [
+            "class:image",
+            "text:photo",
+            "class:gallery",
+            "text:picture"
+          ],
+          "content_sample": "Project Review by Expert51 Photos | Project Review by Expert"
+        }
+      },
+      "structure_analysis": {
+        "total_elements": 4194,
+        "div_count": 1872,
+        "section_count": 4,
+        "image_count": 122,
+        "link_count": 226,
+        "form_count": 1,
+        "script_count": 38,
+        "has_main_content": true
+      },
+      "content_quality": {
+        "total_text_length": 50512,
+        "word_count": 7268,
+        "has_substantial_content": true,
+        "has_property_details": true,
+        "has_contact_info": true,
+        "has_price_info": true
+      },
+      "extraction_opportunities": {
+        "structured_data": false,
+        "json_ld": true,
+        "meta_properties": [
+          "og:title",
+          "og:description",
+          "og:site_name",
+          "og:image",
+          "og:type"
+        ],
+        "data_attributes": [],
+        "api_endpoints": []
+      },
+      "sections_found": 8,
+      "total_analysis_time": 7.311156749725342
+    },
+    {
+      "url": "https://www.magicbricks.com/green-homes-sector-52-gurgaon-pdpid-4d4235313730353839",
+      "url_data": {
+        "url": "https://www.magicbricks.com/green-homes-sector-52-gurgaon-pdpid-4d4235313730353839",
+        "title": "4 BHK Apartment for Sale in Sector 52 Gurgaon",
+        "price": "₹3.25 Cr₹15258 per sqft",
+        "property_type": "4 BHK Apartment for Sale in Sector 52 Gurgaon",
+        "locality": "Sector 52",
+        "source_file": "magicbricks_properties.csv"
+      },
+      "timestamp": "2025-08-09T22:41:34.662977",
+      "page_load_time": 3.2557151317596436,
+      "page_accessible": true,
+      "page_size_kb": 959.62890625,
+      "data_sections_analysis": {
+        "amenities": {
+          "found": true,
+          "indicators": [
+            "text:amenities",
+            "text:facilities",
+            "text:gym",
+            "text:pool"
+          ],
+          "content_sample": ""
+        },
+        "floor_plan": {
+          "found": true,
+          "indicators": [
+            "text:floor",
+            "text:plan",
+            "class:plan",
+            "class:layout",
+            "text:room",
+            "text:bhk",
+            "class:bhk"
+          ],
+          "content_sample": "Green HomesSector 52, Gurgaon₹2.89 Cr-₹3.19 CrReady To MoveSee Price Trend₹2.51 LacEMIView Phone No. | Green HomesSector 52, Gurgaon₹2.89 Cr-₹3.19 CrReady To MoveSee Price Trend₹2.51 LacEMIView Phone No."
+        },
+        "neighborhood": {
+          "found": true,
+          "indicators": [
+            "text:nearby",
+            "class:nearby",
+            "text:locality",
+            "text:schools",
+            "text:hospital",
+            "class:hospital"
+          ],
+          "content_sample": "What's NearbyShow on Map | What's Nearby"
+        },
+        "pricing_details": {
+          "found": true,
+          "indicators": [
+            "text:price",
+            "class:price",
+            "text:cost",
+            "text:payment",
+            "text:emi",
+            "class:emi",
+            "text:charges",
+            "text:registration"
+          ],
+          "content_sample": "₹2.89 Cr-₹3.19 CrReady To MoveSee Price Trend₹2.51 LacEMIView Phone No.Contact Seller | ₹2.89 Cr-₹3.19 CrReady To MoveSee Price Trend₹2.51 LacEMI"
+        },
+        "project_info": {
+          "found": true,
+          "indicators": [
+            "text:project",
+            "class:project",
+            "text:builder",
+            "text:developer",
+            "text:rera",
+            "text:possession",
+            "text:ready"
+          ],
+          "content_sample": "HomeProjects in GurgaonProjects in Sector 52, GurgaonGreen Homes | More about Green HomesGreen Homes in Sector-52 Gurgaon, Gurgaon is a private task. The Apartment are"
+        },
+        "specifications": {
+          "found": true,
+          "indicators": [
+            "text:details",
+            "text:construction"
+          ],
+          "content_sample": ""
+        },
+        "location_details": {
+          "found": true,
+          "indicators": [
+            "text:location",
+            "class:location",
+            "text:address",
+            "class:address",
+            "text:map",
+            "class:map",
+            "class:direction"
+          ],
+          "content_sample": "Sector 52, Gurgaon | Sector 88A, Gurgaon"
+        },
+        "images": {
+          "found": true,
+          "indicators": [
+            "class:image",
+            "text:photo",
+            "class:gallery"
+          ],
+          "content_sample": "14 Photos14 Photos | 14 Photos14 Photos"
+        }
+      },
+      "structure_analysis": {
+        "total_elements": 2427,
+        "div_count": 923,
+        "section_count": 4,
+        "image_count": 49,
+        "link_count": 231,
+        "form_count": 1,
+        "script_count": 40,
+        "has_main_content": true
+      },
+      "content_quality": {
+        "total_text_length": 23037,
+        "word_count": 3220,
+        "has_substantial_content": true,
+        "has_property_details": true,
+        "has_contact_info": true,
+        "has_price_info": true
+      },
+      "extraction_opportunities": {
+        "structured_data": false,
+        "json_ld": true,
+        "meta_properties": [
+          "og:title",
+          "og:description",
+          "og:site_name",
+          "og:image",
+          "og:type"
+        ],
+        "data_attributes": [],
+        "api_endpoints": []
+      },
+      "sections_found": 8,
+      "total_analysis_time": 4.802465438842773
+    },
+    {
+      "url": "https://www.magicbricks.com/the-sixty-three-sector-63-gurgaon-pdpid-4d4235333934323635",
+      "url_data": {
+        "url": "https://www.magicbricks.com/the-sixty-three-sector-63-gurgaon-pdpid-4d4235333934323635",
+        "title": "4 BHK Apartment for Sale in Sector 63 Gurgaon",
+        "price": "₹7.25 Cr₹18,590 per sqft",
+        "property_type": "4 BHK Apartment for Sale in Sector 63 Gurgaon",
+        "locality": "Sector 63",
+        "source_file": "magicbricks_properties.csv"
+      },
+      "timestamp": "2025-08-09T22:41:44.403216",
+      "page_load_time": 3.2829935550689697,
+      "page_accessible": true,
+      "page_size_kb": 1064.24609375,
+      "data_sections_analysis": {
+        "amenities": {
+          "found": true,
+          "indicators": [
+            "text:amenities",
+            "class:amenities",
+            "text:feature",
+            "text:facilities",
+            "text:club",
+            "text:gym",
+            "text:pool"
+          ],
+          "content_sample": ""
+        },
+        "floor_plan": {
+          "found": true,
+          "indicators": [
+            "text:floor",
+            "text:plan",
+            "class:plan",
+            "text:layout",
+            "class:layout",
+            "text:room",
+            "text:bhk",
+            "class:bhk"
+          ],
+          "content_sample": "THE SIXTY THREESector 63, GurgaonRead ReviewsBy DLF Home Developers LimitedRERARERA ID:RERA-GRG-1138 | THE SIXTY THREESector 63, GurgaonRead ReviewsBy DLF Home Developers LimitedRERARERA ID:RERA-GRG-1138"
+        },
+        "neighborhood": {
+          "found": true,
+          "indicators": [
+            "text:nearby",
+            "class:nearby",
+            "text:locality",
+            "text:surrounding",
+            "text:schools",
+            "text:hospital"
+          ],
+          "content_sample": "What's NearbyShow on Map | What's Nearby"
+        },
+        "pricing_details": {
+          "found": true,
+          "indicators": [
+            "text:price",
+            "class:price",
+            "text:cost",
+            "text:payment",
+            "text:emi",
+            "class:emi",
+            "text:charges",
+            "text:registration"
+          ],
+          "content_sample": "₹9.10 Cr -₹9.11 CrBrochure4 BHK FlatsPossessionMar'27See Price Trend₹7.9 LacEMIDownload BrochureCont | ₹9.10 Cr -₹9.11 CrBrochure4 BHK FlatsPossessionMar'27See Price Trend₹7.9 LacEMI"
+        },
+        "project_info": {
+          "found": true,
+          "indicators": [
+            "text:project",
+            "class:project",
+            "text:builder",
+            "class:builder",
+            "text:developer",
+            "class:developer",
+            "text:rera",
+            "class:rera",
+            "text:possession",
+            "text:ready"
+          ],
+          "content_sample": "HomeProjects in GurgaonProjects in Sector 63, GurgaonTHE SIXTY THREE | More about DLF The ArbourTHE NATURES PARADISEDLF The Arbour Sector 63 GURGAON will be your new era o"
+        },
+        "specifications": {
+          "found": true,
+          "indicators": [
+            "text:specification",
+            "text:details",
+            "class:details",
+            "text:construction"
+          ],
+          "content_sample": "4 BHK FlatsPossessionMar'27See Price Trend₹7.9 LacEMI | ₹5.09 Cr - 17.32 CrAdani Samsara VilasaSector 63"
+        },
+        "location_details": {
+          "found": true,
+          "indicators": [
+            "text:location",
+            "class:location",
+            "text:address",
+            "text:map",
+            "class:map",
+            "class:direction"
+          ],
+          "content_sample": "Sector 63, Gurgaon | More about DLF The ArbourTHE NATURES PARADISEDLF The Arbour Sector 63 GURGAON will be your new era o"
+        },
+        "images": {
+          "found": true,
+          "indicators": [
+            "class:image",
+            "text:photo",
+            "class:gallery"
+          ],
+          "content_sample": "Project Review by Expert28 Photos | Project Review by Expert"
+        }
+      },
+      "structure_analysis": {
+        "total_elements": 2839,
+        "div_count": 1311,
+        "section_count": 4,
+        "image_count": 80,
+        "link_count": 230,
+        "form_count": 1,
+        "script_count": 39,
+        "has_main_content": true
+      },
+      "content_quality": {
+        "total_text_length": 35368,
+        "word_count": 5218,
+        "has_substantial_content": true,
+        "has_property_details": true,
+        "has_contact_info": true,
+        "has_price_info": true
+      },
+      "extraction_opportunities": {
+        "structured_data": false,
+        "json_ld": true,
+        "meta_properties": [
+          "og:title",
+          "og:description",
+          "og:site_name",
+          "og:image",
+          "og:type"
+        ],
+        "data_attributes": [],
+        "api_endpoints": []
+      },
+      "sections_found": 8,
+      "total_analysis_time": 5.489093542098999
+    },
+    {
+      "url": "https://www.magicbricks.com/sobha-city-sector-108-gurgaon-pdpid-4d4235303836323234",
+      "url_data": {
+        "url": "https://www.magicbricks.com/sobha-city-sector-108-gurgaon-pdpid-4d4235303836323234",
+        "title": "4 BHK Apartment for Sale in Sector 108 Gurgaon",
+        "price": "₹4.80 Cr₹19810 per sqft",
+        "property_type": "4 BHK Apartment for Sale in Sector 108 Gurgaon",
+        "locality": "Sector 108",
+        "source_file": "magicbricks_properties.csv"
+      },
+      "timestamp": "2025-08-09T22:41:53.230233",
+      "page_load_time": 3.36440372467041,
+      "page_accessible": true,
+      "page_size_kb": 1412.80859375,
+      "data_sections_analysis": {
+        "amenities": {
+          "found": true,
+          "indicators": [
+            "text:amenities",
+            "class:amenities",
+            "text:feature",
+            "text:facilities",
+            "text:club",
+            "text:gym",
+            "text:pool"
+          ],
+          "content_sample": ""
+        },
+        "floor_plan": {
+          "found": true,
+          "indicators": [
+            "text:floor",
+            "class:floor",
+            "text:plan",
+            "class:plan",
+            "text:layout",
+            "class:layout",
+            "text:room",
+            "class:room",
+            "text:bhk",
+            "class:bhk"
+          ],
+          "content_sample": "Unit & Floor PlansAll1711 sq.ft2072 sq.ft2002 Sq-ft2343 Sq-ft2072 Sq-ft1710 Sq-ft2003 Sq-ft1711 Sq-f | All1711 sq.ft2072 sq.ft2002 Sq-ft2343 Sq-ft2072 Sq-ft1710 Sq-ft2003 Sq-ft1711 Sq-ft2073 Sq-ft1381 sq"
+        },
+        "neighborhood": {
+          "found": true,
+          "indicators": [
+            "text:nearby",
+            "class:nearby",
+            "text:locality",
+            "text:schools",
+            "text:hospital"
+          ],
+          "content_sample": "What's NearbyShow on Map | What's Nearby"
+        },
+        "pricing_details": {
+          "found": true,
+          "indicators": [
+            "text:price",
+            "class:price",
+            "text:cost",
+            "text:payment",
+            "text:emi",
+            "class:emi",
+            "text:charges",
+            "text:registration"
+          ],
+          "content_sample": "₹2.50 Cr -₹4.95 CrBrochure2,3,4 BHK FlatsReady To MoveSee Price Trend₹2.17 LacEMIDownload BrochureCo | ₹2.50 Cr -₹4.95 CrBrochure2,3,4 BHK FlatsReady To MoveSee Price Trend₹2.17 LacEMI"
+        },
+        "project_info": {
+          "found": true,
+          "indicators": [
+            "text:project",
+            "class:project",
+            "text:builder",
+            "class:builder",
+            "text:developer",
+            "class:developer",
+            "text:rera",
+            "class:rera",
+            "text:possession",
+            "text:ready"
+          ],
+          "content_sample": "HomeProjects in GurgaonProjects in Sector 108, GurgaonSobha City | More about Sobha CitySOBHA CITY, the best urban park residences of Delhi NCR, is one of the largest "
+        },
+        "specifications": {
+          "found": true,
+          "indicators": [
+            "text:specification",
+            "text:details",
+            "class:details",
+            "text:construction",
+            "text:material",
+            "text:flooring"
+          ],
+          "content_sample": "2,3,4 BHK FlatsReady To MoveSee Price Trend₹2.17 LacEMI"
+        },
+        "location_details": {
+          "found": true,
+          "indicators": [
+            "text:location",
+            "class:location",
+            "text:address",
+            "class:address",
+            "text:map",
+            "class:map",
+            "class:direction"
+          ],
+          "content_sample": "Sector 108, Gurgaon | Sarjapur - Marthahalli Outer Ring Road (ORR)Devarabisanahalli, Bellandur Post,Bangalore Ã¢?? 560103K"
+        },
+        "images": {
+          "found": true,
+          "indicators": [
+            "class:image",
+            "text:photo",
+            "text:gallery",
+            "class:gallery"
+          ],
+          "content_sample": "Project Review by Expert103 Photos | Project Review by Expert"
+        }
+      },
+      "structure_analysis": {
+        "total_elements": 4414,
+        "div_count": 2195,
+        "section_count": 4,
+        "image_count": 172,
+        "link_count": 237,
+        "form_count": 1,
+        "script_count": 39,
+        "has_main_content": true
+      },
+      "content_quality": {
+        "total_text_length": 55572,
+        "word_count": 7989,
+        "has_substantial_content": true,
+        "has_property_details": true,
+        "has_contact_info": true,
+        "has_price_info": true
+      },
+      "extraction_opportunities": {
+        "structured_data": false,
+        "json_ld": true,
+        "meta_properties": [
+          "og:title",
+          "og:description",
+          "og:site_name",
+          "og:image",
+          "og:type"
+        ],
+        "data_attributes": [],
+        "api_endpoints": []
+      },
+      "sections_found": 8,
+      "total_analysis_time": 4.60094690322876
+    },
+    {
+      "url": "https://www.magicbricks.com/ats-kocoon-sector-109-gurgaon-pdpid-4d4235303233353339",
+      "url_data": {
+        "url": "https://www.magicbricks.com/ats-kocoon-sector-109-gurgaon-pdpid-4d4235303233353339",
+        "title": "3 BHK Apartment for Sale in Sector 109 Gurgaon",
+        "price": "₹3.10 Cr₹14797 per sqft",
+        "property_type": "3 BHK Apartment for Sale in Sector 109 Gurgaon",
+        "locality": "Sector 109",
+        "source_file": "magicbricks_properties.csv"
+      },
+      "timestamp": "2025-08-09T22:42:01.378307",
+      "page_load_time": 3.3429150581359863,
+      "page_accessible": true,
+      "page_size_kb": 1395.9501953125,
+      "data_sections_analysis": {
+        "amenities": {
+          "found": true,
+          "indicators": [
+            "text:amenities",
+            "class:amenities",
+            "text:feature",
+            "text:facilities",
+            "text:club",
+            "text:gym",
+            "text:pool"
+          ],
+          "content_sample": ""
+        },
+        "floor_plan": {
+          "found": true,
+          "indicators": [
+            "text:floor",
+            "class:floor",
+            "text:plan",
+            "class:plan",
+            "text:layout",
+            "class:layout",
+            "text:room",
+            "class:room",
+            "text:bhk",
+            "class:bhk"
+          ],
+          "content_sample": "Unit & Floor PlansAll1745 sq.ft2095 Sq-ft1745 Sq-ft3045 sq.ft3045 Sq-ft3 Bathrooms3 BalconiesSuper a | All1745 sq.ft2095 Sq-ft1745 Sq-ft3045 sq.ft3045 Sq-ft3 Bathrooms3 BalconiesSuper area1745 sq.ftPrice"
+        },
+        "neighborhood": {
+          "found": true,
+          "indicators": [
+            "text:nearby",
+            "class:nearby",
+            "text:locality",
+            "class:locality",
+            "text:neighborhood",
+            "text:surrounding",
+            "text:schools",
+            "text:hospital"
+          ],
+          "content_sample": "What's NearbyShow on Map | What's Nearby"
+        },
+        "pricing_details": {
+          "found": true,
+          "indicators": [
+            "text:price",
+            "class:price",
+            "text:cost",
+            "text:payment",
+            "text:emi",
+            "class:emi",
+            "text:charges",
+            "text:registration"
+          ],
+          "content_sample": "₹2.40 Cr -₹4.18 CrBrochure3,4 BHK FlatsReady To MoveSee Price Trend₹2.08 LacEMIEstimated Rent:₹40,00 | ₹2.40 Cr -₹4.18 CrBrochure3,4 BHK FlatsReady To MoveSee Price Trend₹2.08 LacEMI"
+        },
+        "project_info": {
+          "found": true,
+          "indicators": [
+            "text:project",
+            "class:project",
+            "text:builder",
+            "class:builder",
+            "text:developer",
+            "class:developer",
+            "text:rera",
+            "text:possession",
+            "text:ready"
+          ],
+          "content_sample": "HomeProjects in GurgaonProjects in Sector 109, GurgaonATS Kocoon | More about ATS KocoonOverview ATS Kocoon located in Sector 109 , Gurgaon has amazing luxury flats av"
+        },
+        "specifications": {
+          "found": true,
+          "indicators": [
+            "text:specification",
+            "text:details",
+            "class:details",
+            "text:construction",
+            "text:flooring"
+          ],
+          "content_sample": "3,4 BHK FlatsReady To MoveSee Price Trend₹2.08 LacEMI | ₹2.14 Cr - 4.68 CrChintels SerenitySector 1093, 4 BHK"
+        },
+        "location_details": {
+          "found": true,
+          "indicators": [
+            "text:location",
+            "class:location",
+            "text:address",
+            "class:address",
+            "text:map",
+            "class:map",
+            "class:direction"
+          ],
+          "content_sample": "Sector 109, Gurgaon | Sector 105, Gurgaon"
+        },
+        "images": {
+          "found": true,
+          "indicators": [
+            "class:image",
+            "text:photo",
+            "class:gallery"
+          ],
+          "content_sample": "Project Review by Expert64 Photos | Project Review by Expert"
+        }
+      },
+      "structure_analysis": {
+        "total_elements": 3963,
+        "div_count": 1886,
+        "section_count": 4,
+        "image_count": 132,
+        "link_count": 246,
+        "form_count": 1,
+        "script_count": 39,
+        "has_main_content": true
+      },
+      "content_quality": {
+        "total_text_length": 46192,
+        "word_count": 6717,
+        "has_substantial_content": true,
+        "has_property_details": true,
+        "has_contact_info": true,
+        "has_price_info": true
+      },
+      "extraction_opportunities": {
+        "structured_data": false,
+        "json_ld": true,
+        "meta_properties": [
+          "og:title",
+          "og:description",
+          "og:site_name",
+          "og:image",
+          "og:type"
+        ],
+        "data_attributes": [],
+        "api_endpoints": []
+      },
+      "sections_found": 8,
+      "total_analysis_time": 4.962985277175903
+    }
+  ],
+  "data_availability_summary": {
+    "amenities": {
+      "availability_percentage": 100.0,
+      "found_in_properties": 10,
+      "total_properties": 10,
+      "priority": "high"
+    },
+    "floor_plan": {
+      "availability_percentage": 100.0,
+      "found_in_properties": 10,
+      "total_properties": 10,
+      "priority": "high"
+    },
+    "neighborhood": {
+      "availability_percentage": 100.0,
+      "found_in_properties": 10,
+      "total_properties": 10,
+      "priority": "high"
+    },
+    "pricing_details": {
+      "availability_percentage": 100.0,
+      "found_in_properties": 10,
+      "total_properties": 10,
+      "priority": "high"
+    },
+    "project_info": {
+      "availability_percentage": 100.0,
+      "found_in_properties": 10,
+      "total_properties": 10,
+      "priority": "high"
+    },
+    "specifications": {
+      "availability_percentage": 100.0,
+      "found_in_properties": 10,
+      "total_properties": 10,
+      "priority": "high"
+    },
+    "location_details": {
+      "availability_percentage": 100.0,
+      "found_in_properties": 10,
+      "total_properties": 10,
+      "priority": "high"
+    },
+    "images": {
+      "availability_percentage": 100.0,
+      "found_in_properties": 10,
+      "total_properties": 10,
+      "priority": "high"
+    }
+  },
+  "selector_effectiveness": {},
+  "performance_metrics": {
+    "avg_page_load_time": 3.265723180770874,
+    "max_page_load_time": 3.3934171199798584,
+    "min_page_load_time": 3.0111730098724365,
+    "recommended_delay": 4.898584771156312,
+    "parallel_processing_feasible": true
+  },
+  "recommendations": [
+    {
+      "category": "data_extraction",
+      "priority": "high",
+      "recommendation": "Focus on extracting: amenities, floor_plan, neighborhood, pricing_details, project_info, specifications, location_details, images (>70% availability)",
+      "impact": "high"
+    },
+    {
+      "category": "performance",
+      "priority": "high",
+      "recommendation": "Parallel processing feasible with 4.9s delays",
+      "impact": "high"
+    }
+  ]
+}
