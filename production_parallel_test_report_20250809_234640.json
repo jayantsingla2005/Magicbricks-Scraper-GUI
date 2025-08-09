@@ -1,0 +1,77 @@
+{
+  "test_start_time": "2025-08-09 23:45:11.492582",
+  "test_end_time": "2025-08-09 23:46:40.490359",
+  "tests_run": 7,
+  "tests_passed": 4,
+  "tests_failed": 3,
+  "production_test_results": {
+    "session_id": "production_test_20250809_234511",
+    "start_time": "2025-08-09 23:45:11.510381",
+    "end_time": "2025-08-09 23:46:40.471022",
+    "total_properties_processed": 0,
+    "successful_extractions": 0,
+    "failed_extractions": 0,
+    "total_data_sections_extracted": 0,
+    "priority_sections_extracted": 0,
+    "secondary_sections_extracted": 0,
+    "average_processing_time": 0,
+    "error_rate": 0,
+    "throughput_per_minute": 0,
+    "section_success_rates": {
+      "amenities": 0,
+      "floor_plan": 0,
+      "neighborhood": 0,
+      "pricing_details": 0,
+      "project_info": 0,
+      "location_details": 0,
+      "images": 0,
+      "specifications": 0
+    },
+    "property_type_stats": {},
+    "batch_performance": []
+  },
+  "test_details": [
+    {
+      "test_name": "Production Component Initialization",
+      "passed": true,
+      "details": "All production components initialized correctly",
+      "timestamp": "2025-08-09T23:45:11.501322"
+    },
+    {
+      "test_name": "Research Validation Compliance",
+      "passed": true,
+      "details": "All research validation requirements met",
+      "timestamp": "2025-08-09T23:45:11.503806"
+    },
+    {
+      "test_name": "Production Configuration Validation",
+      "passed": true,
+      "details": "Production configuration validated",
+      "timestamp": "2025-08-09T23:45:11.507918"
+    },
+    {
+      "test_name": "Production Parallel Processing",
+      "passed": false,
+      "details": "Production parallel processing failed: Result missing status",
+      "timestamp": "2025-08-09T23:46:40.486189"
+    },
+    {
+      "test_name": "Production Results Analysis",
+      "passed": false,
+      "details": "Production results analysis failed: Missing production report",
+      "timestamp": "2025-08-09T23:46:40.486538"
+    },
+    {
+      "test_name": "Production Performance Validation",
+      "passed": false,
+      "details": "Production performance validation failed: 'statistics'",
+      "timestamp": "2025-08-09T23:46:40.486643"
+    },
+    {
+      "test_name": "Production Error Handling",
+      "passed": true,
+      "details": "Production error handling mechanisms validated",
+      "timestamp": "2025-08-09T23:46:40.490291"
+    }
+  ]
+}
