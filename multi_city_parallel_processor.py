@@ -204,10 +204,21 @@ class MultiCityParallelProcessor:
             
             print(f"🏙️ Starting scraping for {city.name} ({city_code})")
             
+            # Convert mode to enum if it's a string
+            mode = scraping_config.get('mode', ScrapingMode.INCREMENTAL)
+            if isinstance(mode, str):
+                mode_mapping = {
+                    'incremental': ScrapingMode.INCREMENTAL,
+                    'full': ScrapingMode.FULL,
+                    'conservative': ScrapingMode.CONSERVATIVE,
+                    'date_range': ScrapingMode.DATE_RANGE
+                }
+                mode = mode_mapping.get(mode.lower(), ScrapingMode.INCREMENTAL)
+
             # Start scraping
             scraping_result = scraper.scrape_properties_with_incremental(
                 city=city.magicbricks_url_code,
-                mode=scraping_config.get('mode', ScrapingMode.INCREMENTAL),
+                mode=mode,
                 max_pages=scraping_config.get('max_pages', 100)
             )
             
@@ -222,7 +233,8 @@ class MultiCityParallelProcessor:
                 # Save results to city-specific file
                 if scraper.properties:
                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                    mode = scraping_config.get('mode', ScrapingMode.INCREMENTAL).value
+                    mode_obj = scraping_config.get('mode', ScrapingMode.INCREMENTAL)
+                    mode = mode_obj.value if hasattr(mode_obj, 'value') else str(mode_obj)
                     filename = f"magicbricks_{city.magicbricks_url_code}_{mode}_{timestamp}.csv"
                     output_path = Path(scraping_config.get('output_directory', '.')) / filename
                     

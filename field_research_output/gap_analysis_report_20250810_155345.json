@@ -1,0 +1,166 @@
+{
+  "research_summary": {
+    "overall_extraction_rate": 0.711111111111111,
+    "cities_analyzed": 5,
+    "total_properties": 50
+  },
+  "critical_gaps": {
+    "completely_broken_fields": [
+      {
+        "field": "posting_date_text",
+        "rate": 0.0,
+        "issue": "Complete extraction failure across all cities"
+      },
+      {
+        "field": "parsed_posting_date",
+        "rate": 0.0,
+        "issue": "Complete extraction failure across all cities"
+      }
+    ],
+    "poor_performing_fields": [
+      {
+        "field": "title",
+        "rate": 0.8,
+        "min_rate": 0.0,
+        "max_rate": 1.0,
+        "issue": "Inconsistent extraction: 0.0% to 100.0%"
+      },
+      {
+        "field": "price",
+        "rate": 0.8,
+        "min_rate": 0.0,
+        "max_rate": 1.0,
+        "issue": "Inconsistent extraction: 0.0% to 100.0%"
+      },
+      {
+        "field": "area",
+        "rate": 0.8,
+        "min_rate": 0.0,
+        "max_rate": 1.0,
+        "issue": "Inconsistent extraction: 0.0% to 100.0%"
+      }
+    ],
+    "city_specific_issues": [
+      {
+        "city": "delhi",
+        "rate": 0.4444444444444444,
+        "issue": "Major extraction failure - likely using fallback selectors"
+      }
+    ],
+    "enhancement_priorities": [
+      {
+        "priority": 1,
+        "issue": "Date extraction completely broken",
+        "fields": [
+          "posting_date_text",
+          "parsed_posting_date"
+        ],
+        "impact": "HIGH - Critical for incremental scraping",
+        "effort": "MEDIUM - Need to implement date parsing logic"
+      },
+      {
+        "priority": 2,
+        "issue": "Delhi city extraction failure",
+        "fields": [
+          "title",
+          "price",
+          "area"
+        ],
+        "impact": "HIGH - Major city not working",
+        "effort": "MEDIUM - Fix selector issues"
+      },
+      {
+        "priority": 3,
+        "issue": "Overall extraction rate below target",
+        "fields": [
+          "all"
+        ],
+        "impact": "MEDIUM - Need 95%+ for production",
+        "effort": "HIGH - Comprehensive enhancement"
+      }
+    ]
+  },
+  "enhancement_plan": {
+    "immediate_fixes": [
+      {
+        "task": "Fix Date Extraction",
+        "description": "Implement posting date extraction and parsing logic",
+        "files_to_modify": [
+          "integrated_magicbricks_scraper.py",
+          "date_parsing_system.py"
+        ],
+        "specific_actions": [
+          "Add date extraction selectors to extract_property_data method",
+          "Implement date parsing in date_parsing_system",
+          "Add date fields to property data structure",
+          "Test date extraction across all cities"
+        ],
+        "expected_improvement": "+22.2% overall extraction rate",
+        "effort_estimate": "2-3 hours"
+      }
+    ],
+    "medium_term_improvements": [
+      {
+        "task": "Fix Delhi City Extraction",
+        "description": "Resolve selector issues causing Delhi to use fallback selectors",
+        "files_to_modify": [
+          "integrated_magicbricks_scraper.py"
+        ],
+        "specific_actions": [
+          "Debug why Delhi uses fallback selectors",
+          "Update selectors for Delhi-specific page structure",
+          "Test core field extraction (title, price, area)",
+          "Validate against multiple Delhi properties"
+        ],
+        "expected_improvement": "+8.9% overall extraction rate",
+        "effort_estimate": "3-4 hours"
+      },
+      {
+        "task": "Enhance Selector Robustness",
+        "description": "Improve selector fallback logic and add more robust selectors",
+        "files_to_modify": [
+          "integrated_magicbricks_scraper.py"
+        ],
+        "specific_actions": [
+          "Add more fallback selectors for title, price, area",
+          "Implement smart selector detection",
+          "Add city-specific selector variations",
+          "Test across all cities"
+        ],
+        "expected_improvement": "+5-10% overall extraction rate",
+        "effort_estimate": "4-5 hours"
+      }
+    ],
+    "long_term_enhancements": [
+      {
+        "task": "Comprehensive Field Expansion",
+        "description": "Add extraction for additional property fields",
+        "files_to_modify": [
+          "integrated_magicbricks_scraper.py"
+        ],
+        "specific_actions": [
+          "Add bedrooms, bathrooms, furnishing extraction",
+          "Add amenities and description extraction",
+          "Add contact information extraction",
+          "Add image URL extraction"
+        ],
+        "expected_improvement": "Comprehensive property data",
+        "effort_estimate": "8-10 hours"
+      }
+    ],
+    "implementation_order": [
+      "Fix Date Extraction (IMMEDIATE)",
+      "Fix Delhi City Extraction (MEDIUM)",
+      "Enhance Selector Robustness (MEDIUM)",
+      "Comprehensive Field Expansion (LONG-TERM)"
+    ]
+  },
+  "performance_projections": {
+    "current_rate": 0.711111111111111,
+    "after_immediate_fixes": 0.933111111111111,
+    "after_medium_term": 1.022111111111111,
+    "after_all_enhancements": 1.097111111111111,
+    "target_rate": 0.95
+  },
+  "analysis_timestamp": "2025-08-10T15:53:45.493376"
+}

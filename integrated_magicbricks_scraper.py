@@ -65,7 +65,11 @@ class IntegratedMagicBricksScraper:
         
         # Setup logging
         self.setup_logging()
-        
+
+        # Setup date parser (always needed for comprehensive data)
+        from date_parsing_system import DateParsingSystem
+        self.date_parser = DateParsingSystem()
+
         # Setup incremental system if enabled
         if self.incremental_enabled:
             self.setup_incremental_system()
@@ -136,7 +140,7 @@ class IntegratedMagicBricksScraper:
         """Start a new scraping session with incremental support"""
         
         self.session_stats['start_time'] = datetime.now()
-        self.session_stats['mode'] = mode.value
+        self.session_stats['mode'] = mode.value if hasattr(mode, 'value') else str(mode)
         
         if self.incremental_enabled:
             # Start incremental session
@@ -146,7 +150,8 @@ class IntegratedMagicBricksScraper:
                 self.session_stats['session_id'] = session_result['session_id']
                 self.session_stats['last_scrape_date'] = session_result.get('last_scrape_date')
                 
-                print(f"✅ Started {mode.value} scraping session for {city}")
+                mode_str = mode.value if hasattr(mode, 'value') else str(mode)
+                print(f"✅ Started {mode_str} scraping session for {city}")
                 print(f"   📋 Session ID: {session_result['session_id']}")
                 
                 if session_result.get('last_scrape_date'):
@@ -408,9 +413,9 @@ class IntegratedMagicBricksScraper:
             if not property_url:
                 return None
 
-            # Extract posting date for incremental logic
+            # Extract posting date (always extract for comprehensive data)
             card_text = card.get_text()
-            date_info = self.date_parser.parse_posting_date(card_text) if self.incremental_enabled else None
+            date_info = self.date_parser.parse_posting_date(card_text)
 
             # Build property data
             property_data = {

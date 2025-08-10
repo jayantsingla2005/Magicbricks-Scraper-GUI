@@ -62,7 +62,8 @@ class IncrementalScrapingSystem:
                                  custom_config: Dict[str, Any] = None) -> Dict[str, Any]:
         """Start incremental scraping with specified mode"""
         
-        print(f"🚀 Starting incremental scraping for {city} in {mode.value} mode")
+        mode_str = mode.value if hasattr(mode, 'value') else str(mode)
+        print(f"🚀 Starting incremental scraping for {city} in {mode_str} mode")
         
         try:
             # Step 1: Create scraping session
@@ -93,7 +94,7 @@ class IncrementalScrapingSystem:
             return {
                 'success': True,
                 'session_id': session_id,
-                'mode': mode.value,
+                'mode': mode.value if hasattr(mode, 'value') else str(mode),
                 'city': city,
                 'configuration': config,
                 'last_scrape_date': last_scrape_date,

@@ -154,7 +154,7 @@ class ComprehensiveGUITest:
                 
                 total_properties = summary['statistics']['total_properties_saved']
                 total_pages = summary['statistics']['total_pages_scraped']
-                completed_cities = summary['statistics']['completed_cities']
+                completed_cities = summary['statistics']['successful_cities']
                 
                 test_success = (
                     total_properties >= 10 and  # Expect 10+ properties total (reduced)
