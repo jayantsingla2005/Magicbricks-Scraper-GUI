@@ -1,0 +1,215 @@
+{
+  "timestamp": "2025-08-10T12:12:56.689498",
+  "date_field_analysis": {
+    "listing_date": {
+      "found": true,
+      "selectors": [],
+      "patterns": [
+        "today",
+        "today",
+        "today",
+        "today",
+        "today",
+        "today",
+        "today",
+        "today"
+      ]
+    },
+    "posted_date": {
+      "found": false,
+      "selectors": [],
+      "patterns": []
+    },
+    "updated_date": {
+      "found": false,
+      "selectors": [],
+      "patterns": []
+    },
+    "created_date": {
+      "found": false,
+      "selectors": [],
+      "patterns": []
+    },
+    "possession_date": {
+      "found": false,
+      "selectors": [],
+      "patterns": []
+    }
+  },
+  "incremental_strategies": {
+    "strategy_1_relative_dates": {
+      "name": "Relative Date Filtering",
+      "description": "Filter properties based on \"X days ago\" text",
+      "feasibility": "HIGH",
+      "implementation": "Parse relative date text and filter properties",
+      "pros": [
+        "Easy to implement",
+        "Reliable for recent listings"
+      ],
+      "cons": [
+        "Limited to properties with relative dates",
+        "Not precise"
+      ]
+    },
+    "strategy_2_property_id_tracking": {
+      "name": "Property ID Tracking",
+      "description": "Track highest property ID and scrape only newer IDs",
+      "feasibility": "MEDIUM",
+      "implementation": "Store last scraped property ID, scrape only higher IDs",
+      "pros": [
+        "Efficient",
+        "Catches all new properties"
+      ],
+      "cons": [
+        "Assumes sequential IDs",
+        "May miss updated properties"
+      ]
+    },
+    "strategy_3_url_monitoring": {
+      "name": "URL Change Monitoring",
+      "description": "Monitor for new property URLs in listings",
+      "feasibility": "HIGH",
+      "implementation": "Compare current URLs with previously scraped URLs",
+      "pros": [
+        "Catches all new listings",
+        "Simple to implement"
+      ],
+      "cons": [
+        "Requires storing all URLs",
+        "May miss price updates"
+      ]
+    },
+    "strategy_4_hybrid_approach": {
+      "name": "Hybrid Incremental Approach",
+      "description": "Combine multiple strategies for comprehensive coverage",
+      "feasibility": "HIGH",
+      "implementation": "Use URL tracking + relative dates + periodic full scans",
+      "pros": [
+        "Most comprehensive",
+        "Catches all changes"
+      ],
+      "cons": [
+        "More complex",
+        "Requires more storage"
+      ]
+    }
+  },
+  "url_pattern_analysis": {
+    "working_parameters": [
+      {
+        "url": "https://www.magicbricks.com/property-for-sale-in-gurgaon-pppfs?posted_since=7",
+        "status": "accepted"
+      },
+      {
+        "url": "https://www.magicbricks.com/property-for-sale-in-gurgaon-pppfs?date_from=2024-01-01",
+        "status": "accepted"
+      },
+      {
+        "url": "https://www.magicbricks.com/property-for-sale-in-gurgaon-pppfs?posted_after=2024-01-01",
+        "status": "accepted"
+      },
+      {
+        "url": "https://www.magicbricks.com/property-for-sale-in-gurgaon-pppfs?listing_date=recent",
+        "status": "accepted"
+      },
+      {
+        "url": "https://www.magicbricks.com/property-for-sale-in-gurgaon-pppfs?sort=date_desc",
+        "status": "accepted"
+      },
+      {
+        "url": "https://www.magicbricks.com/property-for-sale-in-gurgaon-pppfs?sort=newest",
+        "status": "accepted"
+      },
+      {
+        "url": "https://www.magicbricks.com/property-for-sale-in-gurgaon-pppfs?filter=recent",
+        "status": "accepted"
+      },
+      {
+        "url": "https://www.magicbricks.com/property-for-sale-in-gurgaon-pppfs?days=7",
+        "status": "accepted"
+      },
+      {
+        "url": "https://www.magicbricks.com/property-for-sale-in-gurgaon-pppfs?posted=recent",
+        "status": "accepted"
+      },
+      {
+        "url": "https://www.magicbricks.com/property-for-sale-in-gurgaon-pppfs?sort=date",
+        "status": "accepted"
+      },
+      {
+        "url": "https://www.magicbricks.com/property-for-sale-in-gurgaon-pppfs?sort=posted_date",
+        "status": "accepted"
+      },
+      {
+        "url": "https://www.magicbricks.com/property-for-sale-in-gurgaon-pppfs?sort=latest",
+        "status": "accepted"
+      },
+      {
+        "url": "https://www.magicbricks.com/property-for-sale-in-gurgaon-pppfs?orderby=date",
+        "status": "accepted"
+      },
+      {
+        "url": "https://www.magicbricks.com/property-for-sale-in-gurgaon-pppfs?order=desc",
+        "status": "accepted"
+      }
+    ],
+    "non_working_parameters": [],
+    "sorting_options": [],
+    "potential_date_filters": []
+  },
+  "recommendations": [
+    {
+      "priority": "HIGH",
+      "recommendation": "Implement Hybrid Incremental Approach",
+      "details": "Combine URL tracking with relative date parsing for optimal coverage",
+      "implementation_effort": "Medium",
+      "benefits": "Reduces scraping time by 80-90% for regular runs"
+    },
+    {
+      "priority": "HIGH",
+      "recommendation": "Add Last Scrape Timestamp Tracking",
+      "details": "Store timestamp of last successful scrape in database",
+      "implementation_effort": "Low",
+      "benefits": "Enables precise incremental filtering"
+    },
+    {
+      "priority": "MEDIUM",
+      "recommendation": "Implement Smart Pagination",
+      "details": "Stop scraping when reaching previously seen properties",
+      "implementation_effort": "Medium",
+      "benefits": "Automatically determines when to stop incremental scraping"
+    },
+    {
+      "priority": "MEDIUM",
+      "recommendation": "Add Incremental vs Full Scrape Options",
+      "details": "Give users choice between incremental, full, or custom date range",
+      "implementation_effort": "Low",
+      "benefits": "Flexibility for different use cases"
+    },
+    {
+      "priority": "LOW",
+      "recommendation": "Implement Change Detection",
+      "details": "Detect price changes and status updates for existing properties",
+      "implementation_effort": "High",
+      "benefits": "Comprehensive property tracking beyond just new listings"
+    }
+  ],
+  "timestamp_analysis": {
+    "findings": {
+      "property_pages_have_timestamps": true,
+      "listing_pages_have_relative_dates": true,
+      "common_formats": [
+        "X days ago",
+        "X weeks ago",
+        "Posted on DD/MM/YYYY"
+      ],
+      "timestamp_reliability": "Medium"
+    },
+    "extraction_strategies": [
+      "Parse relative dates (days/weeks ago)",
+      "Extract absolute dates where available",
+      "Use property ID patterns for chronological ordering",
+      "Monitor property URL changes for new listings"
+    ]
+  }
+}

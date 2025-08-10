@@ -1,0 +1,450 @@
+{
+  "timestamp": "2025-08-10T12:15:23.297647",
+  "city_analysis": {
+    "tier_1": {
+      "available": [
+        {
+          "city": "mumbai",
+          "url": "https://www.magicbricks.com/property-for-sale-in-mumbai-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "bangalore",
+          "url": "https://www.magicbricks.com/property-for-sale-in-bangalore-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "hyderabad",
+          "url": "https://www.magicbricks.com/property-for-sale-in-hyderabad-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "pune",
+          "url": "https://www.magicbricks.com/property-for-sale-in-pune-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "chennai",
+          "url": "https://www.magicbricks.com/property-for-sale-in-chennai-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "kolkata",
+          "url": "https://www.magicbricks.com/property-for-sale-in-kolkata-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "ahmedabad",
+          "url": "https://www.magicbricks.com/property-for-sale-in-ahmedabad-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "gurgaon",
+          "url": "https://www.magicbricks.com/property-for-sale-in-gurgaon-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "noida",
+          "url": "https://www.magicbricks.com/property-for-sale-in-noida-pppfs",
+          "property_count": 30,
+          "status": "active"
+        }
+      ],
+      "unavailable": [
+        {
+          "city": "delhi",
+          "url": "https://www.magicbricks.com/property-for-sale-in-delhi-pppfs",
+          "reason": "http_404"
+        }
+      ],
+      "total_tested": 10
+    },
+    "tier_2": {
+      "available": [
+        {
+          "city": "jaipur",
+          "url": "https://www.magicbricks.com/property-for-sale-in-jaipur-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "lucknow",
+          "url": "https://www.magicbricks.com/property-for-sale-in-lucknow-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "kanpur",
+          "url": "https://www.magicbricks.com/property-for-sale-in-kanpur-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "nagpur",
+          "url": "https://www.magicbricks.com/property-for-sale-in-nagpur-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "indore",
+          "url": "https://www.magicbricks.com/property-for-sale-in-indore-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "thane",
+          "url": "https://www.magicbricks.com/property-for-sale-in-thane-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "bhopal",
+          "url": "https://www.magicbricks.com/property-for-sale-in-bhopal-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "visakhapatnam",
+          "url": "https://www.magicbricks.com/property-for-sale-in-visakhapatnam-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "patna",
+          "url": "https://www.magicbricks.com/property-for-sale-in-patna-pppfs",
+          "property_count": 30,
+          "status": "active"
+        }
+      ],
+      "unavailable": [
+        {
+          "city": "pimpri-chinchwad",
+          "url": "https://www.magicbricks.com/property-for-sale-in-pimpri-chinchwad-pppfs",
+          "reason": "http_404"
+        }
+      ],
+      "total_tested": 10
+    },
+    "tier_3": {
+      "available": [
+        {
+          "city": "ludhiana",
+          "url": "https://www.magicbricks.com/property-for-sale-in-ludhiana-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "agra",
+          "url": "https://www.magicbricks.com/property-for-sale-in-agra-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "nashik",
+          "url": "https://www.magicbricks.com/property-for-sale-in-nashik-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "faridabad",
+          "url": "https://www.magicbricks.com/property-for-sale-in-faridabad-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "meerut",
+          "url": "https://www.magicbricks.com/property-for-sale-in-meerut-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "rajkot",
+          "url": "https://www.magicbricks.com/property-for-sale-in-rajkot-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "varanasi",
+          "url": "https://www.magicbricks.com/property-for-sale-in-varanasi-pppfs",
+          "property_count": 30,
+          "status": "active"
+        },
+        {
+          "city": "srinagar",
+          "url": "https://www.magicbricks.com/property-for-sale-in-srinagar-pppfs",
+          "property_count": 30,
+          "status": "active"
+        }
+      ],
+      "unavailable": [
+        {
+          "city": "kalyan-dombivali",
+          "url": "https://www.magicbricks.com/property-for-sale-in-kalyan-dombivali-pppfs",
+          "reason": "http_404"
+        },
+        {
+          "city": "vasai-virar",
+          "url": "https://www.magicbricks.com/property-for-sale-in-vasai-virar-pppfs",
+          "reason": "http_404"
+        }
+      ],
+      "total_tested": 10
+    }
+  },
+  "url_patterns": {
+    "property_for_sale": {
+      "url": "https://www.magicbricks.com/property-for-sale-in-mumbai-pppfs",
+      "status": "working",
+      "property_count": 30,
+      "final_url": "https://www.magicbricks.com/property-for-sale-in-mumbai-pppfs"
+    },
+    "property_for_rent": {
+      "url": "https://www.magicbricks.com/property-for-rent-in-mumbai-pppfr",
+      "status": "working",
+      "property_count": 30,
+      "final_url": "https://www.magicbricks.com/property-for-rent-in-mumbai-pppfr"
+    },
+    "residential_property": {
+      "url": "https://www.magicbricks.com/residential-property-in-mumbai",
+      "status": "http_404",
+      "property_count": 0,
+      "final_url": "https://www.magicbricks.com/residential-property-in-mumbai"
+    },
+    "buy_property": {
+      "url": "https://www.magicbricks.com/buy-property-in-mumbai",
+      "status": "http_404",
+      "property_count": 0,
+      "final_url": "https://www.magicbricks.com/buy-property-in-mumbai"
+    },
+    "rent_property": {
+      "url": "https://www.magicbricks.com/rent-property-in-mumbai",
+      "status": "working",
+      "property_count": 0,
+      "final_url": "https://www.magicbricks.com/"
+    },
+    "new_projects": {
+      "url": "https://www.magicbricks.com/new-projects-in-mumbai",
+      "status": "working",
+      "property_count": 0,
+      "final_url": "https://www.magicbricks.com/magichomes"
+    },
+    "ready_to_move": {
+      "url": "https://www.magicbricks.com/ready-to-move-property-in-mumbai",
+      "status": "http_404",
+      "property_count": 0,
+      "final_url": "https://www.magicbricks.com/ready-to-move-property-in-mumbai"
+    }
+  },
+  "geographic_coverage": {
+    "north": {
+      "cities_tested": 5,
+      "cities_available": 2,
+      "total_properties": 60,
+      "available_cities": [
+        {
+          "city": "gurgaon",
+          "properties": 30
+        },
+        {
+          "city": "noida",
+          "properties": 30
+        }
+      ]
+    },
+    "west": {
+      "cities_tested": 5,
+      "cities_available": 3,
+      "total_properties": 90,
+      "available_cities": [
+        {
+          "city": "mumbai",
+          "properties": 30
+        },
+        {
+          "city": "pune",
+          "properties": 30
+        },
+        {
+          "city": "ahmedabad",
+          "properties": 30
+        }
+      ]
+    },
+    "south": {
+      "cities_tested": 5,
+      "cities_available": 3,
+      "total_properties": 90,
+      "available_cities": [
+        {
+          "city": "bangalore",
+          "properties": 30
+        },
+        {
+          "city": "chennai",
+          "properties": 30
+        },
+        {
+          "city": "hyderabad",
+          "properties": 30
+        }
+      ]
+    },
+    "east": {
+      "cities_tested": 4,
+      "cities_available": 3,
+      "total_properties": 90,
+      "available_cities": [
+        {
+          "city": "kolkata",
+          "properties": 30
+        },
+        {
+          "city": "bhubaneswar",
+          "properties": 30
+        },
+        {
+          "city": "guwahati",
+          "properties": 30
+        }
+      ]
+    },
+    "central": {
+      "cities_tested": 4,
+      "cities_available": 3,
+      "total_properties": 90,
+      "available_cities": [
+        {
+          "city": "bhopal",
+          "properties": 30
+        },
+        {
+          "city": "indore",
+          "properties": 30
+        },
+        {
+          "city": "nagpur",
+          "properties": 30
+        }
+      ]
+    }
+  },
+  "implementation_strategy": {
+    "city_selection_options": {
+      "single_city": {
+        "description": "Select one city for focused scraping",
+        "use_case": "Local real estate analysis",
+        "implementation": "Dropdown selection from available cities"
+      },
+      "multiple_cities": {
+        "description": "Select multiple cities for comparative analysis",
+        "use_case": "Multi-market investment analysis",
+        "implementation": "Multi-select checkbox interface"
+      },
+      "regional_selection": {
+        "description": "Select entire regions (North, South, etc.)",
+        "use_case": "Regional market analysis",
+        "implementation": "Region-based grouping with expand/collapse"
+      },
+      "tier_based_selection": {
+        "description": "Select cities by tier (Tier 1, 2, 3)",
+        "use_case": "Market tier analysis",
+        "implementation": "Tier-based filtering and selection"
+      },
+      "all_cities": {
+        "description": "Scrape all available cities",
+        "use_case": "Comprehensive national analysis",
+        "implementation": "Single \"Select All\" option"
+      }
+    },
+    "technical_implementation": {
+      "city_database": "Maintain database of available cities with metadata",
+      "url_generation": "Dynamic URL generation based on city selection",
+      "parallel_processing": "Process multiple cities in parallel",
+      "progress_tracking": "City-wise progress tracking and reporting",
+      "error_handling": "City-specific error handling and retry logic"
+    },
+    "user_interface_features": {
+      "city_search": "Search functionality to find cities quickly",
+      "favorites": "Save frequently used city combinations",
+      "recent_selections": "Quick access to recently selected cities",
+      "city_statistics": "Show estimated property counts per city",
+      "map_interface": "Optional map-based city selection"
+    }
+  },
+  "city_configurations": {
+    "mumbai": {
+      "property_types": {
+        "apartment": {
+          "available": true,
+          "estimated_count": 147
+        },
+        "house": {
+          "available": true,
+          "estimated_count": 665
+        },
+        "villa": {
+          "available": true,
+          "estimated_count": 256
+        },
+        "plot": {
+          "available": true,
+          "estimated_count": 777
+        }
+      },
+      "price_ranges": {},
+      "area_ranges": {}
+    },
+    "bangalore": {
+      "property_types": {
+        "apartment": {
+          "available": true,
+          "estimated_count": 530
+        },
+        "house": {
+          "available": true,
+          "estimated_count": 202
+        },
+        "villa": {
+          "available": true,
+          "estimated_count": 119
+        },
+        "plot": {
+          "available": true,
+          "estimated_count": 190
+        }
+      },
+      "price_ranges": {},
+      "area_ranges": {}
+    },
+    "delhi": {
+      "property_types": {
+        "apartment": {
+          "available": true,
+          "estimated_count": 299
+        },
+        "house": {
+          "available": true,
+          "estimated_count": 206
+        },
+        "villa": {
+          "available": true,
+          "estimated_count": 917
+        },
+        "plot": {
+          "available": true,
+          "estimated_count": 581
+        }
+      },
+      "price_ranges": {},
+      "area_ranges": {}
+    }
+  }
+}
