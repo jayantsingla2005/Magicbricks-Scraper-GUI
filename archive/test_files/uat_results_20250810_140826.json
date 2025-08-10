@@ -1,0 +1,643 @@
+{
+  "test_metadata": {
+    "generated_at": "2025-08-10T14:08:26.299787",
+    "total_feedback": 20,
+    "framework_version": "1.0"
+  },
+  "user_feedback": [
+    {
+      "user_type": "beginner",
+      "scenario": "first_time_setup",
+      "timestamp": "2025-08-10T14:08:26.292632",
+      "ratings": {
+        "ease_of_use": 5,
+        "feature_completeness": 4,
+        "performance": 4,
+        "overall_satisfaction": 4
+      },
+      "feedback": {
+        "positive": [
+          "Interface is intuitive and easy to navigate",
+          "Clear instructions and helpful tooltips",
+          "Fast and responsive performance",
+          "Reliable scraping with good success rates",
+          "Comprehensive feature set",
+          "All necessary functionality is available"
+        ],
+        "negative": [],
+        "suggestions": [
+          "Add step-by-step wizard for first-time setup",
+          "Include more help documentation"
+        ]
+      },
+      "metrics": {
+        "completion_time_minutes": 12.0,
+        "errors_encountered": [],
+        "help_needed": false,
+        "would_recommend": true
+      }
+    },
+    {
+      "user_type": "intermediate",
+      "scenario": "first_time_setup",
+      "timestamp": "2025-08-10T14:08:26.292944",
+      "ratings": {
+        "ease_of_use": 4,
+        "feature_completeness": 4,
+        "performance": 4,
+        "overall_satisfaction": 4
+      },
+      "feedback": {
+        "positive": [
+          "Interface is intuitive and easy to navigate",
+          "Clear instructions and helpful tooltips",
+          "Fast and responsive performance",
+          "Reliable scraping with good success rates",
+          "Comprehensive feature set",
+          "All necessary functionality is available"
+        ],
+        "negative": [],
+        "suggestions": []
+      },
+      "metrics": {
+        "completion_time_minutes": 8.0,
+        "errors_encountered": [],
+        "help_needed": false,
+        "would_recommend": true
+      }
+    },
+    {
+      "user_type": "beginner",
+      "scenario": "basic_scraping",
+      "timestamp": "2025-08-10T14:08:26.293345",
+      "ratings": {
+        "ease_of_use": 5,
+        "feature_completeness": 4,
+        "performance": 4,
+        "overall_satisfaction": 4
+      },
+      "feedback": {
+        "positive": [
+          "Interface is intuitive and easy to navigate",
+          "Clear instructions and helpful tooltips",
+          "Fast and responsive performance",
+          "Reliable scraping with good success rates",
+          "Comprehensive feature set",
+          "All necessary functionality is available"
+        ],
+        "negative": [],
+        "suggestions": [
+          "Add step-by-step wizard for first-time setup",
+          "Include more help documentation"
+        ]
+      },
+      "metrics": {
+        "completion_time_minutes": 22.5,
+        "errors_encountered": [],
+        "help_needed": false,
+        "would_recommend": true
+      }
+    },
+    {
+      "user_type": "intermediate",
+      "scenario": "basic_scraping",
+      "timestamp": "2025-08-10T14:08:26.293588",
+      "ratings": {
+        "ease_of_use": 4,
+        "feature_completeness": 4,
+        "performance": 4,
+        "overall_satisfaction": 4
+      },
+      "feedback": {
+        "positive": [
+          "Interface is intuitive and easy to navigate",
+          "Clear instructions and helpful tooltips",
+          "Fast and responsive performance",
+          "Reliable scraping with good success rates",
+          "Comprehensive feature set",
+          "All necessary functionality is available"
+        ],
+        "negative": [],
+        "suggestions": []
+      },
+      "metrics": {
+        "completion_time_minutes": 15.0,
+        "errors_encountered": [],
+        "help_needed": false,
+        "would_recommend": true
+      }
+    },
+    {
+      "user_type": "business",
+      "scenario": "basic_scraping",
+      "timestamp": "2025-08-10T14:08:26.294016",
+      "ratings": {
+        "ease_of_use": 4,
+        "feature_completeness": 4,
+        "performance": 5,
+        "overall_satisfaction": 4
+      },
+      "feedback": {
+        "positive": [
+          "Interface is intuitive and easy to navigate",
+          "Clear instructions and helpful tooltips",
+          "Fast and responsive performance",
+          "Reliable scraping with good success rates",
+          "Comprehensive feature set",
+          "All necessary functionality is available"
+        ],
+        "negative": [],
+        "suggestions": [
+          "Add business reporting features",
+          "Include cost/benefit analysis tools"
+        ]
+      },
+      "metrics": {
+        "completion_time_minutes": 18.0,
+        "errors_encountered": [],
+        "help_needed": false,
+        "would_recommend": true
+      }
+    },
+    {
+      "user_type": "intermediate",
+      "scenario": "multi_city_selection",
+      "timestamp": "2025-08-10T14:08:26.294425",
+      "ratings": {
+        "ease_of_use": 4,
+        "feature_completeness": 4,
+        "performance": 4,
+        "overall_satisfaction": 4
+      },
+      "feedback": {
+        "positive": [
+          "Interface is intuitive and easy to navigate",
+          "Clear instructions and helpful tooltips",
+          "Fast and responsive performance",
+          "Reliable scraping with good success rates",
+          "Comprehensive feature set",
+          "All necessary functionality is available",
+          "Excellent city selection interface",
+          "Helpful validation and recommendations"
+        ],
+        "negative": [],
+        "suggestions": []
+      },
+      "metrics": {
+        "completion_time_minutes": 12.0,
+        "errors_encountered": [],
+        "help_needed": false,
+        "would_recommend": true
+      }
+    },
+    {
+      "user_type": "advanced",
+      "scenario": "multi_city_selection",
+      "timestamp": "2025-08-10T14:08:26.294755",
+      "ratings": {
+        "ease_of_use": 4,
+        "feature_completeness": 5,
+        "performance": 4,
+        "overall_satisfaction": 4
+      },
+      "feedback": {
+        "positive": [
+          "Interface is intuitive and easy to navigate",
+          "Clear instructions and helpful tooltips",
+          "Fast and responsive performance",
+          "Reliable scraping with good success rates",
+          "Comprehensive feature set",
+          "All necessary functionality is available",
+          "Excellent city selection interface",
+          "Helpful validation and recommendations"
+        ],
+        "negative": [],
+        "suggestions": [
+          "Add API access for programmatic control",
+          "Include more advanced configuration options"
+        ]
+      },
+      "metrics": {
+        "completion_time_minutes": 9.600000000000001,
+        "errors_encountered": [],
+        "help_needed": false,
+        "would_recommend": true
+      }
+    },
+    {
+      "user_type": "business",
+      "scenario": "multi_city_selection",
+      "timestamp": "2025-08-10T14:08:26.295112",
+      "ratings": {
+        "ease_of_use": 4,
+        "feature_completeness": 4,
+        "performance": 5,
+        "overall_satisfaction": 5
+      },
+      "feedback": {
+        "positive": [
+          "Interface is intuitive and easy to navigate",
+          "Clear instructions and helpful tooltips",
+          "Fast and responsive performance",
+          "Reliable scraping with good success rates",
+          "Comprehensive feature set",
+          "All necessary functionality is available",
+          "Excellent city selection interface",
+          "Helpful validation and recommendations"
+        ],
+        "negative": [],
+        "suggestions": [
+          "Add business reporting features",
+          "Include cost/benefit analysis tools"
+        ]
+      },
+      "metrics": {
+        "completion_time_minutes": 14.399999999999999,
+        "errors_encountered": [],
+        "help_needed": false,
+        "would_recommend": true
+      }
+    },
+    {
+      "user_type": "intermediate",
+      "scenario": "incremental_scraping",
+      "timestamp": "2025-08-10T14:08:26.295484",
+      "ratings": {
+        "ease_of_use": 4,
+        "feature_completeness": 4,
+        "performance": 4,
+        "overall_satisfaction": 4
+      },
+      "feedback": {
+        "positive": [
+          "Interface is intuitive and easy to navigate",
+          "Clear instructions and helpful tooltips",
+          "Fast and responsive performance",
+          "Reliable scraping with good success rates",
+          "Comprehensive feature set",
+          "All necessary functionality is available",
+          "Significant time savings with incremental mode",
+          "Smart stopping logic works well"
+        ],
+        "negative": [],
+        "suggestions": []
+      },
+      "metrics": {
+        "completion_time_minutes": 20.0,
+        "errors_encountered": [],
+        "help_needed": false,
+        "would_recommend": true
+      }
+    },
+    {
+      "user_type": "advanced",
+      "scenario": "incremental_scraping",
+      "timestamp": "2025-08-10T14:08:26.295723",
+      "ratings": {
+        "ease_of_use": 4,
+        "feature_completeness": 5,
+        "performance": 4,
+        "overall_satisfaction": 4
+      },
+      "feedback": {
+        "positive": [
+          "Interface is intuitive and easy to navigate",
+          "Clear instructions and helpful tooltips",
+          "Fast and responsive performance",
+          "Reliable scraping with good success rates",
+          "Comprehensive feature set",
+          "All necessary functionality is available",
+          "Significant time savings with incremental mode",
+          "Smart stopping logic works well"
+        ],
+        "negative": [],
+        "suggestions": [
+          "Add API access for programmatic control",
+          "Include more advanced configuration options"
+        ]
+      },
+      "metrics": {
+        "completion_time_minutes": 16.0,
+        "errors_encountered": [],
+        "help_needed": false,
+        "would_recommend": true
+      }
+    },
+    {
+      "user_type": "business",
+      "scenario": "incremental_scraping",
+      "timestamp": "2025-08-10T14:08:26.295983",
+      "ratings": {
+        "ease_of_use": 4,
+        "feature_completeness": 4,
+        "performance": 5,
+        "overall_satisfaction": 5
+      },
+      "feedback": {
+        "positive": [
+          "Interface is intuitive and easy to navigate",
+          "Clear instructions and helpful tooltips",
+          "Fast and responsive performance",
+          "Reliable scraping with good success rates",
+          "Comprehensive feature set",
+          "All necessary functionality is available",
+          "Significant time savings with incremental mode",
+          "Smart stopping logic works well"
+        ],
+        "negative": [],
+        "suggestions": [
+          "Add business reporting features",
+          "Include cost/benefit analysis tools"
+        ]
+      },
+      "metrics": {
+        "completion_time_minutes": 24.0,
+        "errors_encountered": [],
+        "help_needed": false,
+        "would_recommend": true
+      }
+    },
+    {
+      "user_type": "beginner",
+      "scenario": "error_recovery",
+      "timestamp": "2025-08-10T14:08:26.296311",
+      "ratings": {
+        "ease_of_use": 4,
+        "feature_completeness": 4,
+        "performance": 4,
+        "overall_satisfaction": 4
+      },
+      "feedback": {
+        "positive": [
+          "Interface is intuitive and easy to navigate",
+          "Clear instructions and helpful tooltips",
+          "Fast and responsive performance",
+          "Reliable scraping with good success rates",
+          "Comprehensive feature set",
+          "All necessary functionality is available"
+        ],
+        "negative": [],
+        "suggestions": [
+          "Add step-by-step wizard for first-time setup",
+          "Include more help documentation"
+        ]
+      },
+      "metrics": {
+        "completion_time_minutes": 15.0,
+        "errors_encountered": [],
+        "help_needed": false,
+        "would_recommend": true
+      }
+    },
+    {
+      "user_type": "intermediate",
+      "scenario": "error_recovery",
+      "timestamp": "2025-08-10T14:08:26.296592",
+      "ratings": {
+        "ease_of_use": 4,
+        "feature_completeness": 4,
+        "performance": 4,
+        "overall_satisfaction": 4
+      },
+      "feedback": {
+        "positive": [
+          "Interface is intuitive and easy to navigate",
+          "Clear instructions and helpful tooltips",
+          "Fast and responsive performance",
+          "Reliable scraping with good success rates",
+          "Comprehensive feature set",
+          "All necessary functionality is available"
+        ],
+        "negative": [],
+        "suggestions": []
+      },
+      "metrics": {
+        "completion_time_minutes": 10.0,
+        "errors_encountered": [],
+        "help_needed": false,
+        "would_recommend": true
+      }
+    },
+    {
+      "user_type": "intermediate",
+      "scenario": "results_analysis",
+      "timestamp": "2025-08-10T14:08:26.296961",
+      "ratings": {
+        "ease_of_use": 4,
+        "feature_completeness": 4,
+        "performance": 4,
+        "overall_satisfaction": 4
+      },
+      "feedback": {
+        "positive": [
+          "Interface is intuitive and easy to navigate",
+          "Clear instructions and helpful tooltips",
+          "Fast and responsive performance",
+          "Reliable scraping with good success rates",
+          "Comprehensive feature set",
+          "All necessary functionality is available"
+        ],
+        "negative": [],
+        "suggestions": []
+      },
+      "metrics": {
+        "completion_time_minutes": 15.0,
+        "errors_encountered": [],
+        "help_needed": false,
+        "would_recommend": true
+      }
+    },
+    {
+      "user_type": "advanced",
+      "scenario": "results_analysis",
+      "timestamp": "2025-08-10T14:08:26.297263",
+      "ratings": {
+        "ease_of_use": 4,
+        "feature_completeness": 5,
+        "performance": 4,
+        "overall_satisfaction": 4
+      },
+      "feedback": {
+        "positive": [
+          "Interface is intuitive and easy to navigate",
+          "Clear instructions and helpful tooltips",
+          "Fast and responsive performance",
+          "Reliable scraping with good success rates",
+          "Comprehensive feature set",
+          "All necessary functionality is available"
+        ],
+        "negative": [],
+        "suggestions": [
+          "Add API access for programmatic control",
+          "Include more advanced configuration options"
+        ]
+      },
+      "metrics": {
+        "completion_time_minutes": 12.0,
+        "errors_encountered": [],
+        "help_needed": false,
+        "would_recommend": true
+      }
+    },
+    {
+      "user_type": "business",
+      "scenario": "results_analysis",
+      "timestamp": "2025-08-10T14:08:26.297539",
+      "ratings": {
+        "ease_of_use": 4,
+        "feature_completeness": 4,
+        "performance": 5,
+        "overall_satisfaction": 4
+      },
+      "feedback": {
+        "positive": [
+          "Interface is intuitive and easy to navigate",
+          "Clear instructions and helpful tooltips",
+          "Fast and responsive performance",
+          "Reliable scraping with good success rates",
+          "Comprehensive feature set",
+          "All necessary functionality is available"
+        ],
+        "negative": [],
+        "suggestions": [
+          "Add business reporting features",
+          "Include cost/benefit analysis tools"
+        ]
+      },
+      "metrics": {
+        "completion_time_minutes": 18.0,
+        "errors_encountered": [],
+        "help_needed": false,
+        "would_recommend": true
+      }
+    },
+    {
+      "user_type": "advanced",
+      "scenario": "scheduling_setup",
+      "timestamp": "2025-08-10T14:08:26.297873",
+      "ratings": {
+        "ease_of_use": 4,
+        "feature_completeness": 5,
+        "performance": 4,
+        "overall_satisfaction": 4
+      },
+      "feedback": {
+        "positive": [
+          "Interface is intuitive and easy to navigate",
+          "Clear instructions and helpful tooltips",
+          "Fast and responsive performance",
+          "Reliable scraping with good success rates",
+          "Comprehensive feature set",
+          "All necessary functionality is available"
+        ],
+        "negative": [],
+        "suggestions": [
+          "Add API access for programmatic control",
+          "Include more advanced configuration options"
+        ]
+      },
+      "metrics": {
+        "completion_time_minutes": 9.600000000000001,
+        "errors_encountered": [],
+        "help_needed": false,
+        "would_recommend": true
+      }
+    },
+    {
+      "user_type": "business",
+      "scenario": "scheduling_setup",
+      "timestamp": "2025-08-10T14:08:26.298076",
+      "ratings": {
+        "ease_of_use": 4,
+        "feature_completeness": 4,
+        "performance": 5,
+        "overall_satisfaction": 4
+      },
+      "feedback": {
+        "positive": [
+          "Interface is intuitive and easy to navigate",
+          "Clear instructions and helpful tooltips",
+          "Fast and responsive performance",
+          "Reliable scraping with good success rates",
+          "Comprehensive feature set",
+          "All necessary functionality is available"
+        ],
+        "negative": [],
+        "suggestions": [
+          "Add business reporting features",
+          "Include cost/benefit analysis tools"
+        ]
+      },
+      "metrics": {
+        "completion_time_minutes": 14.399999999999999,
+        "errors_encountered": [],
+        "help_needed": false,
+        "would_recommend": true
+      }
+    },
+    {
+      "user_type": "advanced",
+      "scenario": "advanced_configuration",
+      "timestamp": "2025-08-10T14:08:26.298473",
+      "ratings": {
+        "ease_of_use": 4,
+        "feature_completeness": 5,
+        "performance": 4,
+        "overall_satisfaction": 4
+      },
+      "feedback": {
+        "positive": [
+          "Interface is intuitive and easy to navigate",
+          "Clear instructions and helpful tooltips",
+          "Fast and responsive performance",
+          "Reliable scraping with good success rates",
+          "Comprehensive feature set",
+          "All necessary functionality is available"
+        ],
+        "negative": [],
+        "suggestions": [
+          "Add API access for programmatic control",
+          "Include more advanced configuration options"
+        ]
+      },
+      "metrics": {
+        "completion_time_minutes": 14.4,
+        "errors_encountered": [],
+        "help_needed": false,
+        "would_recommend": true
+      }
+    },
+    {
+      "user_type": "business",
+      "scenario": "advanced_configuration",
+      "timestamp": "2025-08-10T14:08:26.298810",
+      "ratings": {
+        "ease_of_use": 4,
+        "feature_completeness": 4,
+        "performance": 5,
+        "overall_satisfaction": 4
+      },
+      "feedback": {
+        "positive": [
+          "Interface is intuitive and easy to navigate",
+          "Clear instructions and helpful tooltips",
+          "Fast and responsive performance",
+          "Reliable scraping with good success rates",
+          "Comprehensive feature set",
+          "All necessary functionality is available"
+        ],
+        "negative": [],
+        "suggestions": [
+          "Add business reporting features",
+          "Include cost/benefit analysis tools"
+        ]
+      },
+      "metrics": {
+        "completion_time_minutes": 21.599999999999998,
+        "errors_encountered": [],
+        "help_needed": false,
+        "would_recommend": true
+      }
+    }
+  ]
+}

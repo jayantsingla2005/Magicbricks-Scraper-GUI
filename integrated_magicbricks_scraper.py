@@ -236,12 +236,16 @@ class IntegratedMagicBricksScraper:
             
             # Finalize session
             self.finalize_scraping_session()
-            
+
+            # Save to CSV and get filename
+            df, output_file = self.save_to_csv()
+
             return {
                 'success': True,
                 'session_stats': self.session_stats,
                 'properties_scraped': len(self.properties),
-                'pages_scraped': self.session_stats['pages_scraped']
+                'pages_scraped': self.session_stats['pages_scraped'],
+                'output_file': output_file
             }
             
         except Exception as e:
@@ -523,28 +527,32 @@ class IntegratedMagicBricksScraper:
         if self.session_stats.get('incremental_stopped'):
             print(f"🛑 Stopped by incremental logic: {self.session_stats['stop_reason']}")
     
-    def save_to_csv(self, filename: str = None) -> pd.DataFrame:
-        """Save scraped properties to CSV"""
-        
+    def save_to_csv(self, filename: str = None) -> tuple:
+        """Save scraped properties to CSV
+
+        Returns:
+            tuple: (DataFrame, filename) or (None, None) if failed
+        """
+
         if not self.properties:
             print("⚠️ No properties to save")
-            return None
-        
+            return None, None
+
         if filename is None:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             mode = self.session_stats.get('mode', 'unknown')
             filename = f"magicbricks_{mode}_scrape_{timestamp}.csv"
-        
+
         try:
             df = pd.DataFrame(self.properties)
             df.to_csv(filename, index=False)
-            
+
             print(f"💾 Saved {len(self.properties)} properties to {filename}")
-            return df
-            
+            return df, filename
+
         except Exception as e:
             self.logger.error(f"Error saving to CSV: {str(e)}")
-            return None
+            return None, None
     
     def close(self):
         """Close the WebDriver"""
@@ -574,12 +582,10 @@ def main():
             print(f"\n✅ Scraping successful!")
             print(f"📊 Properties scraped: {result['properties_scraped']}")
             print(f"📄 Pages scraped: {result['pages_scraped']}")
-            
-            # Save results
-            df = scraper.save_to_csv()
-            
-            if df is not None:
-                print(f"💾 Data saved successfully with {len(df)} properties")
+            print(f"📁 Output file: {result.get('output_file', 'N/A')}")
+
+            if result.get('output_file'):
+                print(f"💾 Data saved successfully to {result['output_file']}")
         else:
             print(f"❌ Scraping failed: {result['error']}")
         

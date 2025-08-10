@@ -1,0 +1,44 @@
+[
+  {
+    "timestamp": "2025-08-10T14:48:12.791246",
+    "severity": "error",
+    "category": "network",
+    "title": "ConnectionError: Test network error",
+    "message": "Test network error",
+    "details": "Error Type: ConnectionError\nError Message: Test network error\nError Args: ('Test network error',)",
+    "suggestion": "Check your internet connection and try again. If the problem persists, the website might be temporarily unavailable.",
+    "context": {
+      "test": true
+    },
+    "session_id": null,
+    "user_action": "testing"
+  },
+  {
+    "timestamp": "2025-08-10T14:48:12.792300",
+    "severity": "error",
+    "category": "validation",
+    "title": "ValueError: Test validation error",
+    "message": "Test validation error",
+    "details": "Error Type: ValueError\nError Message: Test validation error\nError Args: ('Test validation error',)",
+    "suggestion": "Please check your input values and try again with valid data.",
+    "context": {
+      "test": true
+    },
+    "session_id": null,
+    "user_action": "testing"
+  },
+  {
+    "timestamp": "2025-08-10T14:48:12.792828",
+    "severity": "error",
+    "category": "system",
+    "title": "Exception: Test general error",
+    "message": "Test general error",
+    "details": "Error Type: Exception\nError Message: Test general error\nError Args: ('Test general error',)",
+    "suggestion": "An unexpected error occurred. Please try again or contact support.",
+    "context": {
+      "test": true
+    },
+    "session_id": null,
+    "user_action": "testing"
+  }
+]
