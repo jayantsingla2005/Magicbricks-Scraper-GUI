@@ -1,0 +1,117 @@
+[
+  {
+    "city": "mumbai",
+    "success": true,
+    "properties_found": 35,
+    "properties_analyzed": 10,
+    "field_extraction_rates": {
+      "title": 1.0,
+      "price": 1.0,
+      "area": 1.0,
+      "property_url": 1.0,
+      "page_number": 1.0,
+      "property_index": 1.0,
+      "scraped_at": 1.0,
+      "posting_date_text": 0.3,
+      "parsed_posting_date": 0.3
+    },
+    "missing_fields": [
+      "posting_date_text",
+      "parsed_posting_date"
+    ],
+    "edge_cases": [],
+    "overall_extraction_rate": 0.8444444444444444
+  },
+  {
+    "city": "delhi",
+    "success": true,
+    "properties_found": 8,
+    "properties_analyzed": 8,
+    "field_extraction_rates": {
+      "title": 1.0,
+      "price": 1.0,
+      "area": 1.0,
+      "property_url": 1.0,
+      "page_number": 1.0,
+      "property_index": 1.0,
+      "scraped_at": 1.0,
+      "posting_date_text": 0.75,
+      "parsed_posting_date": 0.75
+    },
+    "missing_fields": [
+      "posting_date_text",
+      "parsed_posting_date"
+    ],
+    "edge_cases": [],
+    "overall_extraction_rate": 0.9444444444444444
+  },
+  {
+    "city": "bangalore",
+    "success": true,
+    "properties_found": 31,
+    "properties_analyzed": 10,
+    "field_extraction_rates": {
+      "title": 1.0,
+      "price": 1.0,
+      "area": 1.0,
+      "property_url": 1.0,
+      "page_number": 1.0,
+      "property_index": 1.0,
+      "scraped_at": 1.0,
+      "posting_date_text": 0.1,
+      "parsed_posting_date": 0.1
+    },
+    "missing_fields": [
+      "posting_date_text",
+      "parsed_posting_date"
+    ],
+    "edge_cases": [],
+    "overall_extraction_rate": 0.8
+  },
+  {
+    "city": "pune",
+    "success": true,
+    "properties_found": 39,
+    "properties_analyzed": 10,
+    "field_extraction_rates": {
+      "title": 1.0,
+      "price": 1.0,
+      "area": 1.0,
+      "property_url": 1.0,
+      "page_number": 1.0,
+      "property_index": 1.0,
+      "scraped_at": 1.0,
+      "posting_date_text": 0.8,
+      "parsed_posting_date": 0.8
+    },
+    "missing_fields": [
+      "posting_date_text",
+      "parsed_posting_date"
+    ],
+    "edge_cases": [],
+    "overall_extraction_rate": 0.9555555555555556
+  },
+  {
+    "city": "chennai",
+    "success": true,
+    "properties_found": 21,
+    "properties_analyzed": 10,
+    "field_extraction_rates": {
+      "title": 1.0,
+      "price": 1.0,
+      "area": 1.0,
+      "property_url": 1.0,
+      "page_number": 1.0,
+      "property_index": 1.0,
+      "scraped_at": 1.0,
+      "posting_date_text": 0.6,
+      "parsed_posting_date": 0.6
+    },
+    "missing_fields": [
+      "posting_date_text",
+      "parsed_posting_date"
+    ],
+    "edge_cases": [],
+    "overall_extraction_rate": 0.9111111111111111
+  }
+]

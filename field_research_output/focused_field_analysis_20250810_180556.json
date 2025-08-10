@@ -1,0 +1,84 @@
+{
+  "overall_extraction_rate": 0.8911111111111112,
+  "cities_analyzed": 5,
+  "total_properties": 48,
+  "field_analysis": {
+    "title": {
+      "average_rate": 1.0,
+      "min_rate": 1.0,
+      "max_rate": 1.0,
+      "cities_tested": 5
+    },
+    "price": {
+      "average_rate": 1.0,
+      "min_rate": 1.0,
+      "max_rate": 1.0,
+      "cities_tested": 5
+    },
+    "area": {
+      "average_rate": 1.0,
+      "min_rate": 1.0,
+      "max_rate": 1.0,
+      "cities_tested": 5
+    },
+    "property_url": {
+      "average_rate": 1.0,
+      "min_rate": 1.0,
+      "max_rate": 1.0,
+      "cities_tested": 5
+    },
+    "page_number": {
+      "average_rate": 1.0,
+      "min_rate": 1.0,
+      "max_rate": 1.0,
+      "cities_tested": 5
+    },
+    "property_index": {
+      "average_rate": 1.0,
+      "min_rate": 1.0,
+      "max_rate": 1.0,
+      "cities_tested": 5
+    },
+    "scraped_at": {
+      "average_rate": 1.0,
+      "min_rate": 1.0,
+      "max_rate": 1.0,
+      "cities_tested": 5
+    },
+    "posting_date_text": {
+      "average_rate": 0.51,
+      "min_rate": 0.1,
+      "max_rate": 0.8,
+      "cities_tested": 5
+    },
+    "parsed_posting_date": {
+      "average_rate": 0.51,
+      "min_rate": 0.1,
+      "max_rate": 0.8,
+      "cities_tested": 5
+    }
+  },
+  "city_performance": {
+    "mumbai": {
+      "extraction_rate": 0.8444444444444444,
+      "properties_analyzed": 10
+    },
+    "delhi": {
+      "extraction_rate": 0.9444444444444444,
+      "properties_analyzed": 8
+    },
+    "bangalore": {
+      "extraction_rate": 0.8,
+      "properties_analyzed": 10
+    },
+    "pune": {
+      "extraction_rate": 0.9555555555555556,
+      "properties_analyzed": 10
+    },
+    "chennai": {
+      "extraction_rate": 0.9111111111111111,
+      "properties_analyzed": 10
+    }
+  },
+  "research_timestamp": "2025-08-10T18:05:56.047591"
+}

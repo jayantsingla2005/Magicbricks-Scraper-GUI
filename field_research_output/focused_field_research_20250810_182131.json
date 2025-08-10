@@ -1,0 +1,102 @@
+[
+  {
+    "city": "mumbai",
+    "success": true,
+    "properties_found": 35,
+    "properties_analyzed": 10,
+    "field_extraction_rates": {
+      "title": 1.0,
+      "price": 1.0,
+      "area": 1.0,
+      "property_url": 1.0,
+      "page_number": 1.0,
+      "property_index": 1.0,
+      "scraped_at": 1.0,
+      "posting_date_text": 1.0,
+      "parsed_posting_date": 1.0
+    },
+    "missing_fields": [],
+    "edge_cases": [],
+    "overall_extraction_rate": 1.0
+  },
+  {
+    "city": "delhi",
+    "success": true,
+    "properties_found": 8,
+    "properties_analyzed": 8,
+    "field_extraction_rates": {
+      "title": 1.0,
+      "price": 1.0,
+      "area": 1.0,
+      "property_url": 1.0,
+      "page_number": 1.0,
+      "property_index": 1.0,
+      "scraped_at": 1.0,
+      "posting_date_text": 1.0,
+      "parsed_posting_date": 1.0
+    },
+    "missing_fields": [],
+    "edge_cases": [],
+    "overall_extraction_rate": 1.0
+  },
+  {
+    "city": "bangalore",
+    "success": true,
+    "properties_found": 31,
+    "properties_analyzed": 10,
+    "field_extraction_rates": {
+      "title": 1.0,
+      "price": 1.0,
+      "area": 1.0,
+      "property_url": 1.0,
+      "page_number": 1.0,
+      "property_index": 1.0,
+      "scraped_at": 1.0,
+      "posting_date_text": 1.0,
+      "parsed_posting_date": 1.0
+    },
+    "missing_fields": [],
+    "edge_cases": [],
+    "overall_extraction_rate": 1.0
+  },
+  {
+    "city": "pune",
+    "success": true,
+    "properties_found": 39,
+    "properties_analyzed": 10,
+    "field_extraction_rates": {
+      "title": 1.0,
+      "price": 1.0,
+      "area": 1.0,
+      "property_url": 1.0,
+      "page_number": 1.0,
+      "property_index": 1.0,
+      "scraped_at": 1.0,
+      "posting_date_text": 1.0,
+      "parsed_posting_date": 1.0
+    },
+    "missing_fields": [],
+    "edge_cases": [],
+    "overall_extraction_rate": 1.0
+  },
+  {
+    "city": "chennai",
+    "success": true,
+    "properties_found": 21,
+    "properties_analyzed": 10,
+    "field_extraction_rates": {
+      "title": 1.0,
+      "price": 1.0,
+      "area": 1.0,
+      "property_url": 1.0,
+      "page_number": 1.0,
+      "property_index": 1.0,
+      "scraped_at": 1.0,
+      "posting_date_text": 1.0,
+      "parsed_posting_date": 1.0
+    },
+    "missing_fields": [],
+    "edge_cases": [],
+    "overall_extraction_rate": 1.0
+  }
+]

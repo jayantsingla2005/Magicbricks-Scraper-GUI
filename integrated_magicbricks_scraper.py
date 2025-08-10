@@ -25,6 +25,7 @@ from pathlib import Path
 from incremental_scraping_system import IncrementalScrapingSystem
 from user_mode_options import ScrapingMode
 from date_parsing_system import DateParsingSystem
+from src.core.detailed_property_extractor import DetailedPropertyExtractor
 from smart_stopping_logic import SmartStoppingLogic
 from url_tracking_system import URLTrackingSystem
 
@@ -62,13 +63,30 @@ class IntegratedMagicBricksScraper:
             'incremental_stopped': False,
             'stop_reason': None
         }
+
+        # City URL mapping for correct URLs
+        self.city_url_mapping = {
+            'mumbai': 'mumbai',
+            'delhi': 'new-delhi',  # Fix: Delhi uses 'new-delhi' in URL
+            'bangalore': 'bangalore',
+            'pune': 'pune',
+            'chennai': 'chennai',
+            'hyderabad': 'hyderabad',
+            'kolkata': 'kolkata',
+            'ahmedabad': 'ahmedabad',
+            'gurgaon': 'gurgaon',
+            'noida': 'noida'
+        }
         
         # Setup logging
         self.setup_logging()
 
         # Setup date parser (always needed for comprehensive data)
-        from date_parsing_system import DateParsingSystem
-        self.date_parser = DateParsingSystem()
+        if not hasattr(self, 'date_parser') or self.date_parser is None:
+            self.date_parser = DateParsingSystem()
+
+        # Note: DetailedPropertyExtractor is available for individual page scraping if needed
+        # For now, we're doing comprehensive extraction from listing pages
 
         # Setup incremental system if enabled
         if self.incremental_enabled:
@@ -180,8 +198,9 @@ class IntegratedMagicBricksScraper:
             if not self.start_scraping_session(city, mode):
                 return {'success': False, 'error': 'Failed to start session'}
             
-            # Build base URL with chronological sorting for incremental mode
-            base_url = f"https://www.magicbricks.com/property-for-sale-in-{city}-pppfs"
+            # Build base URL with correct city mapping
+            url_city = self.city_url_mapping.get(city.lower(), city.lower())
+            base_url = f"https://www.magicbricks.com/property-for-sale-in-{url_city}-pppfs"
             
             if mode in [ScrapingMode.INCREMENTAL, ScrapingMode.CONSERVATIVE, ScrapingMode.DATE_RANGE]:
                 base_url += "?sort=date_desc"  # Force chronological sorting
@@ -378,32 +397,45 @@ class IntegratedMagicBricksScraper:
         return property_cards
 
     def extract_property_data(self, card, page_number: int, property_index: int) -> Optional[Dict[str, Any]]:
-        """Extract data from a single property card using robust selectors"""
+        """Extract comprehensive data from a single property card using robust selectors"""
 
         try:
-            # Extract title using multiple selectors
+            # Extract title using comprehensive selectors
             title = self._extract_with_fallback(card, [
                 'h2.mb-srp__card--title',
                 'h2[class*="title"]',
                 'h3[class*="title"]',
                 'a[class*="title"]',
-                '.mb-srp__card--title'
+                '.mb-srp__card--title',
+                'h1', 'h2', 'h3', 'h4',  # Generic headers
+                'a[href*="property"]',  # Property links
+                '.SRPTuple__title',  # Alternative structure
+                '[data-testid*="title"]'  # Test ID based
             ], 'N/A')
 
-            # Extract price using multiple selectors
+            # Extract price using comprehensive selectors
             price = self._extract_with_fallback(card, [
                 'div.mb-srp__card__price--amount',
                 'span[class*="price"]',
                 'div[class*="price"]',
-                '.mb-srp__card__price--amount'
+                '.mb-srp__card__price--amount',
+                '.SRPTuple__price',  # Alternative structure
+                '[data-testid*="price"]',  # Test ID based
+                '*[class*="cost"]',  # Cost variations
+                '*[class*="amount"]'  # Amount variations
             ], 'N/A')
 
-            # Extract area using multiple selectors
+            # Extract area using comprehensive selectors
             area = self._extract_with_fallback(card, [
                 'div.mb-srp__card__summary--value',
                 'span[class*="area"]',
                 'div[class*="area"]',
-                '.mb-srp__card__summary--value'
+                '.mb-srp__card__summary--value',
+                '.SRPTuple__area',  # Alternative structure
+                '[data-testid*="area"]',  # Test ID based
+                '*[class*="sqft"]',  # Square feet variations
+                '*[class*="size"]',  # Size variations
+                '*[class*="carpet"]'  # Carpet area variations
             ], 'N/A')
 
             # Extract property URL for validation
@@ -413,12 +445,59 @@ class IntegratedMagicBricksScraper:
             if not property_url:
                 return None
 
-            # Extract posting date (always extract for comprehensive data)
-            card_text = card.get_text()
-            date_info = self.date_parser.parse_posting_date(card_text)
+            # Extract posting date using specific date selector
+            posting_date_text = self._extract_with_fallback(card, [
+                '.mb-srp__card__photo__fig--post',  # Primary date selector
+                'div[class*="post"]',  # Alternative post selectors
+                'div[class*="update"]',  # Update selectors
+                'div[class*="date"]',  # Date selectors
+                '*[class*="ago"]',  # Time ago selectors
+                '*[class*="hours"]',  # Hours selectors
+                '*[class*="yesterday"]',  # Yesterday selectors
+                '*[class*="today"]'  # Today selectors
+            ], '')
 
-            # Build property data
+            # If no specific date element found, try parsing from card text as fallback
+            if not posting_date_text:
+                card_text = card.get_text()
+                posting_date_text = self.date_parser.parse_posting_date(card_text) if self.date_parser else ""
+
+            # Parse the date text to get structured date info
+            date_parse_result = self.date_parser.parse_posting_date(posting_date_text) if self.date_parser and posting_date_text else None
+            parsed_posting_date = date_parse_result.get('parsed_datetime') if date_parse_result and date_parse_result.get('success') else None
+
+            # COMPREHENSIVE FIELD EXTRACTION - Extract additional fields using specific selectors
+
+            # Extract structured property details using the exact page structure
+            bathrooms = self._extract_structured_field(card, 'Bathroom')
+            balcony = self._extract_structured_field(card, 'Balcony')
+            floor_details = self._extract_structured_field(card, 'Floor')
+            status = self._extract_structured_field(card, 'Status')
+            furnishing = self._extract_structured_field(card, 'Furnishing')
+            facing = self._extract_structured_field(card, 'facing')
+            parking = self._extract_structured_field(card, 'Car Parking')
+            ownership = self._extract_structured_field(card, 'Ownership')
+            transaction = self._extract_structured_field(card, 'Transaction')
+            overlooking = self._extract_structured_field(card, 'overlooking')
+
+            # Extract property type from title (1 BHK, 2 BHK, etc.)
+            property_type = self._extract_property_type_from_title(title)
+
+            # Extract society/project name from links
+            society = self._extract_with_fallback(card, [
+                'a[href*="pdpid"]',  # Project detail page links
+                'a[href*="project"]'
+            ], '')
+
+            # Extract locality from the card structure
+            locality = self._extract_with_fallback(card, [
+                '.mb-srp__card__ads--locality',
+                '*[class*="locality"]'
+            ], '')
+
+            # Build comprehensive property data
             property_data = {
+                # Basic fields (existing)
                 'title': title,
                 'price': price,
                 'area': area,
@@ -426,8 +505,23 @@ class IntegratedMagicBricksScraper:
                 'page_number': page_number,
                 'property_index': property_index,
                 'scraped_at': datetime.now(),
-                'posting_date_text': date_info.get('raw_text') if date_info and date_info['success'] else None,
-                'parsed_posting_date': date_info.get('parsed_datetime') if date_info and date_info['success'] else None
+                'posting_date_text': posting_date_text,
+                'parsed_posting_date': parsed_posting_date,
+
+                # Comprehensive fields (new)
+                'bathrooms': bathrooms,
+                'balcony': balcony,
+                'property_type': property_type,
+                'furnishing': furnishing,
+                'floor_details': floor_details,
+                'locality': locality,
+                'society': society,
+                'status': status,
+                'facing': facing,
+                'parking': parking,
+                'ownership': ownership,
+                'transaction': transaction,
+                'overlooking': overlooking
             }
 
             return property_data
@@ -436,18 +530,92 @@ class IntegratedMagicBricksScraper:
             self.logger.error(f"Error extracting property data: {str(e)}")
             return None
 
+    def _extract_structured_field(self, card, field_name: str) -> str:
+        """Extract structured field value based on MagicBricks page structure"""
+        try:
+            # Find all elements that contain the field name
+            field_elements = card.find_all(text=lambda text: text and field_name in text)
+
+            for element in field_elements:
+                # Get the parent element
+                parent = element.parent
+                if parent:
+                    # Look for the next sibling or child that contains the value
+                    next_sibling = parent.find_next_sibling()
+                    if next_sibling:
+                        value = next_sibling.get_text(strip=True)
+                        if value and value != field_name:
+                            return value
+
+                    # Also check parent's next sibling
+                    parent_next = parent.parent.find_next_sibling() if parent.parent else None
+                    if parent_next:
+                        value = parent_next.get_text(strip=True)
+                        if value and value != field_name:
+                            return value
+
+            return ''
+        except Exception:
+            return ''
+
+    def _extract_property_type_from_title(self, title: str) -> str:
+        """Extract property type from title (1 BHK, 2 BHK, Studio, etc.)"""
+        try:
+            import re
+            # Look for BHK patterns
+            bhk_match = re.search(r'(\d+)\s*BHK', title, re.I)
+            if bhk_match:
+                return f"{bhk_match.group(1)} BHK"
+
+            # Look for Studio
+            if 'studio' in title.lower():
+                return 'Studio'
+
+            # Look for other property types
+            property_types = ['Villa', 'House', 'Plot', 'Apartment', 'Flat']
+            for prop_type in property_types:
+                if prop_type.lower() in title.lower():
+                    return prop_type
+
+            return ''
+        except Exception:
+            return ''
+
     def _extract_with_fallback(self, card, selectors: List[str], default: str = 'N/A') -> str:
-        """Extract text using fallback selectors"""
+        """Extract text using fallback selectors with intelligent filtering"""
 
         for selector in selectors:
             try:
                 elem = card.select_one(selector)
                 if elem:
                     text = elem.get_text(strip=True)
-                    if text:
-                        return text
+                    if text and text != default and len(text) > 1:
+                        # Additional validation for meaningful content
+                        if not text.lower() in ['n/a', 'na', 'null', 'none', '--', '...']:
+                            return text
             except Exception:
                 continue
+
+        # If no specific selector works, try intelligent text extraction
+        try:
+            all_text = card.get_text()
+
+            # Look for price patterns
+            if any(keyword in selectors[0].lower() for keyword in ['price', 'cost', 'amount']):
+                import re
+                price_match = re.search(r'₹[\d,.]+ (?:Crore|Lakh|crore|lakh)', all_text)
+                if price_match:
+                    return price_match.group()
+
+            # Look for area patterns
+            if any(keyword in selectors[0].lower() for keyword in ['area', 'sqft', 'size']):
+                import re
+                area_match = re.search(r'\d+[\d,.]* (?:sqft|sq ft|Sq\.? ?ft)', all_text, re.I)
+                if area_match:
+                    return area_match.group()
+
+        except Exception:
+            pass
 
         return default
 
