@@ -13,9 +13,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Any, Optional
 
-# Import our integrated scraper
+# Import our integrated scraper and multi-city system
 from integrated_magicbricks_scraper import IntegratedMagicBricksScraper
 from user_mode_options import ScrapingMode
+from multi_city_system import MultiCitySystem, CityTier, Region
 
 
 class MagicBricksGUI:
@@ -45,6 +46,10 @@ class MagicBricksGUI:
         self.scraping_start_time = None
         self.last_update_time = None
         self.progress_history = []
+
+        # Multi-city system
+        self.city_system = MultiCitySystem()
+        self.selected_cities = ['gurgaon']  # Default selection
         
         # Configuration
         self.config = {
@@ -58,11 +63,15 @@ class MagicBricksGUI:
         
         # Create GUI components
         self.create_main_interface()
-        
+
+        # Initialize selected cities display
+        self.update_selected_cities_display()
+
         # Start message processing
         self.process_messages()
-        
+
         print("🎮 MagicBricks GUI Application Initialized")
+        print(f"   🏙️ Multi-city system: {len(self.city_system.cities)} cities available")
     
     def setup_styles(self):
         """Setup modern styling for the GUI"""
@@ -140,12 +149,21 @@ class MagicBricksGUI:
         current_row = 0
         
         # City selection
-        ttk.Label(control_frame, text="City:", style='Heading.TLabel').grid(row=current_row, column=0, sticky=tk.W, pady=(0, 5))
-        self.city_var = tk.StringVar(value=self.config['city'])
-        city_combo = ttk.Combobox(control_frame, textvariable=self.city_var, width=20)
-        city_combo['values'] = ('gurgaon', 'mumbai', 'bangalore', 'delhi', 'pune', 'chennai', 'hyderabad', 'kolkata')
-        city_combo.grid(row=current_row, column=1, sticky=(tk.W, tk.E), pady=(0, 15))
-        city_combo.bind('<<ComboboxSelected>>', self.on_city_changed)
+        city_frame = ttk.Frame(control_frame)
+        city_frame.grid(row=current_row, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 15))
+        city_frame.columnconfigure(1, weight=1)
+
+        ttk.Label(city_frame, text="Cities:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
+
+        # Selected cities display
+        self.selected_cities_var = tk.StringVar(value="Gurgaon")
+        selected_cities_label = ttk.Label(city_frame, textvariable=self.selected_cities_var, style='Info.TLabel', relief='sunken', padding="5")
+        selected_cities_label.grid(row=0, column=1, sticky=(tk.W, tk.E), padx=(10, 5))
+
+        # City selection button
+        select_cities_btn = ttk.Button(city_frame, text="Select Cities", command=self.open_city_selector)
+        select_cities_btn.grid(row=0, column=2)
+
         current_row += 1
         
         # Scraping mode
@@ -336,9 +354,9 @@ class MagicBricksGUI:
         self.mode_desc_var.set(description)
     
     def on_city_changed(self, event=None):
-        """Handle city selection change"""
-        self.config['city'] = self.city_var.get()
-        self.log_message(f"City changed to: {self.config['city']}")
+        """Handle city selection change (legacy method for compatibility)"""
+        # This method is kept for compatibility but city selection is now handled by the multi-city system
+        pass
     
     def on_mode_changed(self, event=None):
         """Handle mode selection change"""
@@ -379,7 +397,8 @@ class MagicBricksGUI:
     
     def update_config_from_gui(self):
         """Update configuration from GUI values"""
-        self.config['city'] = self.city_var.get()
+        self.config['selected_cities'] = self.selected_cities
+        self.config['city'] = self.selected_cities[0] if self.selected_cities else 'gurgaon'  # Primary city for compatibility
         self.config['mode'] = ScrapingMode(self.mode_var.get())
         self.config['max_pages'] = int(self.max_pages_var.get()) if self.max_pages_var.get().isdigit() else 100
         self.config['output_directory'] = self.output_dir_var.get()
@@ -1155,6 +1174,292 @@ For production deployment, schedules integrate with:
         """
 
         messagebox.showinfo("Scheduler Help", help_text)
+
+    def open_city_selector(self):
+        """Open the comprehensive city selection dialog"""
+
+        # Create city selector window
+        city_window = tk.Toplevel(self.root)
+        city_window.title("City Selection - MagicBricks Scraper")
+        city_window.geometry("800x600")
+        city_window.transient(self.root)
+        city_window.grab_set()
+
+        # Main frame
+        main_frame = ttk.Frame(city_window, padding="20")
+        main_frame.pack(fill=tk.BOTH, expand=True)
+        main_frame.columnconfigure(1, weight=1)
+        main_frame.rowconfigure(1, weight=1)
+
+        # Title
+        ttk.Label(main_frame, text="🏙️ City Selection", style='Title.TLabel').grid(row=0, column=0, columnspan=3, pady=(0, 20))
+
+        # Left panel - Filters
+        filter_frame = ttk.LabelFrame(main_frame, text="Filters", padding="15")
+        filter_frame.grid(row=1, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), padx=(0, 10))
+        filter_frame.columnconfigure(0, weight=1)
+
+        # Search
+        ttk.Label(filter_frame, text="Search:", style='Heading.TLabel').pack(anchor=tk.W, pady=(0, 5))
+        search_var = tk.StringVar()
+        search_entry = ttk.Entry(filter_frame, textvariable=search_var, width=20)
+        search_entry.pack(fill=tk.X, pady=(0, 15))
+
+        # Region filter
+        ttk.Label(filter_frame, text="Region:", style='Heading.TLabel').pack(anchor=tk.W, pady=(0, 5))
+        region_var = tk.StringVar(value="All")
+        region_combo = ttk.Combobox(filter_frame, textvariable=region_var, width=18)
+        region_combo['values'] = ['All'] + [region.value for region in Region]
+        region_combo.pack(fill=tk.X, pady=(0, 15))
+
+        # Tier filter
+        ttk.Label(filter_frame, text="Tier:", style='Heading.TLabel').pack(anchor=tk.W, pady=(0, 5))
+        tier_var = tk.StringVar(value="All")
+        tier_combo = ttk.Combobox(filter_frame, textvariable=tier_var, width=18)
+        tier_combo['values'] = ['All'] + [tier.value for tier in CityTier]
+        tier_combo.pack(fill=tk.X, pady=(0, 15))
+
+        # Metro only checkbox
+        metro_var = tk.BooleanVar()
+        metro_check = ttk.Checkbutton(filter_frame, text="Metro cities only", variable=metro_var)
+        metro_check.pack(anchor=tk.W, pady=(0, 15))
+
+        # Quick selections
+        ttk.Label(filter_frame, text="Quick Select:", style='Heading.TLabel').pack(anchor=tk.W, pady=(0, 5))
+
+        def select_metros():
+            metro_cities = self.city_system.get_metro_cities()
+            update_city_list([city.code for city in metro_cities])
+
+        def select_tier1():
+            tier1_cities = self.city_system.get_cities_by_tier(CityTier.TIER_1)
+            update_city_list([city.code for city in tier1_cities])
+
+        def select_top10():
+            all_cities = list(self.city_system.cities.values())
+            top_cities = sorted([c for c in all_cities if c.is_active], key=lambda x: x.population, reverse=True)[:10]
+            update_city_list([city.code for city in top_cities])
+
+        ttk.Button(filter_frame, text="Metro Cities", command=select_metros).pack(fill=tk.X, pady=2)
+        ttk.Button(filter_frame, text="Tier 1 Cities", command=select_tier1).pack(fill=tk.X, pady=2)
+        ttk.Button(filter_frame, text="Top 10 by Population", command=select_top10).pack(fill=tk.X, pady=2)
+
+        # Middle panel - Available cities
+        available_frame = ttk.LabelFrame(main_frame, text="Available Cities", padding="15")
+        available_frame.grid(row=1, column=1, sticky=(tk.W, tk.E, tk.N, tk.S), padx=(0, 10))
+        available_frame.columnconfigure(0, weight=1)
+        available_frame.rowconfigure(0, weight=1)
+
+        # City listbox with scrollbar
+        list_frame = ttk.Frame(available_frame)
+        list_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
+        list_frame.columnconfigure(0, weight=1)
+        list_frame.rowconfigure(0, weight=1)
+
+        city_listbox = tk.Listbox(list_frame, selectmode=tk.MULTIPLE, height=15)
+        city_listbox.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+
+        city_scrollbar = ttk.Scrollbar(list_frame, orient=tk.VERTICAL, command=city_listbox.yview)
+        city_scrollbar.grid(row=0, column=1, sticky=(tk.N, tk.S))
+        city_listbox.configure(yscrollcommand=city_scrollbar.set)
+
+        # Control buttons
+        control_frame = ttk.Frame(available_frame)
+        control_frame.pack(pady=(10, 0))
+
+        def add_selected():
+            selection = city_listbox.curselection()
+            for index in selection:
+                city_code = city_codes[index]
+                if city_code not in selected_city_codes:
+                    selected_city_codes.append(city_code)
+            update_selected_display()
+
+        def add_all():
+            for city_code in city_codes:
+                if city_code not in selected_city_codes:
+                    selected_city_codes.append(city_code)
+            update_selected_display()
+
+        ttk.Button(control_frame, text="Add Selected →", command=add_selected).pack(side=tk.LEFT, padx=(0, 5))
+        ttk.Button(control_frame, text="Add All →", command=add_all).pack(side=tk.LEFT)
+
+        # Right panel - Selected cities
+        selected_frame = ttk.LabelFrame(main_frame, text="Selected Cities", padding="15")
+        selected_frame.grid(row=1, column=2, sticky=(tk.W, tk.E, tk.N, tk.S))
+        selected_frame.columnconfigure(0, weight=1)
+        selected_frame.rowconfigure(0, weight=1)
+
+        # Selected cities listbox
+        selected_list_frame = ttk.Frame(selected_frame)
+        selected_list_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
+        selected_list_frame.columnconfigure(0, weight=1)
+        selected_list_frame.rowconfigure(0, weight=1)
+
+        selected_listbox = tk.Listbox(selected_list_frame, selectmode=tk.MULTIPLE, height=15)
+        selected_listbox.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+
+        selected_scrollbar = ttk.Scrollbar(selected_list_frame, orient=tk.VERTICAL, command=selected_listbox.yview)
+        selected_scrollbar.grid(row=0, column=1, sticky=(tk.N, tk.S))
+        selected_listbox.configure(yscrollcommand=selected_scrollbar.set)
+
+        # Selected control buttons
+        selected_control_frame = ttk.Frame(selected_frame)
+        selected_control_frame.pack(pady=(10, 0))
+
+        def remove_selected():
+            selection = selected_listbox.curselection()
+            for index in reversed(selection):  # Remove from end to avoid index issues
+                if index < len(selected_city_codes):
+                    selected_city_codes.pop(index)
+            update_selected_display()
+
+        def remove_all():
+            selected_city_codes.clear()
+            update_selected_display()
+
+        ttk.Button(selected_control_frame, text="← Remove Selected", command=remove_selected).pack(side=tk.LEFT, padx=(0, 5))
+        ttk.Button(selected_control_frame, text="← Remove All", command=remove_all).pack(side=tk.LEFT)
+
+        # Initialize data
+        city_codes = []
+        selected_city_codes = self.selected_cities.copy()
+
+        def update_city_list(filter_codes=None):
+            city_listbox.delete(0, tk.END)
+            city_codes.clear()
+
+            # Apply filters
+            cities_to_show = []
+
+            for city in self.city_system.cities.values():
+                if not city.is_active:
+                    continue
+
+                # Apply search filter
+                search_term = search_var.get().lower()
+                if search_term and search_term not in city.name.lower() and search_term not in city.state.lower():
+                    continue
+
+                # Apply region filter
+                if region_var.get() != "All" and city.region.value != region_var.get():
+                    continue
+
+                # Apply tier filter
+                if tier_var.get() != "All" and city.tier.value != tier_var.get():
+                    continue
+
+                # Apply metro filter
+                if metro_var.get() and not city.is_metro:
+                    continue
+
+                cities_to_show.append(city)
+
+            # If filter_codes provided, use those instead
+            if filter_codes:
+                cities_to_show = [self.city_system.cities[code] for code in filter_codes if code in self.city_system.cities]
+
+            # Sort by population (descending)
+            cities_to_show.sort(key=lambda x: x.population, reverse=True)
+
+            # Populate listbox
+            for city in cities_to_show:
+                display_text = f"{city.name}, {city.state} ({city.tier.value}, {city.population:,})"
+                city_listbox.insert(tk.END, display_text)
+                city_codes.append(city.code)
+
+        def update_selected_display():
+            selected_listbox.delete(0, tk.END)
+
+            for city_code in selected_city_codes:
+                if city_code in self.city_system.cities:
+                    city = self.city_system.cities[city_code]
+                    display_text = f"{city.name}, {city.state}"
+                    selected_listbox.insert(tk.END, display_text)
+
+            # Update validation info
+            validation = self.city_system.validate_city_selection(selected_city_codes)
+            validation_text = f"Selected: {len(selected_city_codes)} cities"
+            if validation['warnings']:
+                validation_text += f" ⚠️ {len(validation['warnings'])} warnings"
+            validation_label.config(text=validation_text)
+
+        # Bind filter events
+        search_var.trace('w', lambda *args: update_city_list())
+        region_var.trace('w', lambda *args: update_city_list())
+        tier_var.trace('w', lambda *args: update_city_list())
+        metro_var.trace('w', lambda *args: update_city_list())
+
+        # Bottom panel - Validation and actions
+        bottom_frame = ttk.Frame(main_frame)
+        bottom_frame.grid(row=2, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(20, 0))
+        bottom_frame.columnconfigure(0, weight=1)
+
+        # Validation info
+        validation_label = ttk.Label(bottom_frame, text="Selected: 0 cities", style='Info.TLabel')
+        validation_label.pack(side=tk.LEFT)
+
+        # Action buttons
+        button_frame = ttk.Frame(bottom_frame)
+        button_frame.pack(side=tk.RIGHT)
+
+        def apply_selection():
+            if not selected_city_codes:
+                messagebox.showwarning("No Selection", "Please select at least one city.")
+                return
+
+            # Validate selection
+            validation = self.city_system.validate_city_selection(selected_city_codes)
+
+            if validation['warnings']:
+                warning_msg = "Warnings:\n" + "\n".join(validation['warnings'])
+                warning_msg += f"\n\nEstimated scraping time: {validation['estimated_time']} minutes"
+                warning_msg += f"\nEstimated properties: {validation['total_properties_estimate']:,}"
+                warning_msg += "\n\nDo you want to continue?"
+
+                if not messagebox.askyesno("Selection Warnings", warning_msg):
+                    return
+
+            # Apply selection
+            self.selected_cities = selected_city_codes
+            self.update_selected_cities_display()
+            city_window.destroy()
+
+            self.log_message(f"Selected {len(selected_city_codes)} cities: {', '.join([self.city_system.cities[code].name for code in selected_city_codes])}")
+
+        def get_recommendations():
+            recommendations = self.city_system.get_city_recommendations()
+            recommended_codes = [city.code for city in recommendations]
+            update_city_list(recommended_codes)
+
+        ttk.Button(button_frame, text="Get Recommendations", command=get_recommendations).pack(side=tk.LEFT, padx=(0, 10))
+        ttk.Button(button_frame, text="Apply Selection", command=apply_selection, style='Action.TButton').pack(side=tk.LEFT, padx=(0, 10))
+        ttk.Button(button_frame, text="Cancel", command=city_window.destroy).pack(side=tk.LEFT)
+
+        # Initialize displays
+        update_city_list()
+        update_selected_display()
+
+    def update_selected_cities_display(self):
+        """Update the selected cities display in the main GUI"""
+
+        if not self.selected_cities:
+            display_text = "No cities selected"
+        elif len(self.selected_cities) == 1:
+            city = self.city_system.cities.get(self.selected_cities[0])
+            display_text = city.name if city else self.selected_cities[0]
+        else:
+            city_names = []
+            for city_code in self.selected_cities[:3]:  # Show first 3
+                city = self.city_system.cities.get(city_code)
+                if city:
+                    city_names.append(city.name)
+
+            display_text = ", ".join(city_names)
+            if len(self.selected_cities) > 3:
+                display_text += f" + {len(self.selected_cities) - 3} more"
+
+        self.selected_cities_var.set(display_text)
     
     def start_scraping(self):
         """Start the scraping process in a separate thread"""
