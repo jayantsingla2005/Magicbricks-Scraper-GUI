@@ -1,0 +1,45 @@
+[
+  {
+    "timestamp": "2025-08-10T13:49:41.364220",
+    "severity": "error",
+    "category": "system",
+    "title": "ConnectionError: Failed to connect to magicbricks.com",
+    "message": "Failed to connect to magicbricks.com",
+    "details": "Error Type: ConnectionError\nError Message: Failed to connect to magicbricks.com\nError Args: ('Failed to connect to magicbricks.com',)",
+    "suggestion": "An unexpected error occurred. Please try again or contact support.",
+    "context": {
+      "url": "https://magicbricks.com"
+    },
+    "session_id": null,
+    "user_action": "scraping_start"
+  },
+  {
+    "timestamp": "2025-08-10T13:49:41.365216",
+    "severity": "info",
+    "category": "parsing",
+    "title": "ValueError: Element not found: div.property-card",
+    "message": "Element not found: div.property-card",
+    "details": "Error Type: ValueError\nError Message: Element not found: div.property-card\nError Args: ('Element not found: div.property-card',)",
+    "suggestion": "The website structure may have changed. This is usually temporary - try again later.",
+    "context": {
+      "page": 1,
+      "selector": "div.property-card"
+    },
+    "session_id": null,
+    "user_action": "property_extraction"
+  },
+  {
+    "timestamp": "2025-08-10T13:49:41.365721",
+    "severity": "error",
+    "category": "validation",
+    "title": "TypeError: Invalid city parameter: must be string",
+    "message": "Invalid city parameter: must be string",
+    "details": "Error Type: TypeError\nError Message: Invalid city parameter: must be string\nError Args: ('Invalid city parameter: must be string',)",
+    "suggestion": "Please check your input values and try again with valid data.",
+    "context": {
+      "city": 123
+    },
+    "session_id": null,
+    "user_action": "city_validation"
+  }
+]
