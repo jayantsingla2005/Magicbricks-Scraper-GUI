@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 MagicBricks Scraper GUI Application
-User-friendly interface for non-technical users with complete scraping control and monitoring.
+Modern, professional interface for property data extraction with advanced features.
 """
 
 import tkinter as tk
@@ -22,21 +22,24 @@ from error_handling_system import ErrorHandlingSystem, ErrorSeverity, ErrorCateg
 
 class MagicBricksGUI:
     """
-    Modern GUI application for MagicBricks scraper with user-friendly interface
+    Modern, professional GUI application for MagicBricks scraper with advanced features
     """
-    
+
     def __init__(self):
         """Initialize the GUI application"""
-        
+
         # Create main window
         self.root = tk.Tk()
-        self.root.title("MagicBricks Property Scraper - Professional Edition")
-        self.root.geometry("1200x800")
-        self.root.minsize(1000, 600)
-        
-        # Configure style
-        self.setup_styles()
-        
+        self.root.title("🏠 MagicBricks Property Scraper - Professional Edition v2.0")
+        self.root.geometry("1400x900")
+        self.root.minsize(1200, 700)
+
+        # Set window icon and modern styling
+        self.root.configure(bg='#f8f9fa')
+
+        # Configure modern styling
+        self.setup_modern_styles()
+
         # Initialize variables
         self.scraper = None
         self.scraping_thread = None
@@ -55,19 +58,24 @@ class MagicBricksGUI:
         # Error handling system
         self.error_system = ErrorHandlingSystem()
         self.error_system.register_callback(self.on_error_callback)
-        
-        # Configuration
+
+        # Configuration with better defaults
         self.config = {
             'city': 'gurgaon',
             'mode': ScrapingMode.INCREMENTAL,
             'max_pages': 100,
             'headless': True,
             'output_directory': str(Path.cwd()),
-            'incremental_enabled': True
+            'incremental_enabled': True,
+            'page_delay': 3,
+            'max_retries': 3,
+            'export_json': False,
+            'export_excel': False,
+            'individual_pages': False
         }
-        
-        # Create GUI components
-        self.create_main_interface()
+
+        # Create modern GUI components
+        self.create_modern_interface()
 
         # Initialize selected cities display
         self.update_selected_cities_display()
@@ -75,101 +83,512 @@ class MagicBricksGUI:
         # Start message processing
         self.process_messages()
 
-        print("🎮 MagicBricks GUI Application Initialized")
+        print("🎮 MagicBricks GUI v2.0 Initialized")
         print(f"   🏙️ Multi-city system: {len(self.city_system.cities)} cities available")
+        print(f"   🎨 Modern interface with scrollable panels")
     
-    def setup_styles(self):
-        """Setup modern styling for the GUI"""
-        
+    def setup_modern_styles(self):
+        """Setup modern, professional styling for the GUI"""
+
         # Configure ttk styles
-        style = ttk.Style()
-        
+        self.style = ttk.Style()
+
         # Use modern theme
         try:
-            style.theme_use('clam')
+            self.style.theme_use('clam')
         except:
-            style.theme_use('default')
-        
-        # Custom colors
-        bg_color = '#f0f0f0'
-        accent_color = '#2196F3'
-        success_color = '#4CAF50'
-        warning_color = '#FF9800'
-        error_color = '#F44336'
-        
-        # Configure root window
-        self.root.configure(bg=bg_color)
-        
-        # Configure styles
-        style.configure('Title.TLabel', font=('Arial', 16, 'bold'), background=bg_color)
-        style.configure('Heading.TLabel', font=('Arial', 12, 'bold'), background=bg_color)
-        style.configure('Info.TLabel', font=('Arial', 10), background=bg_color)
-        style.configure('Success.TLabel', font=('Arial', 10), background=bg_color, foreground=success_color)
-        style.configure('Warning.TLabel', font=('Arial', 10), background=bg_color, foreground=warning_color)
-        style.configure('Error.TLabel', font=('Arial', 10), background=bg_color, foreground=error_color)
-        
-        # Button styles
-        style.configure('Action.TButton', font=('Arial', 11, 'bold'))
-        style.configure('Success.TButton', font=('Arial', 11, 'bold'))
-        style.configure('Warning.TButton', font=('Arial', 11, 'bold'))
+            self.style.theme_use('default')
+
+        # Modern color palette
+        self.colors = {
+            'bg_primary': '#ffffff',
+            'bg_secondary': '#f8f9fa',
+            'bg_accent': '#e9ecef',
+            'primary': '#0d6efd',
+            'success': '#198754',
+            'warning': '#fd7e14',
+            'danger': '#dc3545',
+            'info': '#0dcaf0',
+            'dark': '#212529',
+            'light': '#f8f9fa',
+            'border': '#dee2e6'
+        }
+
+        # Configure modern styles
+        self.style.configure('Title.TLabel',
+                           font=('Segoe UI', 18, 'bold'),
+                           background=self.colors['bg_primary'],
+                           foreground=self.colors['dark'])
+
+        self.style.configure('Subtitle.TLabel',
+                           font=('Segoe UI', 11),
+                           background=self.colors['bg_primary'],
+                           foreground=self.colors['dark'])
+
+        self.style.configure('Heading.TLabel',
+                           font=('Segoe UI', 10, 'bold'),
+                           background=self.colors['bg_primary'],
+                           foreground=self.colors['dark'])
+
+        self.style.configure('Info.TLabel',
+                           font=('Segoe UI', 9),
+                           background=self.colors['bg_primary'],
+                           foreground=self.colors['dark'])
+
+        self.style.configure('Success.TLabel',
+                           font=('Segoe UI', 9),
+                           background=self.colors['bg_primary'],
+                           foreground=self.colors['success'])
+
+        self.style.configure('Warning.TLabel',
+                           font=('Segoe UI', 9),
+                           background=self.colors['bg_primary'],
+                           foreground=self.colors['warning'])
+
+        self.style.configure('Error.TLabel',
+                           font=('Segoe UI', 9),
+                           background=self.colors['bg_primary'],
+                           foreground=self.colors['danger'])
+
+        # Modern button styles
+        self.style.configure('Primary.TButton',
+                           font=('Segoe UI', 10, 'bold'),
+                           padding=(20, 10))
+
+        self.style.configure('Success.TButton',
+                           font=('Segoe UI', 10, 'bold'),
+                           padding=(15, 8))
+
+        self.style.configure('Secondary.TButton',
+                           font=('Segoe UI', 9),
+                           padding=(10, 6))
+
+        # Frame styles
+        self.style.configure('Card.TFrame',
+                           background=self.colors['bg_primary'],
+                           relief='solid',
+                           borderwidth=1)
+
+        self.style.configure('Sidebar.TFrame',
+                           background=self.colors['bg_secondary'])
     
-    def create_main_interface(self):
-        """Create the main interface layout"""
-        
-        # Create main container with padding
-        main_frame = ttk.Frame(self.root, padding="20")
-        main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
-        
+    def create_modern_interface(self):
+        """Create modern, professional interface with proper scrolling"""
+
+        # Create main container
+        main_container = ttk.Frame(self.root)
+        main_container.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
+
         # Configure grid weights
-        self.root.columnconfigure(0, weight=1)
-        self.root.rowconfigure(0, weight=1)
-        main_frame.columnconfigure(1, weight=1)
-        main_frame.rowconfigure(2, weight=1)
-        
-        # Title
-        title_label = ttk.Label(main_frame, text="🏠 MagicBricks Property Scraper", style='Title.TLabel')
-        title_label.grid(row=0, column=0, columnspan=2, pady=(0, 20), sticky=tk.W)
-        
-        # Subtitle
-        subtitle_label = ttk.Label(main_frame, text="Professional property data extraction with intelligent incremental scraping", style='Info.TLabel')
-        subtitle_label.grid(row=1, column=0, columnspan=2, pady=(0, 30), sticky=tk.W)
-        
-        # Create left panel (controls)
-        self.create_control_panel(main_frame)
-        
-        # Create right panel (monitoring)
-        self.create_monitoring_panel(main_frame)
-        
-        # Create bottom status bar
-        self.create_status_bar(main_frame)
+        main_container.columnconfigure(0, weight=1)
+        main_container.columnconfigure(1, weight=2)
+        main_container.rowconfigure(1, weight=1)
+
+        # Header section
+        self.create_header(main_container)
+
+        # Main content area with two panels
+        content_frame = ttk.Frame(main_container)
+        content_frame.grid(row=1, column=0, columnspan=2, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(20, 0))
+        content_frame.columnconfigure(0, weight=1)
+        content_frame.columnconfigure(1, weight=2)
+        content_frame.rowconfigure(0, weight=1)
+
+        # Left panel (controls) - with scrolling
+        self.create_scrollable_control_panel(content_frame)
+
+        # Right panel (monitoring and logs)
+        self.create_monitoring_panel(content_frame)
+
+        # Bottom status bar
+        self.create_modern_status_bar(main_container)
+
+    def create_header(self, parent):
+        """Create modern header section"""
+
+        header_frame = ttk.Frame(parent, style='Card.TFrame')
+        header_frame.grid(row=0, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 10))
+        header_frame.columnconfigure(1, weight=1)
+
+        # Icon and title
+        title_frame = ttk.Frame(header_frame)
+        title_frame.grid(row=0, column=0, sticky=tk.W, padx=20, pady=15)
+
+        ttk.Label(title_frame, text="🏠", font=('Segoe UI', 24)).pack(side=tk.LEFT)
+
+        title_text_frame = ttk.Frame(title_frame)
+        title_text_frame.pack(side=tk.LEFT, padx=(10, 0))
+
+        ttk.Label(title_text_frame, text="MagicBricks Property Scraper",
+                 style='Title.TLabel').pack(anchor=tk.W)
+        ttk.Label(title_text_frame, text="Professional Edition v2.0 - Advanced Property Data Extraction",
+                 style='Subtitle.TLabel').pack(anchor=tk.W)
+
+        # Quick stats frame
+        stats_frame = ttk.Frame(header_frame)
+        stats_frame.grid(row=0, column=1, sticky=tk.E, padx=20, pady=15)
+
+        # Version info
+        version_frame = ttk.Frame(stats_frame)
+        version_frame.pack(anchor=tk.E)
+
+        ttk.Label(version_frame, text="v2.0 - Incremental Scraping Edition",
+                 style='Info.TLabel').pack(anchor=tk.E)
     
-    def create_control_panel(self, parent):
-        """Create the control panel with scraping options"""
-        
-        # Control panel frame
-        control_frame = ttk.LabelFrame(parent, text="Scraping Configuration", padding="15")
-        control_frame.grid(row=2, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), padx=(0, 10))
-        control_frame.columnconfigure(1, weight=1)
-        
+    def create_scrollable_control_panel(self, parent):
+        """Create scrollable control panel with all scraping options"""
+
+        # Control panel container
+        control_container = ttk.LabelFrame(parent, text="📋 Scraping Configuration", padding="10")
+        control_container.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), padx=(0, 10))
+        control_container.columnconfigure(0, weight=1)
+        control_container.rowconfigure(0, weight=1)
+
+        # Create canvas and scrollbar for scrolling
+        canvas = tk.Canvas(control_container, bg=self.colors['bg_primary'], highlightthickness=0)
+        scrollbar = ttk.Scrollbar(control_container, orient="vertical", command=canvas.yview)
+        scrollable_frame = ttk.Frame(canvas)
+
+        # Configure scrolling
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        # Pack canvas and scrollbar
+        canvas.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        scrollbar.grid(row=0, column=1, sticky=(tk.N, tk.S))
+
+        # Configure canvas grid weights
+        control_container.columnconfigure(0, weight=1)
+        control_container.rowconfigure(0, weight=1)
+
+        # Add mouse wheel scrolling
+        def _on_mousewheel(event):
+            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+        canvas.bind_all("<MouseWheel>", _on_mousewheel)
+
+        # Now create all the controls in the scrollable frame
+        self.create_control_sections(scrollable_frame)
+
+    def create_control_sections(self, parent):
+        """Create all control sections in the scrollable frame"""
+
+        parent.columnconfigure(0, weight=1)
         current_row = 0
-        
-        # City selection
-        city_frame = ttk.Frame(control_frame)
-        city_frame.grid(row=current_row, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 15))
-        city_frame.columnconfigure(1, weight=1)
 
-        ttk.Label(city_frame, text="Cities:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
-
-        # Selected cities display
-        self.selected_cities_var = tk.StringVar(value="Gurgaon")
-        selected_cities_label = ttk.Label(city_frame, textvariable=self.selected_cities_var, style='Info.TLabel', relief='sunken', padding="5")
-        selected_cities_label.grid(row=0, column=1, sticky=(tk.W, tk.E), padx=(10, 5))
-
-        # City selection button
-        select_cities_btn = ttk.Button(city_frame, text="Select Cities", command=self.open_city_selector)
-        select_cities_btn.grid(row=0, column=2)
-
+        # === CITY SELECTION SECTION ===
+        city_section = ttk.LabelFrame(parent, text="🏙️ City Selection", padding="15")
+        city_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        city_section.columnconfigure(1, weight=1)
         current_row += 1
+
+        ttk.Label(city_section, text="Selected Cities:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
+
+        # Selected cities display with better styling
+        self.selected_cities_var = tk.StringVar(value="Gurgaon")
+        cities_frame = ttk.Frame(city_section)
+        cities_frame.grid(row=0, column=1, sticky=(tk.W, tk.E), padx=(10, 0))
+        cities_frame.columnconfigure(0, weight=1)
+
+        selected_cities_label = ttk.Label(cities_frame, textvariable=self.selected_cities_var,
+                                        style='Info.TLabel', relief='solid', padding="8")
+        selected_cities_label.grid(row=0, column=0, sticky=(tk.W, tk.E), padx=(0, 10))
+
+        select_cities_btn = ttk.Button(cities_frame, text="Select Cities",
+                                     command=self.open_city_selector, style='Secondary.TButton')
+        select_cities_btn.grid(row=0, column=1)
+
+        # === SCRAPING MODE SECTION ===
+        mode_section = ttk.LabelFrame(parent, text="⚙️ Scraping Mode", padding="15")
+        mode_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        mode_section.columnconfigure(1, weight=1)
+        current_row += 1
+
+        ttk.Label(mode_section, text="Mode:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
+
+        self.mode_var = tk.StringVar(value=self.config['mode'].value)
+        mode_combo = ttk.Combobox(mode_section, textvariable=self.mode_var, width=25, state='readonly')
+        mode_combo['values'] = ('incremental', 'full', 'conservative', 'date_range', 'custom')
+        mode_combo.grid(row=0, column=1, sticky=(tk.W, tk.E), pady=(0, 10), padx=(10, 0))
+        mode_combo.bind('<<ComboboxSelected>>', self.on_mode_changed)
+
+        # Mode description with better formatting
+        self.mode_desc_var = tk.StringVar()
+        self.update_mode_description()
+        mode_desc_label = ttk.Label(mode_section, textvariable=self.mode_desc_var,
+                                   style='Info.TLabel', wraplength=400)
+        mode_desc_label.grid(row=1, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 10))
+
+        # === BASIC SETTINGS SECTION ===
+        basic_section = ttk.LabelFrame(parent, text="📊 Basic Settings", padding="15")
+        basic_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        basic_section.columnconfigure(1, weight=1)
+        current_row += 1
+
+        # Max pages
+        ttk.Label(basic_section, text="Max Pages:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
+        self.max_pages_var = tk.StringVar(value=str(self.config['max_pages']))
+        max_pages_entry = ttk.Entry(basic_section, textvariable=self.max_pages_var, width=15)
+        max_pages_entry.grid(row=0, column=1, sticky=tk.W, pady=(0, 10), padx=(10, 0))
+
+        # Output directory
+        ttk.Label(basic_section, text="Output Directory:", style='Heading.TLabel').grid(row=1, column=0, sticky=tk.W, pady=(0, 5))
+        output_frame = ttk.Frame(basic_section)
+        output_frame.grid(row=1, column=1, sticky=(tk.W, tk.E), pady=(0, 10), padx=(10, 0))
+        output_frame.columnconfigure(0, weight=1)
+
+        self.output_dir_var = tk.StringVar(value=self.config['output_directory'])
+        output_entry = ttk.Entry(output_frame, textvariable=self.output_dir_var)
+        output_entry.grid(row=0, column=0, sticky=(tk.W, tk.E), padx=(0, 10))
+
+        browse_btn = ttk.Button(output_frame, text="Browse", command=self.browse_output_directory,
+                              style='Secondary.TButton')
+        browse_btn.grid(row=0, column=1)
+
+        # === ADVANCED OPTIONS SECTION ===
+        advanced_section = ttk.LabelFrame(parent, text="🔧 Advanced Options", padding="15")
+        advanced_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        advanced_section.columnconfigure(0, weight=1)
+        current_row += 1
+
+        # Checkboxes in a grid layout
+        checkbox_frame = ttk.Frame(advanced_section)
+        checkbox_frame.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        checkbox_frame.columnconfigure(0, weight=1)
+        checkbox_frame.columnconfigure(1, weight=1)
+
+        # Headless mode
+        self.headless_var = tk.BooleanVar(value=self.config['headless'])
+        headless_check = ttk.Checkbutton(checkbox_frame, text="🚀 Headless Mode (faster)",
+                                       variable=self.headless_var)
+        headless_check.grid(row=0, column=0, sticky=tk.W, pady=2)
+
+        # Incremental enabled
+        self.incremental_var = tk.BooleanVar(value=self.config['incremental_enabled'])
+        incremental_check = ttk.Checkbutton(checkbox_frame, text="⚡ Incremental Scraping (60-75% faster)",
+                                          variable=self.incremental_var)
+        incremental_check.grid(row=0, column=1, sticky=tk.W, pady=2)
+
+        # Individual property pages
+        self.individual_pages_var = tk.BooleanVar(value=self.config['individual_pages'])
+        individual_check = ttk.Checkbutton(checkbox_frame, text="📄 Individual Property Details (⚠️ 10x slower)",
+                                         variable=self.individual_pages_var,
+                                         command=self.on_individual_pages_changed)
+        individual_check.grid(row=1, column=0, columnspan=2, sticky=tk.W, pady=2)
+
+        # Individual pages warning
+        self.individual_info_var = tk.StringVar()
+        self.update_individual_pages_info()
+        individual_info_label = ttk.Label(advanced_section, textvariable=self.individual_info_var,
+                                        style='Warning.TLabel', wraplength=400)
+        individual_info_label.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+
+        # === EXPORT OPTIONS SECTION ===
+        export_section = ttk.LabelFrame(parent, text="💾 Export Options", padding="15")
+        export_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        export_section.columnconfigure(0, weight=1)
+        current_row += 1
+
+        # Mandatory formats
+        ttk.Label(export_section, text="✅ Mandatory: CSV + Database",
+                 style='Success.TLabel', font=('Segoe UI', 9, 'bold')).grid(row=0, column=0, sticky=tk.W, pady=(0, 10))
+
+        # Optional formats
+        optional_frame = ttk.Frame(export_section)
+        optional_frame.grid(row=1, column=0, sticky=(tk.W, tk.E))
+        optional_frame.columnconfigure(0, weight=1)
+        optional_frame.columnconfigure(1, weight=1)
+
+        ttk.Label(optional_frame, text="Optional Formats:", style='Heading.TLabel').grid(row=0, column=0, columnspan=2, sticky=tk.W, pady=(0, 5))
+
+        # JSON export
+        self.export_json_var = tk.BooleanVar(value=self.config['export_json'])
+        json_check = ttk.Checkbutton(optional_frame, text="📋 JSON (structured data)",
+                                   variable=self.export_json_var)
+        json_check.grid(row=1, column=0, sticky=tk.W, pady=2)
+
+        # Excel export
+        self.export_excel_var = tk.BooleanVar(value=self.config['export_excel'])
+        excel_check = ttk.Checkbutton(optional_frame, text="📊 Excel (multi-sheet with summary)",
+                                    variable=self.export_excel_var)
+        excel_check.grid(row=1, column=1, sticky=tk.W, pady=2)
+
+        # === TIMING SETTINGS SECTION ===
+        timing_section = ttk.LabelFrame(parent, text="⏱️ Timing & Performance", padding="15")
+        timing_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        timing_section.columnconfigure(1, weight=1)
+        current_row += 1
+
+        # Page delay
+        ttk.Label(timing_section, text="Page Delay (seconds):", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
+        self.delay_var = tk.StringVar(value=str(self.config['page_delay']))
+        delay_spin = ttk.Spinbox(timing_section, from_=1, to=10, textvariable=self.delay_var, width=10)
+        delay_spin.grid(row=0, column=1, sticky=tk.W, pady=(0, 10), padx=(10, 0))
+
+        # Max retries
+        ttk.Label(timing_section, text="Max Retries:", style='Heading.TLabel').grid(row=1, column=0, sticky=tk.W, pady=(0, 5))
+        self.retry_var = tk.StringVar(value=str(self.config['max_retries']))
+        retry_spin = ttk.Spinbox(timing_section, from_=1, to=10, textvariable=self.retry_var, width=10)
+        retry_spin.grid(row=1, column=1, sticky=tk.W, pady=(0, 10), padx=(10, 0))
+
+        # Individual page delay range (only shown when individual pages enabled)
+        self.individual_delay_frame = ttk.Frame(timing_section)
+        self.individual_delay_frame.grid(row=2, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 0))
+        self.individual_delay_frame.columnconfigure(1, weight=1)
+
+        ttk.Label(self.individual_delay_frame, text="Individual Page Delay (min-max):",
+                 style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
+
+        delay_range_frame = ttk.Frame(self.individual_delay_frame)
+        delay_range_frame.grid(row=0, column=1, sticky=tk.W, padx=(10, 0))
+
+        self.individual_delay_min_var = tk.StringVar(value="3")
+        self.individual_delay_max_var = tk.StringVar(value="8")
+
+        ttk.Spinbox(delay_range_frame, from_=1, to=30, textvariable=self.individual_delay_min_var, width=5).grid(row=0, column=0)
+        ttk.Label(delay_range_frame, text=" - ").grid(row=0, column=1)
+        ttk.Spinbox(delay_range_frame, from_=1, to=30, textvariable=self.individual_delay_max_var, width=5).grid(row=0, column=2)
+        ttk.Label(delay_range_frame, text=" seconds").grid(row=0, column=3)
+
+        # Initially hide individual delay settings
+        self.toggle_individual_delay_settings()
+
+        # === ACTION SECTION ===
+        action_section = ttk.Frame(parent)
+        action_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(20, 10))
+        action_section.columnconfigure(0, weight=1)
+        current_row += 1
+
+        # Start scraping button - large and prominent
+        self.start_button = ttk.Button(action_section, text="🚀 Ready to Start Scraping",
+                                     command=self.start_scraping, style='Primary.TButton')
+        self.start_button.pack(fill=tk.X, pady=(0, 10))
+
+        # Quick action buttons
+        button_frame = ttk.Frame(action_section)
+        button_frame.pack(fill=tk.X)
+        button_frame.columnconfigure(0, weight=1)
+        button_frame.columnconfigure(1, weight=1)
+        button_frame.columnconfigure(2, weight=1)
+
+        ttk.Button(button_frame, text="📁 Open Output Folder",
+                  command=self.open_output_folder, style='Secondary.TButton').grid(row=0, column=0, padx=(0, 5), sticky=(tk.W, tk.E))
+
+        ttk.Button(button_frame, text="🔄 Reset Settings",
+                  command=self.reset_settings, style='Secondary.TButton').grid(row=0, column=1, padx=5, sticky=(tk.W, tk.E))
+
+        ttk.Button(button_frame, text="💾 Save Config",
+                  command=self.save_config, style='Secondary.TButton').grid(row=0, column=2, padx=(5, 0), sticky=(tk.W, tk.E))
+
+    def toggle_individual_delay_settings(self):
+        """Show/hide individual delay settings based on individual pages checkbox"""
+        if self.individual_pages_var.get():
+            self.individual_delay_frame.grid()
+        else:
+            self.individual_delay_frame.grid_remove()
+
+    def on_individual_pages_changed(self):
+        """Handle individual pages checkbox change"""
+        self.toggle_individual_delay_settings()
+        self.update_individual_pages_info()
+
+    def update_individual_pages_info(self):
+        """Update individual pages information text"""
+        if self.individual_pages_var.get():
+            self.individual_info_var.set("⚠️ Individual page scraping will significantly increase scraping time but provides detailed amenities, floor plans, and neighborhood data.")
+        else:
+            self.individual_info_var.set("ℹ️ Using listing page data only (recommended for faster scraping)")
+
+    def open_output_folder(self):
+        """Open the output folder in file explorer"""
+        import os
+        import subprocess
+        import platform
+
+        output_dir = self.output_dir_var.get()
+        if not os.path.exists(output_dir):
+            messagebox.showwarning("Warning", f"Output directory does not exist: {output_dir}")
+            return
+
+        try:
+            if platform.system() == "Windows":
+                os.startfile(output_dir)
+            elif platform.system() == "Darwin":  # macOS
+                subprocess.run(["open", output_dir])
+            else:  # Linux
+                subprocess.run(["xdg-open", output_dir])
+        except Exception as e:
+            messagebox.showerror("Error", f"Could not open output folder: {str(e)}")
+
+    def reset_settings(self):
+        """Reset all settings to defaults"""
+        if messagebox.askyesno("Reset Settings", "Are you sure you want to reset all settings to defaults?"):
+            # Reset to default values
+            self.config = {
+                'city': 'gurgaon',
+                'mode': ScrapingMode.INCREMENTAL,
+                'max_pages': 100,
+                'headless': True,
+                'output_directory': str(Path.cwd()),
+                'incremental_enabled': True,
+                'page_delay': 3,
+                'max_retries': 3,
+                'export_json': False,
+                'export_excel': False,
+                'individual_pages': False
+            }
+
+            # Update GUI elements
+            self.mode_var.set(self.config['mode'].value)
+            self.max_pages_var.set(str(self.config['max_pages']))
+            self.output_dir_var.set(self.config['output_directory'])
+            self.headless_var.set(self.config['headless'])
+            self.incremental_var.set(self.config['incremental_enabled'])
+            self.delay_var.set(str(self.config['page_delay']))
+            self.retry_var.set(str(self.config['max_retries']))
+            self.export_json_var.set(self.config['export_json'])
+            self.export_excel_var.set(self.config['export_excel'])
+            self.individual_pages_var.set(self.config['individual_pages'])
+
+            # Update dependent elements
+            self.update_mode_description()
+            self.toggle_individual_delay_settings()
+            self.update_individual_pages_info()
+
+            messagebox.showinfo("Settings Reset", "All settings have been reset to defaults.")
+
+    def save_config(self):
+        """Save current configuration to file"""
+        try:
+            config_data = {
+                'city': self.selected_cities[0] if self.selected_cities else 'gurgaon',
+                'mode': self.mode_var.get(),
+                'max_pages': int(self.max_pages_var.get()),
+                'headless': self.headless_var.get(),
+                'output_directory': self.output_dir_var.get(),
+                'incremental_enabled': self.incremental_var.get(),
+                'page_delay': int(self.delay_var.get()),
+                'max_retries': int(self.retry_var.get()),
+                'export_json': self.export_json_var.get(),
+                'export_excel': self.export_excel_var.get(),
+                'individual_pages': self.individual_pages_var.get(),
+                'individual_delay_min': int(self.individual_delay_min_var.get()),
+                'individual_delay_max': int(self.individual_delay_max_var.get()),
+                'selected_cities': self.selected_cities
+            }
+
+            config_file = Path('magicbricks_gui_config.json')
+            with open(config_file, 'w') as f:
+                json.dump(config_data, f, indent=2)
+
+            messagebox.showinfo("Configuration Saved", f"Configuration saved to {config_file}")
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Could not save configuration: {str(e)}")
         
         # Scraping mode
         ttk.Label(control_frame, text="Scraping Mode:", style='Heading.TLabel').grid(row=current_row, column=0, sticky=tk.W, pady=(0, 5))
@@ -403,87 +822,145 @@ class MagicBricksGUI:
         self.schedule_btn.pack(side=tk.LEFT)
     
     def create_monitoring_panel(self, parent):
-        """Create the monitoring panel with progress and logs"""
-        
-        # Monitoring panel frame
-        monitor_frame = ttk.LabelFrame(parent, text="Scraping Progress & Monitoring", padding="15")
-        monitor_frame.grid(row=2, column=1, sticky=(tk.W, tk.E, tk.N, tk.S))
-        monitor_frame.columnconfigure(0, weight=1)
-        monitor_frame.rowconfigure(2, weight=1)
-        
-        # Progress section
-        progress_frame = ttk.Frame(monitor_frame)
-        progress_frame.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
-        progress_frame.columnconfigure(1, weight=1)
-        
-        # Progress bar
-        ttk.Label(progress_frame, text="Progress:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W)
+        """Create modern monitoring panel with progress and logs"""
+
+        # Monitoring panel container
+        monitor_container = ttk.LabelFrame(parent, text="📊 Scraping Progress & Monitoring", padding="10")
+        monitor_container.grid(row=0, column=1, sticky=(tk.W, tk.E, tk.N, tk.S))
+        monitor_container.columnconfigure(0, weight=1)
+        monitor_container.rowconfigure(2, weight=1)
+
+        # === PROGRESS SECTION ===
+        progress_section = ttk.LabelFrame(monitor_container, text="📈 Progress", padding="15")
+        progress_section.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=(0, 10))
+        progress_section.columnconfigure(1, weight=1)
+        # Progress information with modern cards
+        ttk.Label(progress_section, text="Progress:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
         self.progress_var = tk.DoubleVar()
-        self.progress_bar = ttk.Progressbar(progress_frame, variable=self.progress_var, maximum=100)
-        self.progress_bar.grid(row=0, column=1, sticky=(tk.W, tk.E), padx=(10, 0))
-        
-        # Statistics
-        stats_frame = ttk.Frame(monitor_frame)
-        stats_frame.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
-        
-        # Create statistics labels
+        self.progress_bar = ttk.Progressbar(progress_section, variable=self.progress_var, maximum=100, length=300)
+        self.progress_bar.grid(row=0, column=1, sticky=(tk.W, tk.E), padx=(10, 0), pady=(0, 5))
+
+        # Progress percentage
+        self.progress_text_var = tk.StringVar(value="0%")
+        ttk.Label(progress_section, textvariable=self.progress_text_var, style='Info.TLabel').grid(row=0, column=2, padx=(10, 0))
+
+        # === STATISTICS SECTION ===
+        stats_section = ttk.LabelFrame(monitor_container, text="📈 Statistics", padding="15")
+        stats_section.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(0, 10))
+        stats_section.columnconfigure(0, weight=1)
+        stats_section.columnconfigure(1, weight=1)
+        stats_section.columnconfigure(2, weight=1)
+
+        # Create modern statistics display
         self.stats_labels = {}
         stats_info = [
-            ('session_id', 'Session ID: N/A'),
-            ('mode', 'Mode: Not Started'),
-            ('pages_scraped', 'Pages Scraped: 0'),
-            ('properties_found', 'Properties Found: 0'),
-            ('properties_saved', 'Properties Saved: 0'),
-            ('duration', 'Duration: 0m 0s'),
-            ('estimated_remaining', 'Est. Remaining: N/A'),
-            ('avg_properties_per_page', 'Avg Props/Page: N/A'),
-            ('scraping_speed', 'Speed: N/A props/min'),
-            ('status', 'Status: Ready')
+            ('session_id', '🆔 Session ID:', 'N/A'),
+            ('mode', '⚙️ Mode:', 'Not Started'),
+            ('pages_scraped', '📄 Pages Scraped:', '0'),
+            ('properties_found', '🏠 Properties Found:', '0'),
+            ('properties_saved', '💾 Properties Saved:', '0'),
+            ('duration', '⏱️ Duration:', '0m 0s'),
+            ('estimated_remaining', '⏳ Est. Remaining:', 'N/A'),
+            ('scraping_speed', '⚡ Speed:', 'N/A props/min'),
+            ('status', '📊 Status:', 'Ready')
         ]
 
-        for i, (key, default_text) in enumerate(stats_info):
-            label = ttk.Label(stats_frame, text=default_text, style='Info.TLabel')
-            label.grid(row=i//3, column=i%3, sticky=tk.W, padx=(0, 15), pady=2)
-            self.stats_labels[key] = label
-        
-        # Log output
-        ttk.Label(monitor_frame, text="Scraping Log:", style='Heading.TLabel').grid(row=2, column=0, sticky=tk.W, pady=(15, 5))
-        
-        self.log_text = scrolledtext.ScrolledText(monitor_frame, height=15, width=60, wrap=tk.WORD)
-        self.log_text.grid(row=3, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
-        
-        # Log control buttons
-        log_btn_frame = ttk.Frame(monitor_frame)
-        log_btn_frame.grid(row=4, column=0, pady=(10, 0))
-        
-        clear_log_btn = ttk.Button(log_btn_frame, text="Clear Log", command=self.clear_log)
-        clear_log_btn.pack(side=tk.LEFT, padx=(0, 10))
-        
-        save_log_btn = ttk.Button(log_btn_frame, text="Save Log", command=self.save_log)
-        save_log_btn.pack(side=tk.LEFT, padx=(0, 10))
+        for i, (key, label_text, default_value) in enumerate(stats_info):
+            row = i // 3
+            col = i % 3
 
-        view_results_btn = ttk.Button(log_btn_frame, text="📊 View Results", command=self.open_results_viewer)
-        view_results_btn.pack(side=tk.LEFT, padx=(0, 10))
+            # Create a mini card for each stat
+            stat_frame = ttk.Frame(stats_section, style='Card.TFrame')
+            stat_frame.grid(row=row, column=col, sticky=(tk.W, tk.E), padx=5, pady=5)
+            stat_frame.columnconfigure(0, weight=1)
 
-        error_log_btn = ttk.Button(log_btn_frame, text="🛡️ Error Log", command=self.open_error_log_viewer)
-        error_log_btn.pack(side=tk.LEFT)
+            ttk.Label(stat_frame, text=label_text, style='Heading.TLabel').pack(anchor=tk.W, padx=8, pady=(8, 2))
+
+            value_label = ttk.Label(stat_frame, text=default_value, style='Info.TLabel')
+            value_label.pack(anchor=tk.W, padx=8, pady=(0, 8))
+            self.stats_labels[key] = value_label
+
+        # === LOG SECTION ===
+        log_section = ttk.LabelFrame(monitor_container, text="📝 Scraping Log", padding="10")
+        log_section.grid(row=2, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        log_section.columnconfigure(0, weight=1)
+        log_section.rowconfigure(0, weight=1)
+
+        # Log text area with better styling
+        self.log_text = scrolledtext.ScrolledText(log_section, height=12, wrap=tk.WORD,
+                                                font=('Consolas', 9), bg='#f8f9fa')
+        self.log_text.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 10))
+
+        # Log control buttons with modern styling
+        log_btn_frame = ttk.Frame(log_section)
+        log_btn_frame.grid(row=1, column=0, sticky=(tk.W, tk.E))
+        log_btn_frame.columnconfigure(0, weight=1)
+
+        # Left side buttons
+        left_buttons = ttk.Frame(log_btn_frame)
+        left_buttons.pack(side=tk.LEFT)
+
+        ttk.Button(left_buttons, text="🗑️ Clear Log", command=self.clear_log,
+                  style='Secondary.TButton').pack(side=tk.LEFT, padx=(0, 5))
+
+        ttk.Button(left_buttons, text="💾 Save Log", command=self.save_log,
+                  style='Secondary.TButton').pack(side=tk.LEFT, padx=(0, 5))
+
+        # Right side buttons
+        right_buttons = ttk.Frame(log_btn_frame)
+        right_buttons.pack(side=tk.RIGHT)
+
+        ttk.Button(right_buttons, text="📊 View Results", command=self.open_results_viewer,
+                  style='Secondary.TButton').pack(side=tk.LEFT, padx=(0, 5))
+
+        ttk.Button(right_buttons, text="🛡️ Error Log", command=self.open_error_log_viewer,
+                  style='Secondary.TButton').pack(side=tk.LEFT)
     
-    def create_status_bar(self, parent):
-        """Create the bottom status bar"""
-        
-        # Status bar frame
-        status_frame = ttk.Frame(parent)
-        status_frame.grid(row=3, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(20, 0))
-        status_frame.columnconfigure(0, weight=1)
-        
-        # Status label
+    def create_modern_status_bar(self, parent):
+        """Create modern status bar with enhanced information"""
+
+        # Status bar container
+        status_container = ttk.Frame(parent, style='Card.TFrame')
+        status_container.grid(row=2, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(10, 0))
+        status_container.columnconfigure(1, weight=1)
+
+        # Left side - Status
+        status_left = ttk.Frame(status_container)
+        status_left.grid(row=0, column=0, sticky=tk.W, padx=15, pady=10)
+
+        ttk.Label(status_left, text="Status:", style='Heading.TLabel').pack(side=tk.LEFT)
         self.status_var = tk.StringVar(value="Ready to start scraping")
-        status_label = ttk.Label(status_frame, textvariable=self.status_var, style='Info.TLabel')
-        status_label.grid(row=0, column=0, sticky=tk.W)
-        
-        # Version info
-        version_label = ttk.Label(status_frame, text="v2.0 - Incremental Scraping Edition", style='Info.TLabel')
-        version_label.grid(row=0, column=1, sticky=tk.E)
+        status_label = ttk.Label(status_left, textvariable=self.status_var, style='Info.TLabel')
+        status_label.pack(side=tk.LEFT, padx=(5, 0))
+
+        # Center - Quick stats
+        stats_center = ttk.Frame(status_container)
+        stats_center.grid(row=0, column=1, pady=10)
+
+        self.quick_stats_var = tk.StringVar(value="🏙️ Cities: 0 | 📄 Pages: 0 | 🏠 Properties: 0")
+        quick_stats_label = ttk.Label(stats_center, textvariable=self.quick_stats_var, style='Info.TLabel')
+        quick_stats_label.pack()
+
+        # Right side - Version and time
+        status_right = ttk.Frame(status_container)
+        status_right.grid(row=0, column=2, sticky=tk.E, padx=15, pady=10)
+
+        version_label = ttk.Label(status_right, text="v2.0 Professional", style='Info.TLabel')
+        version_label.pack(side=tk.RIGHT)
+
+        # Current time display
+        self.time_var = tk.StringVar()
+        time_label = ttk.Label(status_right, textvariable=self.time_var, style='Info.TLabel')
+        time_label.pack(side=tk.RIGHT, padx=(0, 10))
+
+        # Update time every second
+        self.update_time()
+
+    def update_time(self):
+        """Update the current time display"""
+        current_time = datetime.now().strftime("%H:%M:%S")
+        self.time_var.set(f"🕐 {current_time}")
+        self.root.after(1000, self.update_time)  # Update every second
     
     def update_mode_description(self):
         """Update the mode description based on selected mode"""
