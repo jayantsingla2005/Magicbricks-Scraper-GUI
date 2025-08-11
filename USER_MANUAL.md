@@ -135,6 +135,55 @@ The MagicBricks Property Scraper is a professional-grade tool designed to extrac
 - **Precision**: Target specific posting periods
 - **Use Cases**: Market analysis, trend research
 
+## Individual Property Page Scraping
+
+### Overview
+The scraper offers two levels of data extraction:
+
+#### 1. Fast Listing Mode (Default - Recommended)
+- **Speed**: Maximum performance (100+ properties/minute)
+- **Data Fields**: 22 comprehensive fields per property
+- **Coverage**: All essential property information
+- **Best For**: Most users, regular data collection
+- **Fields Include**: Price, area, location, amenities, contact details, posting dates
+
+#### 2. Detailed Individual Mode (Optional)
+- **Speed**: 5-10x slower (10-20 properties/minute)
+- **Data Fields**: 30+ detailed fields per property
+- **Coverage**: Comprehensive property specifications
+- **Best For**: Detailed analysis, premium data requirements
+- **Additional Fields**: Full descriptions, builder information, detailed amenities, floor plans, neighborhood data
+
+### When to Use Individual Property Mode
+
+#### ✅ Recommended For:
+- **Market Research**: Detailed property analysis
+- **Investment Analysis**: Comprehensive due diligence
+- **Competitive Analysis**: Full property specifications
+- **Premium Data Needs**: Maximum information extraction
+
+#### ❌ Not Recommended For:
+- **Regular Updates**: Daily/weekly data collection
+- **Large Datasets**: 1000+ properties
+- **Quick Analysis**: Fast market overviews
+- **Bandwidth Constraints**: Limited internet connections
+
+### Performance Impact
+
+| Mode | Properties/Hour | Data Fields | Use Case |
+|------|----------------|-------------|----------|
+| Fast Listing | 3,000-6,000 | 22 fields | Regular updates |
+| Individual Pages | 600-1,200 | 30+ fields | Detailed analysis |
+
+### Configuration
+1. Open the GUI application
+2. Navigate to "Advanced Options"
+3. Check "Include Individual Property Details"
+4. Review the time impact warning
+5. Start scraping with enhanced data collection
+
+⚠️ **Important**: Individual property mode significantly increases scraping time. Plan accordingly for large datasets.
+
 ## Multi-City Selection
 
 ### City Categories
@@ -214,6 +263,12 @@ The MagicBricks Property Scraper is a professional-grade tool designed to extrac
 - **Page Delays**: Control request timing
 - **Memory Management**: Optimize for large datasets
 - **Browser Settings**: Headless mode, window size
+
+### Data Extraction Options
+- **Incremental Scraping**: Enable smart incremental updates (60-75% time savings)
+- **Individual Property Pages**: Include detailed property information (⚠️ 5-10x slower)
+- **Headless Mode**: Run browser without GUI for faster performance
+- **Anti-Detection**: Advanced stealth measures for reliable scraping
 
 ### Error Handling
 - **Retry Attempts**: Configure retry behavior
@@ -307,6 +362,18 @@ A: Incremental mode saves 60-75% time by only scraping new properties, making it
 
 **Q: Can I run multiple instances?**
 A: Not recommended. Use multi-city selection for parallel processing instead.
+
+**Q: Should I use individual property page scraping?**
+A: For most users, the fast listing mode (22 fields) provides all essential data. Use individual property mode only when you need detailed specifications, full descriptions, or comprehensive amenities lists.
+
+**Q: How much slower is individual property mode?**
+A: Individual property mode is 5-10x slower than listing mode. For example, scraping 1000 properties takes ~15 minutes in listing mode vs ~2 hours in individual mode.
+
+**Q: What additional data does individual property mode provide?**
+A: Individual mode adds: full property descriptions, detailed builder information, comprehensive amenities lists, floor plan details, neighborhood data, and detailed specifications.
+
+**Q: Can I switch between modes for different scraping sessions?**
+A: Yes, you can enable/disable individual property mode for each scraping session. The setting is saved in your configuration.
 
 **Q: How accurate is the data?**
 A: Data accuracy depends on source website. Our tool achieves 85%+ field completeness with robust validation.

@@ -64,6 +64,14 @@ class IntegratedMagicBricksScraper:
             'stop_reason': None
         }
 
+        # Anti-scraping enhancement variables
+        self.bot_detection_count = 0
+        self.last_detection_time = None
+        self.current_user_agent_index = 0
+        self.session_start_time = None
+        self.failed_requests = 0
+        self.consecutive_failures = 0
+
         # City URL mapping for correct URLs
         self.city_url_mapping = {
             'mumbai': 'mumbai',
@@ -187,7 +195,7 @@ class IntegratedMagicBricksScraper:
             return True
     
     def scrape_properties_with_incremental(self, city: str, mode: ScrapingMode = ScrapingMode.INCREMENTAL,
-                                         max_pages: int = None) -> Dict[str, Any]:
+                                         max_pages: int = None, include_individual_pages: bool = False) -> Dict[str, Any]:
         """Main scraping method with incremental support"""
         
         try:
@@ -207,10 +215,11 @@ class IntegratedMagicBricksScraper:
             
             print(f"🔗 Base URL: {base_url}")
             
-            # Scraping loop
+            # Scraping loop with enhanced anti-scraping
             page_number = 1
             consecutive_old_pages = 0
-            
+            self.session_start_time = time.time()
+
             while True:
                 # Check page limits
                 if max_pages and page_number > max_pages:
@@ -226,12 +235,21 @@ class IntegratedMagicBricksScraper:
                 
                 print(f"\n📄 Scraping page {page_number}: {page_url}")
                 
-                # Scrape page
+                # Scrape page with bot detection
                 page_result = self.scrape_single_page(page_url, page_number)
-                
+
                 if not page_result['success']:
+                    self.consecutive_failures += 1
                     print(f"❌ Failed to scrape page {page_number}: {page_result['error']}")
-                    break
+
+                    # Check if it's bot detection
+                    if 'bot' in page_result['error'].lower() or 'captcha' in page_result['error'].lower():
+                        self._handle_bot_detection()
+                        continue  # Retry after recovery
+                    else:
+                        break
+                else:
+                    self.consecutive_failures = 0  # Reset on success
                 
                 # Update statistics
                 self.session_stats['pages_scraped'] += 1
@@ -251,25 +269,50 @@ class IntegratedMagicBricksScraper:
                         print(f"🛑 Incremental stopping: {should_stop['reason']}")
                         break
                 
-                # Random delay between pages
-                delay = random.uniform(2, 5)
-                print(f"⏱️ Waiting {delay:.1f} seconds before next page...")
-                time.sleep(delay)
+                # Enhanced delay strategy
+                self._enhanced_delay_strategy(page_number)
                 
                 page_number += 1
             
             # Finalize session
             self.finalize_scraping_session()
 
-            # Save to CSV and get filename
+            # Save to CSV and get filename (Phase 1 Complete)
             df, output_file = self.save_to_csv()
+
+            # PHASE 2: Optional Individual Property Page Scraping
+            individual_properties_scraped = 0
+            if include_individual_pages and len(self.properties) > 0:
+                self.logger.info("\\n🏠 PHASE 2: Starting Individual Property Page Scraping")
+                self.logger.info("=" * 60)
+
+                # Extract property URLs from scraped data
+                property_urls = [prop.get('property_url', '') for prop in self.properties if prop.get('property_url')]
+                property_urls = [url for url in property_urls if url]  # Remove empty URLs
+
+                if property_urls:
+                    self.logger.info(f"   📋 Found {len(property_urls)} property URLs for detailed scraping")
+
+                    # Scrape individual property pages with enhanced anti-scraping
+                    detailed_properties = self.scrape_individual_property_pages(property_urls, batch_size=10)
+                    individual_properties_scraped = len(detailed_properties)
+
+                    # Update CSV with detailed information if any were scraped
+                    if detailed_properties:
+                        self._update_csv_with_individual_data(output_file, detailed_properties)
+                        self.logger.info(f"   ✅ Updated CSV with {individual_properties_scraped} detailed properties")
+
+                else:
+                    self.logger.warning("   ⚠️ No property URLs found for individual page scraping")
 
             return {
                 'success': True,
                 'session_stats': self.session_stats,
                 'properties_scraped': len(self.properties),
+                'individual_properties_scraped': individual_properties_scraped,
                 'pages_scraped': self.session_stats['pages_scraped'],
-                'output_file': output_file
+                'output_file': output_file,
+                'two_phase_scraping': include_individual_pages
             }
             
         except Exception as e:
@@ -295,6 +338,13 @@ class IntegratedMagicBricksScraper:
 
             # Navigate to page
             self.driver.get(page_url)
+
+            # Check for bot detection
+            page_source = self.driver.page_source
+            current_url = self.driver.current_url
+
+            if self._detect_bot_detection(page_source, current_url):
+                return {'success': False, 'error': 'Bot detection triggered'}
 
             # Wait for content to load using proven selectors
             has_container = self._wait_for_listing_container()
@@ -727,9 +777,405 @@ class IntegratedMagicBricksScraper:
             self.logger.error(f"Error saving to CSV: {str(e)}")
             return None, None
     
+    def _get_enhanced_user_agents(self):
+        """Get list of realistic user agents for rotation"""
+        return [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+        ]
+
+    def _detect_bot_detection(self, page_source: str, current_url: str) -> bool:
+        """Detect if we've been flagged as a bot"""
+        bot_indicators = [
+            'captcha', 'robot', 'bot detection', 'access denied',
+            'cloudflare', 'please verify', 'security check',
+            'unusual traffic', 'automated requests'
+        ]
+
+        page_lower = page_source.lower()
+        url_lower = current_url.lower()
+
+        for indicator in bot_indicators:
+            if indicator in page_lower or indicator in url_lower:
+                return True
+
+        return False
+
+    def _handle_bot_detection(self):
+        """Handle bot detection with recovery strategies"""
+        self.bot_detection_count += 1
+        self.last_detection_time = time.time()
+
+        self.logger.warning(f"🚨 Bot detection #{self.bot_detection_count} - Implementing recovery strategy")
+
+        if self.bot_detection_count <= 3:
+            # Strategy 1: Extended delay and user agent rotation
+            delay = min(30 + (self.bot_detection_count * 15), 120)  # 30s to 120s
+            self.logger.info(f"   🔄 Strategy 1: Extended delay ({delay}s) + User agent rotation")
+
+            # Rotate user agent
+            user_agents = self._get_enhanced_user_agents()
+            self.current_user_agent_index = (self.current_user_agent_index + 1) % len(user_agents)
+
+            time.sleep(delay)
+
+            # Restart browser session
+            self._restart_browser_session()
+
+        elif self.bot_detection_count <= 5:
+            # Strategy 2: Longer delay and session reset
+            delay = 180 + (self.bot_detection_count * 30)  # 3-5 minutes
+            self.logger.info(f"   🔄 Strategy 2: Long delay ({delay}s) + Complete session reset")
+
+            time.sleep(delay)
+            self._restart_browser_session()
+
+        else:
+            # Strategy 3: Extended break
+            delay = 600  # 10 minutes
+            self.logger.warning(f"   ⏸️ Strategy 3: Extended break ({delay}s) - Multiple detections")
+            time.sleep(delay)
+            self._restart_browser_session()
+
+    def _restart_browser_session(self):
+        """Restart browser session with new configuration"""
+        try:
+            if self.driver:
+                self.driver.quit()
+                time.sleep(2)
+
+            # Create new session with rotated user agent
+            self._setup_webdriver()
+            self.logger.info("   ✅ Browser session restarted successfully")
+
+        except Exception as e:
+            self.logger.error(f"   ❌ Failed to restart browser session: {str(e)}")
+
+    def _enhanced_delay_strategy(self, page_number: int):
+        """Enhanced delay strategy based on session health"""
+        base_delay = random.uniform(2.0, 5.0)
+
+        # Increase delays if we've had recent bot detection
+        if self.last_detection_time and (time.time() - self.last_detection_time) < 300:  # 5 minutes
+            base_delay *= 1.5
+
+        # Increase delays for consecutive failures
+        if self.consecutive_failures > 0:
+            base_delay *= (1 + self.consecutive_failures * 0.3)
+
+        # Longer delays for later pages in session
+        if page_number > 10:
+            base_delay *= 1.2
+
+        # Session duration factor
+        if self.session_start_time and (time.time() - self.session_start_time) > 1800:  # 30 minutes
+            base_delay *= 1.3
+
+        final_delay = min(base_delay, 15.0)  # Cap at 15 seconds
+
+        self.logger.info(f"⏱️ Waiting {final_delay:.1f} seconds before next page...")
+        time.sleep(final_delay)
+
+    def scrape_individual_property_pages(self, property_urls: List[str], batch_size: int = 10) -> List[Dict[str, Any]]:
+        """
+        Enhanced individual property page scraping with advanced anti-scraping measures
+        """
+        detailed_properties = []
+        total_urls = len(property_urls)
+
+        self.logger.info(f"🏠 Starting individual property page scraping for {total_urls} properties")
+        self.logger.info(f"   📦 Batch size: {batch_size}")
+        self.logger.info(f"   🛡️ Enhanced anti-scraping: Enabled")
+
+        # Process in batches
+        for batch_start in range(0, total_urls, batch_size):
+            batch_end = min(batch_start + batch_size, total_urls)
+            batch_urls = property_urls[batch_start:batch_end]
+
+            self.logger.info(f"\\n📦 Processing batch {batch_start//batch_size + 1}: Properties {batch_start+1}-{batch_end}")
+
+            # Process each property in the batch
+            for i, url in enumerate(batch_urls, 1):
+                try:
+                    # Enhanced delay strategy for individual pages
+                    if i > 1:  # Skip delay for first property in batch
+                        delay = self._calculate_individual_page_delay(i, len(batch_urls))
+                        self.logger.info(f"   ⏱️ Waiting {delay:.1f}s before next property...")
+                        time.sleep(delay)
+
+                    # Scrape individual property
+                    property_data = self._scrape_single_property_page(url, batch_start + i)
+
+                    if property_data:
+                        detailed_properties.append(property_data)
+                        self.logger.info(f"   ✅ Property {batch_start + i}/{total_urls}: Success")
+                    else:
+                        self.logger.warning(f"   ❌ Property {batch_start + i}/{total_urls}: Failed")
+
+                except Exception as e:
+                    self.logger.error(f"   ❌ Property {batch_start + i}/{total_urls}: Error - {str(e)}")
+                    continue
+
+            # Batch completion break
+            if batch_end < total_urls:
+                batch_break = 15 + (batch_start // batch_size) * 5  # Increasing breaks
+                self.logger.info(f"   🛌 Batch break: {batch_break}s")
+                time.sleep(batch_break)
+
+        self.logger.info(f"\\n🎉 Individual property scraping complete: {len(detailed_properties)}/{total_urls} successful")
+        return detailed_properties
+
+    def _calculate_individual_page_delay(self, property_index: int, batch_size: int) -> float:
+        """Calculate smart delay for individual property pages"""
+        import random
+
+        # Base delay: 3-8 seconds
+        base_delay = random.uniform(3.0, 8.0)
+
+        # Increase delay based on recent bot detection
+        if self.last_detection_time and (time.time() - self.last_detection_time) < 600:  # 10 minutes
+            base_delay *= 1.8
+
+        # Increase delay for consecutive failures
+        if self.consecutive_failures > 0:
+            base_delay *= (1 + self.consecutive_failures * 0.4)
+
+        # Progressive delay within batch
+        if property_index > 5:
+            base_delay *= 1.2
+
+        # Session duration factor
+        if self.session_start_time and (time.time() - self.session_start_time) > 3600:  # 1 hour
+            base_delay *= 1.5
+
+        return min(base_delay, 20.0)  # Cap at 20 seconds
+
+    def _scrape_single_property_page(self, url: str, property_index: int) -> Optional[Dict[str, Any]]:
+        """Scrape a single property page with enhanced error handling"""
+        try:
+            # Navigate with bot detection
+            self.driver.get(url)
+
+            # Check for bot detection
+            page_source = self.driver.page_source
+            current_url = self.driver.current_url
+
+            if self._detect_bot_detection(page_source, current_url):
+                self.logger.warning(f"   🚨 Bot detection on property {property_index}")
+                self._handle_bot_detection()
+                return None
+
+            # Wait for page load
+            time.sleep(2)
+
+            # Extract detailed property data
+            soup = BeautifulSoup(page_source, 'html.parser')
+
+            property_data = {
+                'url': url,
+                'scraped_at': datetime.now().isoformat(),
+                'property_index': property_index,
+                'title': self._extract_property_title(soup),
+                'price': self._extract_property_price(soup),
+                'area': self._extract_property_area(soup),
+                'amenities': self._extract_amenities(soup),
+                'description': self._extract_description(soup),
+                'builder_info': self._extract_builder_info(soup),
+                'location_details': self._extract_location_details(soup),
+                'specifications': self._extract_specifications(soup)
+            }
+
+            return property_data
+
+        except Exception as e:
+            self.logger.error(f"   ❌ Error scraping property {property_index}: {str(e)}")
+            return None
+
+    def _extract_property_title(self, soup: BeautifulSoup) -> str:
+        """Extract property title from individual page"""
+        selectors = [
+            'h1.mb-ldp__dtls__title',
+            'h1[class*="title"]',
+            '.property-title',
+            'h1'
+        ]
+
+        for selector in selectors:
+            element = soup.select_one(selector)
+            if element:
+                return element.get_text(strip=True)
+
+        return ''
+
+    def _extract_property_price(self, soup: BeautifulSoup) -> str:
+        """Extract property price from individual page"""
+        selectors = [
+            '.mb-ldp__dtls__price',
+            '[class*="price"]',
+            '.property-price'
+        ]
+
+        for selector in selectors:
+            element = soup.select_one(selector)
+            if element:
+                return element.get_text(strip=True)
+
+        return ''
+
+    def _extract_property_area(self, soup: BeautifulSoup) -> str:
+        """Extract property area from individual page"""
+        selectors = [
+            '.mb-ldp__dtls__area',
+            '[class*="area"]',
+            '.property-area'
+        ]
+
+        for selector in selectors:
+            element = soup.select_one(selector)
+            if element:
+                return element.get_text(strip=True)
+
+        return ''
+
+    def _extract_amenities(self, soup: BeautifulSoup) -> List[str]:
+        """Extract amenities from individual page"""
+        amenities = []
+
+        # Common amenity selectors
+        amenity_selectors = [
+            '.mb-ldp__amenities li',
+            '.amenities-list li',
+            '[class*="amenity"]'
+        ]
+
+        for selector in amenity_selectors:
+            elements = soup.select(selector)
+            for element in elements:
+                amenity = element.get_text(strip=True)
+                if amenity and amenity not in amenities:
+                    amenities.append(amenity)
+
+        return amenities
+
+    def _extract_description(self, soup: BeautifulSoup) -> str:
+        """Extract property description from individual page"""
+        selectors = [
+            '.mb-ldp__dtls__desc',
+            '.property-description',
+            '[class*="description"]'
+        ]
+
+        for selector in selectors:
+            element = soup.select_one(selector)
+            if element:
+                return element.get_text(strip=True)
+
+        return ''
+
+    def _extract_builder_info(self, soup: BeautifulSoup) -> Dict[str, str]:
+        """Extract builder information from individual page"""
+        builder_info = {}
+
+        # Builder name
+        builder_selectors = [
+            '.mb-ldp__builder__name',
+            '.builder-name',
+            '[class*="builder"]'
+        ]
+
+        for selector in builder_selectors:
+            element = soup.select_one(selector)
+            if element:
+                builder_info['name'] = element.get_text(strip=True)
+                break
+
+        return builder_info
+
+    def _extract_location_details(self, soup: BeautifulSoup) -> Dict[str, str]:
+        """Extract detailed location information"""
+        location_details = {}
+
+        # Location selectors
+        location_selectors = [
+            '.mb-ldp__location',
+            '.property-location',
+            '[class*="location"]'
+        ]
+
+        for selector in location_selectors:
+            element = soup.select_one(selector)
+            if element:
+                location_details['address'] = element.get_text(strip=True)
+                break
+
+        return location_details
+
+    def _extract_specifications(self, soup: BeautifulSoup) -> Dict[str, str]:
+        """Extract detailed specifications"""
+        specifications = {}
+
+        # Specification selectors
+        spec_selectors = [
+            '.mb-ldp__specs tr',
+            '.specifications tr',
+            '[class*="spec"] tr'
+        ]
+
+        for selector in spec_selectors:
+            rows = soup.select(selector)
+            for row in rows:
+                cells = row.find_all(['td', 'th'])
+                if len(cells) >= 2:
+                    key = cells[0].get_text(strip=True)
+                    value = cells[1].get_text(strip=True)
+                    if key and value:
+                        specifications[key] = value
+
+        return specifications
+
+    def _update_csv_with_individual_data(self, csv_file: str, detailed_properties: List[Dict[str, Any]]):
+        """Update CSV file with detailed individual property data"""
+        try:
+            import pandas as pd
+
+            # Read existing CSV
+            df = pd.read_csv(csv_file)
+
+            # Create a mapping of URL to detailed data
+            detailed_data_map = {prop['url']: prop for prop in detailed_properties}
+
+            # Add new columns for detailed data
+            new_columns = ['amenities', 'description', 'builder_name', 'location_address', 'specifications']
+            for col in new_columns:
+                if col not in df.columns:
+                    df[col] = ''
+
+            # Update rows with detailed data
+            for index, row in df.iterrows():
+                property_url = row.get('property_url', '')
+                if property_url in detailed_data_map:
+                    detailed_data = detailed_data_map[property_url]
+
+                    # Update with detailed information
+                    df.at[index, 'amenities'] = ', '.join(detailed_data.get('amenities', []))
+                    df.at[index, 'description'] = detailed_data.get('description', '')
+                    df.at[index, 'builder_name'] = detailed_data.get('builder_info', {}).get('name', '')
+                    df.at[index, 'location_address'] = detailed_data.get('location_details', {}).get('address', '')
+                    df.at[index, 'specifications'] = str(detailed_data.get('specifications', {}))
+
+            # Save updated CSV
+            df.to_csv(csv_file, index=False)
+            self.logger.info(f"   💾 CSV updated with detailed property information")
+
+        except Exception as e:
+            self.logger.error(f"   ❌ Failed to update CSV with detailed data: {str(e)}")
+
     def close(self):
         """Close the WebDriver"""
-        
+
         if self.driver:
             self.driver.quit()
             self.logger.info("WebDriver closed")

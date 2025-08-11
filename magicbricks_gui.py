@@ -224,9 +224,22 @@ class MagicBricksGUI:
         incremental_check = ttk.Checkbutton(advanced_frame, text="Enable Incremental Scraping (60-75% time savings)", variable=self.incremental_var)
         incremental_check.grid(row=1, column=0, columnspan=2, sticky=tk.W, pady=(0, 5))
 
+        # Individual property pages scraping
+        self.individual_pages_var = tk.BooleanVar(value=False)
+        individual_check = ttk.Checkbutton(advanced_frame, text="Include Individual Property Details (⚠️ 10x slower)",
+                                         variable=self.individual_pages_var, command=self.on_individual_pages_changed)
+        individual_check.grid(row=2, column=0, columnspan=2, sticky=tk.W, pady=(0, 5))
+
+        # Individual pages warning/info
+        self.individual_info_var = tk.StringVar()
+        self.update_individual_pages_info()
+        individual_info_label = ttk.Label(advanced_frame, textvariable=self.individual_info_var,
+                                        style='Warning.TLabel', wraplength=400)
+        individual_info_label.grid(row=3, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 10))
+
         # Delay settings
         delay_frame = ttk.Frame(advanced_frame)
-        delay_frame.grid(row=2, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 0))
+        delay_frame.grid(row=4, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 0))
         delay_frame.columnconfigure(1, weight=1)
 
         ttk.Label(delay_frame, text="Page Delay (seconds):").grid(row=0, column=0, sticky=tk.W)
@@ -236,7 +249,7 @@ class MagicBricksGUI:
 
         # Retry settings
         retry_frame = ttk.Frame(advanced_frame)
-        retry_frame.grid(row=3, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 15))
+        retry_frame.grid(row=5, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 15))
         retry_frame.columnconfigure(1, weight=1)
 
         ttk.Label(retry_frame, text="Max Retries:").grid(row=0, column=0, sticky=tk.W)
@@ -372,7 +385,27 @@ class MagicBricksGUI:
         self.config['mode'] = ScrapingMode(mode_str)
         self.update_mode_description()
         self.log_message(f"Scraping mode changed to: {mode_str}")
-    
+
+    def on_individual_pages_changed(self):
+        """Handle individual pages option change"""
+        self.update_individual_pages_info()
+        if self.individual_pages_var.get():
+            self.log_message("⚠️ Individual property pages enabled - Scraping will be significantly slower")
+        else:
+            self.log_message("Individual property pages disabled - Using fast listing-only mode")
+
+    def update_individual_pages_info(self):
+        """Update the individual pages information text"""
+        if self.individual_pages_var.get():
+            info_text = ("⚠️ SLOWER MODE: Will scrape detailed individual property pages including "
+                        "amenities, descriptions, builder info, and specifications. "
+                        "Expect 5-10x longer scraping time but much more comprehensive data.")
+        else:
+            info_text = ("✅ FAST MODE: Will scrape comprehensive listing data only (22 fields per property). "
+                        "Recommended for most users - provides all essential information at maximum speed.")
+
+        self.individual_info_var.set(info_text)
+
     def browse_output_directory(self):
         """Browse for output directory"""
         directory = filedialog.askdirectory(initialdir=self.config['output_directory'])
@@ -1984,11 +2017,12 @@ For production deployment, schedules integrate with:
             
             self.log_message(f"Starting scraping for {self.config['city']} in {self.config['mode'].value} mode")
             
-            # Start scraping
+            # Start scraping with individual pages option
             result = self.scraper.scrape_properties_with_incremental(
                 city=self.config['city'],
                 mode=self.config['mode'],
-                max_pages=self.config['max_pages']
+                max_pages=self.config['max_pages'],
+                include_individual_pages=self.individual_pages_var.get()
             )
 
             # Get session ID for error tracking
