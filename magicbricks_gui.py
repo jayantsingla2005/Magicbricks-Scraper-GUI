@@ -237,9 +237,30 @@ class MagicBricksGUI:
                                         style='Warning.TLabel', wraplength=400)
         individual_info_label.grid(row=3, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 10))
 
+        # Export format options
+        export_frame = ttk.LabelFrame(advanced_frame, text="Export Formats", padding="10")
+        export_frame.grid(row=4, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 10))
+        export_frame.columnconfigure(0, weight=1)
+
+        # CSV and Database are mandatory
+        ttk.Label(export_frame, text="Mandatory: CSV + Database", font=('TkDefaultFont', 9, 'bold')).grid(row=0, column=0, sticky=tk.W)
+
+        # Optional export formats
+        ttk.Label(export_frame, text="Optional Formats:", font=('TkDefaultFont', 9)).grid(row=1, column=0, sticky=tk.W, pady=(5, 0))
+
+        # JSON export option
+        self.export_json_var = tk.BooleanVar(value=False)
+        json_check = ttk.Checkbutton(export_frame, text="JSON (structured data)", variable=self.export_json_var)
+        json_check.grid(row=2, column=0, sticky=tk.W, pady=(2, 0))
+
+        # Excel export option
+        self.export_excel_var = tk.BooleanVar(value=False)
+        excel_check = ttk.Checkbutton(export_frame, text="Excel (multi-sheet with summary)", variable=self.export_excel_var)
+        excel_check.grid(row=3, column=0, sticky=tk.W, pady=(2, 0))
+
         # Delay settings
         delay_frame = ttk.Frame(advanced_frame)
-        delay_frame.grid(row=4, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 0))
+        delay_frame.grid(row=5, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 0))
         delay_frame.columnconfigure(1, weight=1)
 
         ttk.Label(delay_frame, text="Page Delay (seconds):").grid(row=0, column=0, sticky=tk.W)
@@ -249,13 +270,118 @@ class MagicBricksGUI:
 
         # Retry settings
         retry_frame = ttk.Frame(advanced_frame)
-        retry_frame.grid(row=5, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 15))
+        retry_frame.grid(row=6, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 15))
         retry_frame.columnconfigure(1, weight=1)
 
         ttk.Label(retry_frame, text="Max Retries:").grid(row=0, column=0, sticky=tk.W)
         self.retry_var = tk.StringVar(value="3")
         retry_spin = ttk.Spinbox(retry_frame, from_=1, to=10, textvariable=self.retry_var, width=10)
         retry_spin.grid(row=0, column=1, sticky=tk.W, padx=(10, 0))
+
+        # Advanced delay configurations
+        delay_config_frame = ttk.LabelFrame(advanced_frame, text="Advanced Delay Settings", padding="10")
+        delay_config_frame.grid(row=7, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(10, 5))
+        delay_config_frame.columnconfigure(1, weight=1)
+
+        # Individual page delay range
+        ttk.Label(delay_config_frame, text="Individual Page Delay (min-max):").grid(row=0, column=0, sticky=tk.W)
+        individual_delay_frame = ttk.Frame(delay_config_frame)
+        individual_delay_frame.grid(row=0, column=1, sticky=tk.W, padx=(10, 0))
+
+        self.individual_delay_min_var = tk.StringVar(value="3")
+        self.individual_delay_max_var = tk.StringVar(value="8")
+
+        ttk.Spinbox(individual_delay_frame, from_=1, to=30, textvariable=self.individual_delay_min_var, width=5).grid(row=0, column=0)
+        ttk.Label(individual_delay_frame, text=" - ").grid(row=0, column=1)
+        ttk.Spinbox(individual_delay_frame, from_=1, to=30, textvariable=self.individual_delay_max_var, width=5).grid(row=0, column=2)
+        ttk.Label(individual_delay_frame, text=" seconds").grid(row=0, column=3)
+
+        # Batch break delay
+        ttk.Label(delay_config_frame, text="Batch Break Delay:").grid(row=1, column=0, sticky=tk.W, pady=(5, 0))
+        self.batch_break_var = tk.StringVar(value="15")
+        ttk.Spinbox(delay_config_frame, from_=5, to=60, textvariable=self.batch_break_var, width=10).grid(row=1, column=1, sticky=tk.W, padx=(10, 0), pady=(5, 0))
+
+        # Performance settings
+        performance_frame = ttk.LabelFrame(advanced_frame, text="Performance Settings", padding="10")
+        performance_frame.grid(row=8, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 15))
+        performance_frame.columnconfigure(1, weight=1)
+
+        # Batch size for individual properties
+        ttk.Label(performance_frame, text="Individual Property Batch Size:").grid(row=0, column=0, sticky=tk.W)
+        self.batch_size_var = tk.StringVar(value="10")
+        ttk.Spinbox(performance_frame, from_=1, to=50, textvariable=self.batch_size_var, width=10).grid(row=0, column=1, sticky=tk.W, padx=(10, 0))
+
+        # Memory optimization
+        self.memory_optimization_var = tk.BooleanVar(value=True)
+        ttk.Checkbutton(performance_frame, text="Memory Optimization", variable=self.memory_optimization_var).grid(row=1, column=0, columnspan=2, sticky=tk.W, pady=(5, 0))
+
+        # Advanced filtering options
+        filtering_frame = ttk.LabelFrame(advanced_frame, text="Property Filtering", padding="10")
+        filtering_frame.grid(row=9, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 15))
+        filtering_frame.columnconfigure(1, weight=1)
+
+        # Enable filtering checkbox
+        self.enable_filtering_var = tk.BooleanVar(value=False)
+        enable_filter_check = ttk.Checkbutton(filtering_frame, text="Enable Property Filtering",
+                                            variable=self.enable_filtering_var,
+                                            command=self.toggle_filtering_options)
+        enable_filter_check.grid(row=0, column=0, columnspan=2, sticky=tk.W, pady=(0, 10))
+
+        # Price range filtering
+        price_frame = ttk.Frame(filtering_frame)
+        price_frame.grid(row=1, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(2, 0))
+        price_frame.columnconfigure(1, weight=1)
+
+        ttk.Label(price_frame, text="Price Range (Lakhs):").grid(row=0, column=0, sticky=tk.W)
+        price_range_frame = ttk.Frame(price_frame)
+        price_range_frame.grid(row=0, column=1, sticky=tk.W, padx=(10, 0))
+
+        self.price_min_var = tk.StringVar()
+        self.price_max_var = tk.StringVar()
+
+        ttk.Entry(price_range_frame, textvariable=self.price_min_var, width=8, state='disabled').grid(row=0, column=0)
+        ttk.Label(price_range_frame, text=" - ").grid(row=0, column=1)
+        ttk.Entry(price_range_frame, textvariable=self.price_max_var, width=8, state='disabled').grid(row=0, column=2)
+
+        # Area range filtering
+        area_frame = ttk.Frame(filtering_frame)
+        area_frame.grid(row=2, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 0))
+        area_frame.columnconfigure(1, weight=1)
+
+        ttk.Label(area_frame, text="Area Range (Sq.Ft):").grid(row=0, column=0, sticky=tk.W)
+        area_range_frame = ttk.Frame(area_frame)
+        area_range_frame.grid(row=0, column=1, sticky=tk.W, padx=(10, 0))
+
+        self.area_min_var = tk.StringVar()
+        self.area_max_var = tk.StringVar()
+
+        ttk.Entry(area_range_frame, textvariable=self.area_min_var, width=8, state='disabled').grid(row=0, column=0)
+        ttk.Label(area_range_frame, text=" - ").grid(row=0, column=1)
+        ttk.Entry(area_range_frame, textvariable=self.area_max_var, width=8, state='disabled').grid(row=0, column=2)
+
+        # BHK filtering
+        bhk_frame = ttk.Frame(filtering_frame)
+        bhk_frame.grid(row=3, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 0))
+
+        ttk.Label(bhk_frame, text="BHK Types:").grid(row=0, column=0, sticky=tk.W)
+
+        bhk_options_frame = ttk.Frame(bhk_frame)
+        bhk_options_frame.grid(row=0, column=1, sticky=tk.W, padx=(10, 0))
+
+        self.bhk_vars = {}
+        bhk_options = ['1', '2', '3', '4', '4+']
+        for i, bhk in enumerate(bhk_options):
+            var = tk.BooleanVar()
+            self.bhk_vars[bhk] = var
+            ttk.Checkbutton(bhk_options_frame, text=f"{bhk} BHK", variable=var, state='disabled').grid(row=0, column=i, padx=(0, 10))
+
+        # Store filtering widgets for enabling/disabling
+        self.filtering_widgets = [
+            price_range_frame.winfo_children()[0],  # price min entry
+            price_range_frame.winfo_children()[2],  # price max entry
+            area_range_frame.winfo_children()[0],   # area min entry
+            area_range_frame.winfo_children()[2],   # area max entry
+        ] + [child for child in bhk_options_frame.winfo_children() if isinstance(child, ttk.Checkbutton)]
         
         # Action buttons
         button_frame = ttk.Frame(control_frame)
@@ -405,6 +531,14 @@ class MagicBricksGUI:
                         "Recommended for most users - provides all essential information at maximum speed.")
 
         self.individual_info_var.set(info_text)
+
+    def toggle_filtering_options(self):
+        """Enable/disable filtering options based on checkbox"""
+        state = 'normal' if self.enable_filtering_var.get() else 'disabled'
+
+        # Enable/disable filtering widgets
+        for widget in self.filtering_widgets:
+            widget.configure(state=state)
 
     def browse_output_directory(self):
         """Browse for output directory"""
@@ -2017,12 +2151,63 @@ For production deployment, schedules integrate with:
             
             self.log_message(f"Starting scraping for {self.config['city']} in {self.config['mode'].value} mode")
             
-            # Start scraping with individual pages option
+            # Prepare export formats
+            export_formats = ['csv']  # CSV is always included
+            if self.export_json_var.get():
+                export_formats.append('json')
+            if self.export_excel_var.get():
+                export_formats.append('excel')
+
+            # Prepare custom configuration
+            custom_config = {
+                'individual_delay_min': int(self.individual_delay_min_var.get()),
+                'individual_delay_max': int(self.individual_delay_max_var.get()),
+                'batch_break_delay': int(self.batch_break_var.get()),
+                'batch_size': int(self.batch_size_var.get()),
+                'memory_optimization': self.memory_optimization_var.get(),
+                'max_retries': int(self.retry_var.get()),
+                'page_delay_min': int(self.delay_var.get()),
+                'page_delay_max': int(self.delay_var.get()) + 2,  # Add some variance
+
+                # Filtering configuration
+                'enable_filtering': self.enable_filtering_var.get()
+            }
+
+            # Add filtering options if enabled
+            if self.enable_filtering_var.get():
+                # Price filtering
+                price_min = self.price_min_var.get().strip()
+                price_max = self.price_max_var.get().strip()
+                if price_min or price_max:
+                    custom_config['price_filter'] = {
+                        'min': float(price_min) * 100000 if price_min else None,  # Convert lakhs to actual value
+                        'max': float(price_max) * 100000 if price_max else None
+                    }
+
+                # Area filtering
+                area_min = self.area_min_var.get().strip()
+                area_max = self.area_max_var.get().strip()
+                if area_min or area_max:
+                    custom_config['area_filter'] = {
+                        'min': float(area_min) if area_min else None,
+                        'max': float(area_max) if area_max else None
+                    }
+
+                # BHK filtering
+                selected_bhks = [bhk for bhk, var in self.bhk_vars.items() if var.get()]
+                if selected_bhks:
+                    custom_config['bhk_filter'] = selected_bhks
+
+            # Create scraper with custom configuration
+            self.scraper = IntegratedMagicBricksScraper(custom_config=custom_config)
+
+            # Start scraping with individual pages option and export formats
             result = self.scraper.scrape_properties_with_incremental(
                 city=self.config['city'],
                 mode=self.config['mode'],
                 max_pages=self.config['max_pages'],
-                include_individual_pages=self.individual_pages_var.get()
+                include_individual_pages=self.individual_pages_var.get(),
+                export_formats=export_formats
             )
 
             # Get session ID for error tracking

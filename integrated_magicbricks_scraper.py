@@ -9,6 +9,8 @@ import time
 import random
 from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional, Tuple
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import threading
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -35,14 +37,19 @@ class IntegratedMagicBricksScraper:
     Production MagicBricks scraper with integrated incremental scraping system
     """
     
-    def __init__(self, headless: bool = True, incremental_enabled: bool = True):
-        """Initialize integrated scraper"""
-        
+    def __init__(self, headless: bool = True, incremental_enabled: bool = True, custom_config: Dict[str, Any] = None):
+        """Initialize integrated scraper with custom configuration"""
+
         # Core scraper setup
         self.headless = headless
         self.driver = None
         self.properties = []
-        
+
+        # Setup custom configuration
+        self.config = self._setup_default_config()
+        if custom_config:
+            self.config.update(custom_config)
+
         # Incremental scraping system
         self.incremental_enabled = incremental_enabled
         if incremental_enabled:
@@ -102,19 +109,112 @@ class IntegratedMagicBricksScraper:
         
         print("🚀 Integrated MagicBricks Scraper Initialized")
         print(f"   📊 Incremental scraping: {'Enabled' if incremental_enabled else 'Disabled'}")
-    
+        print(f"   ⚙️ Custom configuration: {'Enabled' if custom_config else 'Default'}")
+
+    def _setup_default_config(self) -> Dict[str, Any]:
+        """Setup default configuration for the scraper"""
+        return {
+            # Delay configurations
+            'page_delay_min': 3,
+            'page_delay_max': 8,
+            'individual_delay_min': 3,
+            'individual_delay_max': 20,
+            'batch_break_delay': 15,
+            'bot_recovery_delay': 30,
+
+            # City-specific delays (can be customized per city)
+            'city_delays': {
+                'mumbai': {'page': (3, 8), 'individual': (4, 15)},
+                'delhi': {'page': (3, 8), 'individual': (4, 15)},
+                'bangalore': {'page': (3, 8), 'individual': (4, 15)},
+                'pune': {'page': (3, 8), 'individual': (4, 15)},
+                'hyderabad': {'page': (3, 8), 'individual': (4, 15)},
+                'chennai': {'page': (3, 8), 'individual': (4, 15)},
+                'kolkata': {'page': (3, 8), 'individual': (4, 15)},
+                'ahmedabad': {'page': (3, 8), 'individual': (4, 15)},
+                'gurgaon': {'page': (3, 8), 'individual': (4, 15)},
+                'noida': {'page': (3, 8), 'individual': (4, 15)}
+            },
+
+            # Anti-scraping configurations
+            'max_retries': 3,
+            'timeout_seconds': 30,
+            'user_agent_rotation': True,
+            'proxy_rotation': False,
+            'captcha_handling': True,
+
+            # Performance configurations
+            'batch_size': 10,
+            'max_workers': 3,
+            'memory_optimization': True,
+            'cache_enabled': False,
+
+            # Export configurations
+            'default_export_formats': ['csv'],
+            'auto_backup': False,
+            'compression_enabled': False,
+
+            # Filtering configurations
+            'enable_filtering': False,
+            'price_filter': {'min': None, 'max': None},
+            'area_filter': {'min': None, 'max': None},
+            'property_type_filter': [],  # ['apartment', 'house', 'plot', etc.]
+            'bhk_filter': [],  # ['1', '2', '3', '4+']
+            'location_filter': [],  # Specific localities
+            'amenities_filter': [],  # Required amenities
+            'exclude_keywords': []  # Keywords to exclude from title/description
+        }
+
     def setup_logging(self):
-        """Setup logging for the scraper"""
-        
-        logging.basicConfig(
-            level=logging.INFO,
-            format='%(asctime)s - %(levelname)s - %(message)s',
-            handlers=[
-                logging.FileHandler('integrated_scraper.log'),
-                logging.StreamHandler()
-            ]
-        )
+        """Setup logging for the scraper with Unicode support"""
+
+        # Create custom formatter that handles Unicode safely
+        class SafeFormatter(logging.Formatter):
+            def format(self, record):
+                # Replace Unicode characters that might cause issues
+                if hasattr(record, 'msg'):
+                    if isinstance(record.msg, str):
+                        # Replace problematic Unicode characters with safe alternatives
+                        record.msg = (record.msg
+                                    .replace('🏠', '[HOUSE]')
+                                    .replace('📦', '[BATCH]')
+                                    .replace('🛡️', '[SHIELD]')
+                                    .replace('⏱️', '[TIMER]')
+                                    .replace('✅', '[SUCCESS]')
+                                    .replace('❌', '[ERROR]')
+                                    .replace('🛌', '[BREAK]')
+                                    .replace('📋', '[LIST]')
+                                    .replace('💾', '[SAVE]')
+                                    .replace('🎉', '[COMPLETE]')
+                                    .replace('🚨', '[ALERT]')
+                                    .replace('🔄', '[RETRY]')
+                                    .replace('⏸️', '[PAUSE]'))
+                return super().format(record)
+
+        # Setup logging with safe formatter
+        formatter = SafeFormatter('%(asctime)s - %(levelname)s - %(message)s')
+
+        # File handler with UTF-8 encoding
+        file_handler = logging.FileHandler('integrated_scraper.log', encoding='utf-8')
+        file_handler.setFormatter(formatter)
+
+        # Console handler with safe encoding
+        console_handler = logging.StreamHandler()
+        console_handler.setFormatter(formatter)
+
+        # Configure logger
         self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.INFO)
+
+        # Clear existing handlers
+        self.logger.handlers.clear()
+
+        # Add new handlers
+        self.logger.addHandler(file_handler)
+        self.logger.addHandler(console_handler)
+
+        # Prevent duplicate logs
+        self.logger.propagate = False
     
     def setup_incremental_system(self):
         """Setup the incremental scraping system"""
@@ -195,7 +295,8 @@ class IntegratedMagicBricksScraper:
             return True
     
     def scrape_properties_with_incremental(self, city: str, mode: ScrapingMode = ScrapingMode.INCREMENTAL,
-                                         max_pages: int = None, include_individual_pages: bool = False) -> Dict[str, Any]:
+                                         max_pages: int = None, include_individual_pages: bool = False,
+                                         export_formats: List[str] = ['csv'], progress_callback=None) -> Dict[str, Any]:
         """Main scraping method with incremental support"""
         
         try:
@@ -215,6 +316,24 @@ class IntegratedMagicBricksScraper:
             
             print(f"🔗 Base URL: {base_url}")
             
+            # Initialize progress tracking
+            estimated_total_pages = max_pages if max_pages else 50  # Default estimate
+            progress_data = {
+                'phase': 'listing_extraction',
+                'current_page': 0,
+                'total_pages': estimated_total_pages,
+                'properties_found': 0,
+                'progress_percentage': 0,
+                'estimated_time_remaining': 0,
+                'start_time': time.time(),
+                'city': city,
+                'mode': mode.value if hasattr(mode, 'value') else str(mode)
+            }
+
+            # Send initial progress update
+            if progress_callback:
+                progress_callback(progress_data)
+
             # Scraping loop with enhanced anti-scraping
             page_number = 1
             consecutive_old_pages = 0
@@ -234,7 +353,25 @@ class IntegratedMagicBricksScraper:
                     page_url = f"{base_url}{separator}page={page_number}"
                 
                 print(f"\n📄 Scraping page {page_number}: {page_url}")
-                
+
+                # Update progress before scraping page
+                progress_data.update({
+                    'current_page': page_number,
+                    'progress_percentage': min((page_number / estimated_total_pages) * 100, 100),
+                    'properties_found': len(self.properties)
+                })
+
+                # Calculate estimated time remaining
+                elapsed_time = time.time() - progress_data['start_time']
+                if page_number > 1:
+                    avg_time_per_page = elapsed_time / (page_number - 1)
+                    remaining_pages = max(0, estimated_total_pages - page_number + 1)
+                    progress_data['estimated_time_remaining'] = avg_time_per_page * remaining_pages
+
+                # Send progress update
+                if progress_callback:
+                    progress_callback(progress_data)
+
                 # Scrape page with bot detection
                 page_result = self.scrape_single_page(page_url, page_number)
 
@@ -277,13 +414,27 @@ class IntegratedMagicBricksScraper:
             # Finalize session
             self.finalize_scraping_session()
 
-            # Save to CSV and get filename (Phase 1 Complete)
-            df, output_file = self.save_to_csv()
+            # Validate data quality
+            validation_report = self._validate_data_completeness(self.properties)
+            self.session_stats['validation_report'] = validation_report
+
+            # Log data quality summary
+            self.logger.info(f"\\n[COMPLETE] DATA QUALITY REPORT")
+            self.logger.info(f"   [LIST] Total properties: {validation_report.get('total_properties', 0)}")
+            self.logger.info(f"   [SUCCESS] Valid properties: {validation_report.get('valid_properties', 0)}")
+            self.logger.info(f"   [SHIELD] Validation success rate: {validation_report.get('validation_success_rate', 0):.1f}%")
+            self.logger.info(f"   [COMPLETE] Average data quality: {validation_report.get('data_quality_average', 0):.1f}%")
+
+            # Export data in requested formats (Phase 1 Complete)
+            exported_files = self.export_data(formats=export_formats)
+
+            # Get primary output file (CSV is always included)
+            output_file = exported_files.get('csv', 'No CSV file generated')
 
             # PHASE 2: Optional Individual Property Page Scraping
             individual_properties_scraped = 0
             if include_individual_pages and len(self.properties) > 0:
-                self.logger.info("\\n🏠 PHASE 2: Starting Individual Property Page Scraping")
+                self.logger.info("\\n[HOUSE] PHASE 2: Starting Individual Property Page Scraping")
                 self.logger.info("=" * 60)
 
                 # Extract property URLs from scraped data
@@ -291,10 +442,29 @@ class IntegratedMagicBricksScraper:
                 property_urls = [url for url in property_urls if url]  # Remove empty URLs
 
                 if property_urls:
-                    self.logger.info(f"   📋 Found {len(property_urls)} property URLs for detailed scraping")
+                    self.logger.info(f"   [LIST] Found {len(property_urls)} property URLs for detailed scraping")
 
-                    # Scrape individual property pages with enhanced anti-scraping
-                    detailed_properties = self.scrape_individual_property_pages(property_urls, batch_size=10)
+                    # Update progress for Phase 2
+                    progress_data.update({
+                        'phase': 'individual_property_extraction',
+                        'current_page': 0,
+                        'total_pages': len(property_urls),
+                        'progress_percentage': 0,
+                        'estimated_time_remaining': 0,
+                        'start_time': time.time()
+                    })
+
+                    # Send progress update for Phase 2 start
+                    if progress_callback:
+                        progress_callback(progress_data)
+
+                    # Scrape individual property pages with enhanced anti-scraping and progress tracking
+                    detailed_properties = self.scrape_individual_property_pages(
+                        property_urls,
+                        batch_size=10,
+                        progress_callback=progress_callback,
+                        progress_data=progress_data
+                    )
                     individual_properties_scraped = len(detailed_properties)
 
                     # Update CSV with detailed information if any were scraped
@@ -312,6 +482,8 @@ class IntegratedMagicBricksScraper:
                 'individual_properties_scraped': individual_properties_scraped,
                 'pages_scraped': self.session_stats['pages_scraped'],
                 'output_file': output_file,
+                'exported_files': exported_files,
+                'export_formats': export_formats,
                 'two_phase_scraping': include_individual_pages
             }
             
@@ -368,8 +540,26 @@ class IntegratedMagicBricksScraper:
                 try:
                     property_data = self.extract_property_data(card, page_number, i + 1)
                     if property_data:
-                        page_properties.append(property_data)
-                        property_texts.append(card.get_text())
+                        # Validate and clean property data
+                        cleaned_property_data = self._validate_and_clean_property_data(property_data)
+
+                        # Apply filtering if enabled
+                        if self._apply_property_filters(cleaned_property_data):
+                            page_properties.append(cleaned_property_data)
+                            property_texts.append(card.get_text())
+
+                            # Track filtering stats
+                            if not hasattr(self, '_filter_stats'):
+                                self._filter_stats = {'total': 0, 'filtered': 0, 'excluded': 0}
+                            self._filter_stats['total'] += 1
+                            self._filter_stats['filtered'] += 1
+                        else:
+                            # Property was excluded by filters
+                            if not hasattr(self, '_filter_stats'):
+                                self._filter_stats = {'total': 0, 'filtered': 0, 'excluded': 0}
+                            self._filter_stats['total'] += 1
+                            self._filter_stats['excluded'] += 1
+                            self.logger.debug(f"Property {i+1} on page {page_number} excluded by filters")
                         
                 except Exception as e:
                     self.logger.error(f"Error extracting property {i+1} on page {page_number}: {str(e)}")
@@ -776,7 +966,154 @@ class IntegratedMagicBricksScraper:
         except Exception as e:
             self.logger.error(f"Error saving to CSV: {str(e)}")
             return None, None
-    
+
+    def save_to_json(self, filename: str = None) -> tuple:
+        """Save scraped properties to JSON
+
+        Returns:
+            tuple: (data, filename) or (None, None) if failed
+        """
+
+        if not self.properties:
+            print("⚠️ No properties to save")
+            return None, None
+
+        if filename is None:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            mode = self.session_stats.get('mode', 'unknown')
+            filename = f"magicbricks_{mode}_scrape_{timestamp}.json"
+
+        try:
+            # Create comprehensive JSON structure
+            json_data = {
+                'metadata': {
+                    'scrape_timestamp': datetime.now().isoformat(),
+                    'total_properties': len(self.properties),
+                    'session_stats': self.session_stats,
+                    'scraper_version': '2.0',
+                    'export_format': 'json'
+                },
+                'properties': self.properties
+            }
+
+            with open(filename, 'w', encoding='utf-8') as f:
+                json.dump(json_data, f, indent=2, ensure_ascii=False, default=str)
+
+            print(f"💾 Saved {len(self.properties)} properties to {filename}")
+            return json_data, filename
+
+        except Exception as e:
+            self.logger.error(f"Error saving to JSON: {str(e)}")
+            return None, None
+
+    def save_to_excel(self, filename: str = None) -> tuple:
+        """Save scraped properties to Excel with multiple sheets
+
+        Returns:
+            tuple: (DataFrame, filename) or (None, None) if failed
+        """
+
+        if not self.properties:
+            print("⚠️ No properties to save")
+            return None, None
+
+        if filename is None:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            mode = self.session_stats.get('mode', 'unknown')
+            filename = f"magicbricks_{mode}_scrape_{timestamp}.xlsx"
+
+        try:
+            df = pd.DataFrame(self.properties)
+
+            # Create Excel writer with multiple sheets
+            with pd.ExcelWriter(filename, engine='openpyxl') as writer:
+                # Main properties sheet
+                df.to_excel(writer, sheet_name='Properties', index=False)
+
+                # Summary sheet
+                summary_data = {
+                    'Metric': [
+                        'Total Properties',
+                        'Scrape Date',
+                        'Mode',
+                        'Pages Scraped',
+                        'Duration',
+                        'Success Rate'
+                    ],
+                    'Value': [
+                        len(self.properties),
+                        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        self.session_stats.get('mode', 'unknown'),
+                        self.session_stats.get('pages_scraped', 0),
+                        self.session_stats.get('duration_formatted', 'N/A'),
+                        f"{self.session_stats.get('success_rate', 0):.1f}%"
+                    ]
+                }
+                summary_df = pd.DataFrame(summary_data)
+                summary_df.to_excel(writer, sheet_name='Summary', index=False)
+
+                # City breakdown if available
+                if 'city_stats' in self.session_stats:
+                    city_df = pd.DataFrame(self.session_stats['city_stats'])
+                    city_df.to_excel(writer, sheet_name='City_Stats', index=False)
+
+            print(f"💾 Saved {len(self.properties)} properties to {filename}")
+            return df, filename
+
+        except Exception as e:
+            self.logger.error(f"Error saving to Excel: {str(e)}")
+            return None, None
+
+    def export_data(self, formats: List[str] = ['csv'], base_filename: str = None) -> Dict[str, str]:
+        """Export data in multiple formats
+
+        Args:
+            formats: List of formats to export ('csv', 'json', 'excel')
+            base_filename: Base filename without extension
+
+        Returns:
+            Dict mapping format to filename
+        """
+
+        if not self.properties:
+            print("⚠️ No properties to export")
+            return {}
+
+        if base_filename is None:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            mode = self.session_stats.get('mode', 'unknown')
+            base_filename = f"magicbricks_{mode}_scrape_{timestamp}"
+
+        exported_files = {}
+
+        for format_type in formats:
+            try:
+                if format_type.lower() == 'csv':
+                    filename = f"{base_filename}.csv"
+                    _, saved_filename = self.save_to_csv(filename)
+                    if saved_filename:
+                        exported_files['csv'] = saved_filename
+
+                elif format_type.lower() == 'json':
+                    filename = f"{base_filename}.json"
+                    _, saved_filename = self.save_to_json(filename)
+                    if saved_filename:
+                        exported_files['json'] = saved_filename
+
+                elif format_type.lower() == 'excel':
+                    filename = f"{base_filename}.xlsx"
+                    _, saved_filename = self.save_to_excel(filename)
+                    if saved_filename:
+                        exported_files['excel'] = saved_filename
+
+                else:
+                    print(f"⚠️ Unsupported format: {format_type}")
+
+            except Exception as e:
+                self.logger.error(f"Error exporting {format_type}: {str(e)}")
+
+        return exported_files
+
     def _get_enhanced_user_agents(self):
         """Get list of realistic user agents for rotation"""
         return [
@@ -879,9 +1216,10 @@ class IntegratedMagicBricksScraper:
         self.logger.info(f"⏱️ Waiting {final_delay:.1f} seconds before next page...")
         time.sleep(final_delay)
 
-    def scrape_individual_property_pages(self, property_urls: List[str], batch_size: int = 10) -> List[Dict[str, Any]]:
+    def scrape_individual_property_pages(self, property_urls: List[str], batch_size: int = 10,
+                                        progress_callback=None, progress_data=None) -> List[Dict[str, Any]]:
         """
-        Enhanced individual property page scraping with advanced anti-scraping measures
+        Enhanced individual property page scraping with advanced anti-scraping measures and progress tracking
         """
         detailed_properties = []
         total_urls = len(property_urls)
@@ -915,6 +1253,24 @@ class IntegratedMagicBricksScraper:
                     else:
                         self.logger.warning(f"   ❌ Property {batch_start + i}/{total_urls}: Failed")
 
+                    # Update progress for individual property scraping
+                    if progress_callback and progress_data:
+                        current_property = batch_start + i
+                        progress_data.update({
+                            'current_page': current_property,
+                            'progress_percentage': (current_property / total_urls) * 100,
+                            'properties_found': len(detailed_properties)
+                        })
+
+                        # Calculate estimated time remaining
+                        elapsed_time = time.time() - progress_data['start_time']
+                        if current_property > 0:
+                            avg_time_per_property = elapsed_time / current_property
+                            remaining_properties = total_urls - current_property
+                            progress_data['estimated_time_remaining'] = avg_time_per_property * remaining_properties
+
+                        progress_callback(progress_data)
+
                 except Exception as e:
                     self.logger.error(f"   ❌ Property {batch_start + i}/{total_urls}: Error - {str(e)}")
                     continue
@@ -928,15 +1284,24 @@ class IntegratedMagicBricksScraper:
         self.logger.info(f"\\n🎉 Individual property scraping complete: {len(detailed_properties)}/{total_urls} successful")
         return detailed_properties
 
-    def _calculate_individual_page_delay(self, property_index: int, batch_size: int) -> float:
-        """Calculate smart delay for individual property pages"""
+    def _calculate_individual_page_delay(self, property_index: int, batch_size: int, city: str = None) -> float:
+        """Calculate smart delay for individual property pages using custom configuration"""
         import random
 
-        # Base delay: 3-8 seconds
-        base_delay = random.uniform(3.0, 8.0)
+        # Get city-specific delays if available
+        if city and city.lower() in self.config.get('city_delays', {}):
+            city_config = self.config['city_delays'][city.lower()]
+            min_delay, max_delay = city_config.get('individual', (3, 8))
+        else:
+            # Use global configuration
+            min_delay = self.config.get('individual_delay_min', 3)
+            max_delay = self.config.get('individual_delay_max', 8)
+
+        # Base delay using configured range
+        base_delay = random.uniform(float(min_delay), float(max_delay))
 
         # Increase delay based on recent bot detection
-        if self.last_detection_time and (time.time() - self.last_detection_time) < 600:  # 10 minutes
+        if hasattr(self, 'last_detection_time') and self.last_detection_time and (time.time() - self.last_detection_time) < 600:  # 10 minutes
             base_delay *= 1.8
 
         # Increase delay for consecutive failures
@@ -953,92 +1318,630 @@ class IntegratedMagicBricksScraper:
 
         return min(base_delay, 20.0)  # Cap at 20 seconds
 
-    def _scrape_single_property_page(self, url: str, property_index: int) -> Optional[Dict[str, Any]]:
-        """Scrape a single property page with enhanced error handling"""
+    def _calculate_page_delay(self, page_number: int, city: str = None) -> float:
+        """Calculate smart delay for page navigation using custom configuration"""
+        import random
+
+        # Get city-specific delays if available
+        if city and city.lower() in self.config.get('city_delays', {}):
+            city_config = self.config['city_delays'][city.lower()]
+            min_delay, max_delay = city_config.get('page', (3, 8))
+        else:
+            # Use global configuration
+            min_delay = self.config.get('page_delay_min', 3)
+            max_delay = self.config.get('page_delay_max', 8)
+
+        # Base delay using configured range
+        base_delay = random.uniform(float(min_delay), float(max_delay))
+
+        # Add progressive delay for later pages
+        if page_number > 5:
+            base_delay += random.uniform(0.5, 2.0)
+
+        # Increase delay based on recent bot detection
+        if hasattr(self, 'last_detection_time') and self.last_detection_time and (time.time() - self.last_detection_time) < 600:
+            base_delay *= 1.5
+
+        return base_delay
+
+    def get_config_value(self, key: str, default=None):
+        """Get a configuration value with fallback to default"""
+        return self.config.get(key, default)
+
+    def update_config(self, updates: Dict[str, Any]):
+        """Update configuration values"""
+        self.config.update(updates)
+        self.logger.info(f"Configuration updated: {list(updates.keys())}")
+
+    def _apply_property_filters(self, property_data: Dict[str, Any]) -> bool:
+        """Apply filtering criteria to determine if property should be included"""
+
+        if not self.config.get('enable_filtering', False):
+            return True  # No filtering enabled, include all properties
+
         try:
-            # Navigate with bot detection
-            self.driver.get(url)
+            # Price filtering
+            price_filter = self.config.get('price_filter', {})
+            if price_filter.get('min') or price_filter.get('max'):
+                price_text = property_data.get('price', '').lower()
+                price_value = self._extract_numeric_price(price_text)
 
-            # Check for bot detection
-            page_source = self.driver.page_source
-            current_url = self.driver.current_url
+                if price_value:
+                    if price_filter.get('min') and price_value < price_filter['min']:
+                        return False
+                    if price_filter.get('max') and price_value > price_filter['max']:
+                        return False
 
-            if self._detect_bot_detection(page_source, current_url):
-                self.logger.warning(f"   🚨 Bot detection on property {property_index}")
-                self._handle_bot_detection()
-                return None
+            # Area filtering
+            area_filter = self.config.get('area_filter', {})
+            if area_filter.get('min') or area_filter.get('max'):
+                area_text = property_data.get('area', '').lower()
+                area_value = self._extract_numeric_area(area_text)
 
-            # Wait for page load
-            time.sleep(2)
+                if area_value:
+                    if area_filter.get('min') and area_value < area_filter['min']:
+                        return False
+                    if area_filter.get('max') and area_value > area_filter['max']:
+                        return False
 
-            # Extract detailed property data
-            soup = BeautifulSoup(page_source, 'html.parser')
+            # Property type filtering
+            property_type_filter = self.config.get('property_type_filter', [])
+            if property_type_filter:
+                property_type = property_data.get('property_type', '').lower()
+                if not any(ptype.lower() in property_type for ptype in property_type_filter):
+                    return False
 
-            property_data = {
-                'url': url,
-                'scraped_at': datetime.now().isoformat(),
-                'property_index': property_index,
-                'title': self._extract_property_title(soup),
-                'price': self._extract_property_price(soup),
-                'area': self._extract_property_area(soup),
-                'amenities': self._extract_amenities(soup),
-                'description': self._extract_description(soup),
-                'builder_info': self._extract_builder_info(soup),
-                'location_details': self._extract_location_details(soup),
-                'specifications': self._extract_specifications(soup)
-            }
+            # BHK filtering
+            bhk_filter = self.config.get('bhk_filter', [])
+            if bhk_filter:
+                title = property_data.get('title', '').lower()
+                area = property_data.get('area', '').lower()
+                combined_text = f"{title} {area}"
 
-            return property_data
+                bhk_found = False
+                for bhk in bhk_filter:
+                    if bhk.lower() in combined_text or f"{bhk} bhk" in combined_text:
+                        bhk_found = True
+                        break
+
+                if not bhk_found:
+                    return False
+
+            # Location filtering
+            location_filter = self.config.get('location_filter', [])
+            if location_filter:
+                locality = property_data.get('locality', '').lower()
+                society = property_data.get('society', '').lower()
+                combined_location = f"{locality} {society}"
+
+                location_found = False
+                for location in location_filter:
+                    if location.lower() in combined_location:
+                        location_found = True
+                        break
+
+                if not location_found:
+                    return False
+
+            # Exclude keywords filtering
+            exclude_keywords = self.config.get('exclude_keywords', [])
+            if exclude_keywords:
+                title = property_data.get('title', '').lower()
+                description = property_data.get('description', '').lower()
+                combined_text = f"{title} {description}"
+
+                for keyword in exclude_keywords:
+                    if keyword.lower() in combined_text:
+                        return False
+
+            return True  # Passed all filters
 
         except Exception as e:
-            self.logger.error(f"   ❌ Error scraping property {property_index}: {str(e)}")
-            return None
+            self.logger.warning(f"Error applying filters: {str(e)}")
+            return True  # Include property if filtering fails
 
-    def _extract_property_title(self, soup: BeautifulSoup) -> str:
-        """Extract property title from individual page"""
+    def _extract_numeric_price(self, price_text: str) -> Optional[float]:
+        """Extract numeric price value from price text"""
+        import re
+
+        # Remove common currency symbols and text
+        price_text = re.sub(r'[₹,\s]', '', price_text)
+
+        # Extract numbers and handle units (lakh, crore)
+        if 'crore' in price_text.lower():
+            numbers = re.findall(r'(\d+\.?\d*)', price_text)
+            if numbers:
+                return float(numbers[0]) * 10000000  # Convert crores to actual value
+        elif 'lakh' in price_text.lower():
+            numbers = re.findall(r'(\d+\.?\d*)', price_text)
+            if numbers:
+                return float(numbers[0]) * 100000  # Convert lakhs to actual value
+        else:
+            numbers = re.findall(r'(\d+\.?\d*)', price_text)
+            if numbers:
+                return float(numbers[0])
+
+        return None
+
+    def _extract_numeric_area(self, area_text: str) -> Optional[float]:
+        """Extract numeric area value from area text"""
+        import re
+
+        # Extract numbers from area text
+        numbers = re.findall(r'(\d+\.?\d*)', area_text)
+        if numbers:
+            return float(numbers[0])
+
+        return None
+
+    def get_filtered_properties_count(self) -> Dict[str, int]:
+        """Get count of properties before and after filtering"""
+        if not hasattr(self, '_filter_stats'):
+            return {'total': 0, 'filtered': 0, 'excluded': 0}
+
+        return self._filter_stats
+
+    def _validate_and_clean_property_data(self, property_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Validate and clean property data for quality assurance"""
+
+        cleaned_data = property_data.copy()
+        validation_issues = []
+
+        try:
+            # Clean and validate title
+            title = cleaned_data.get('title', '').strip()
+            if title:
+                # Remove excessive whitespace and normalize
+                title = ' '.join(title.split())
+                # Remove common unwanted characters
+                title = title.replace('\n', ' ').replace('\t', ' ')
+                cleaned_data['title'] = title
+            else:
+                validation_issues.append('Missing title')
+
+            # Clean and validate price
+            price = cleaned_data.get('price', '').strip()
+            if price:
+                # Normalize price format
+                price = price.replace('₹', '').replace(',', '').strip()
+                # Validate price contains numbers
+                if not any(char.isdigit() for char in price):
+                    validation_issues.append('Invalid price format')
+                cleaned_data['price'] = price
+            else:
+                validation_issues.append('Missing price')
+
+            # Clean and validate area
+            area = cleaned_data.get('area', '').strip()
+            if area:
+                # Normalize area format
+                area = area.replace(',', '').strip()
+                cleaned_data['area'] = area
+            else:
+                validation_issues.append('Missing area')
+
+            # Validate and clean property URL
+            url = cleaned_data.get('property_url', '').strip()
+            if url:
+                if not url.startswith('http'):
+                    if url.startswith('/'):
+                        cleaned_data['property_url'] = f"https://www.magicbricks.com{url}"
+                    else:
+                        validation_issues.append('Invalid URL format')
+            else:
+                validation_issues.append('Missing property URL')
+
+            # Clean locality and society
+            for field in ['locality', 'society']:
+                value = cleaned_data.get(field, '').strip()
+                if value:
+                    # Remove excessive whitespace and normalize
+                    value = ' '.join(value.split())
+                    cleaned_data[field] = value
+
+            # Validate numeric fields
+            for field in ['bathrooms', 'balcony']:
+                value = cleaned_data.get(field, '')
+                if value and isinstance(value, str):
+                    # Extract numeric value
+                    import re
+                    numbers = re.findall(r'\d+', value)
+                    if numbers:
+                        cleaned_data[field] = numbers[0]
+
+            # Clean and validate posting date
+            posting_date = cleaned_data.get('posting_date_text', '').strip()
+            if posting_date:
+                # Normalize date format
+                posting_date = ' '.join(posting_date.split())
+                cleaned_data['posting_date_text'] = posting_date
+
+            # Add data quality score
+            total_fields = len([k for k in cleaned_data.keys() if k not in ['scraped_at', 'session_id', 'page_number', 'property_index']])
+            filled_fields = len([v for v in cleaned_data.values() if v and str(v).strip()])
+            quality_score = (filled_fields / total_fields) * 100 if total_fields > 0 else 0
+
+            cleaned_data['data_quality_score'] = round(quality_score, 1)
+            cleaned_data['validation_issues'] = validation_issues
+            cleaned_data['is_valid'] = len(validation_issues) == 0
+
+            return cleaned_data
+
+        except Exception as e:
+            self.logger.warning(f"Error validating property data: {str(e)}")
+            cleaned_data['validation_issues'] = validation_issues + [f"Validation error: {str(e)}"]
+            cleaned_data['is_valid'] = False
+            return cleaned_data
+
+    def _validate_data_completeness(self, properties: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """Validate overall data completeness and quality"""
+
+        if not properties:
+            return {
+                'total_properties': 0,
+                'valid_properties': 0,
+                'data_quality_average': 0,
+                'completeness_report': {}
+            }
+
+        total_properties = len(properties)
+        valid_properties = len([p for p in properties if p.get('is_valid', False)])
+
+        # Calculate field completeness
+        field_completeness = {}
+        essential_fields = ['title', 'price', 'area', 'property_url']
+
+        for field in essential_fields:
+            filled_count = len([p for p in properties if p.get(field) and str(p[field]).strip()])
+            field_completeness[field] = (filled_count / total_properties) * 100 if total_properties > 0 else 0
+
+        # Calculate average data quality score
+        quality_scores = [p.get('data_quality_score', 0) for p in properties]
+        avg_quality = sum(quality_scores) / len(quality_scores) if quality_scores else 0
+
+        return {
+            'total_properties': total_properties,
+            'valid_properties': valid_properties,
+            'validation_success_rate': (valid_properties / total_properties) * 100 if total_properties > 0 else 0,
+            'data_quality_average': round(avg_quality, 1),
+            'field_completeness': field_completeness,
+            'completeness_report': {
+                'excellent': len([p for p in properties if p.get('data_quality_score', 0) >= 90]),
+                'good': len([p for p in properties if 70 <= p.get('data_quality_score', 0) < 90]),
+                'fair': len([p for p in properties if 50 <= p.get('data_quality_score', 0) < 70]),
+                'poor': len([p for p in properties if p.get('data_quality_score', 0) < 50])
+            }
+        }
+
+    def _scrape_single_property_page(self, url: str, property_index: int, max_retries: int = 3) -> Optional[Dict[str, Any]]:
+        """Scrape a single property page with enhanced error handling and retry logic"""
+
+        for attempt in range(max_retries):
+            try:
+                self.logger.info(f"   🔍 Scraping property {property_index} (attempt {attempt + 1}/{max_retries})")
+
+                # Navigate with timeout and error handling
+                try:
+                    self.driver.set_page_load_timeout(30)  # 30 second timeout
+                    self.driver.get(url)
+                except Exception as nav_error:
+                    self.logger.warning(f"   ⚠️ Navigation error on attempt {attempt + 1}: {str(nav_error)}")
+                    if attempt < max_retries - 1:
+                        time.sleep(5 * (attempt + 1))  # Progressive delay
+                        continue
+                    else:
+                        raise nav_error
+
+                # Check for bot detection
+                page_source = self.driver.page_source
+                current_url = self.driver.current_url
+
+                if self._detect_bot_detection(page_source, current_url):
+                    self.logger.warning(f"   🚨 Bot detection on property {property_index} (attempt {attempt + 1})")
+                    if attempt < max_retries - 1:
+                        self._handle_bot_detection()
+                        continue
+                    else:
+                        return None
+
+                # Validate page loaded correctly
+                if not self._validate_property_page(page_source):
+                    self.logger.warning(f"   ⚠️ Invalid property page on attempt {attempt + 1}")
+                    if attempt < max_retries - 1:
+                        time.sleep(3 * (attempt + 1))
+                        continue
+                    else:
+                        return None
+
+                # Wait for page load with progressive timeout
+                time.sleep(2 + attempt)
+
+                # Extract detailed property data with error handling
+                soup = BeautifulSoup(page_source, 'html.parser')
+
+                property_data = {
+                    'url': url,
+                    'scraped_at': datetime.now().isoformat(),
+                    'property_index': property_index,
+                    'scrape_attempt': attempt + 1,
+                    'title': self._safe_extract_property_title(soup),
+                    'price': self._safe_extract_property_price(soup),
+                    'area': self._safe_extract_property_area(soup),
+                    'amenities': self._safe_extract_amenities(soup),
+                    'description': self._safe_extract_description(soup),
+                    'builder_info': self._safe_extract_builder_info(soup),
+                    'location_details': self._safe_extract_location_details(soup),
+                    'specifications': self._safe_extract_specifications(soup)
+                }
+
+                # Validate extracted data quality
+                if self._validate_extracted_data(property_data):
+                    self.logger.info(f"   ✅ Property {property_index} scraped successfully")
+                    return property_data
+                else:
+                    self.logger.warning(f"   ⚠️ Poor data quality on attempt {attempt + 1}")
+                    if attempt < max_retries - 1:
+                        continue
+                    else:
+                        # Return partial data if it's the last attempt
+                        self.logger.info(f"   📝 Returning partial data for property {property_index}")
+                        return property_data
+
+            except Exception as e:
+                self.logger.error(f"   ❌ Error scraping property {property_index} (attempt {attempt + 1}): {str(e)}")
+                if attempt < max_retries - 1:
+                    # Progressive delay with jitter
+                    delay = (5 * (attempt + 1)) + random.uniform(1, 3)
+                    self.logger.info(f"   ⏱️ Retrying in {delay:.1f} seconds...")
+                    time.sleep(delay)
+
+                    # Try to recover browser state
+                    try:
+                        self.driver.refresh()
+                        time.sleep(2)
+                    except:
+                        pass
+                else:
+                    self.logger.error(f"   ❌ Failed to scrape property {property_index} after {max_retries} attempts")
+                    return None
+
+        return None
+
+    def _validate_property_page(self, page_source: str) -> bool:
+        """Validate that the property page loaded correctly"""
+        # Check for common property page indicators
+        indicators = [
+            'property', 'price', 'sqft', 'bedroom', 'bathroom',
+            'magicbricks', 'contact', 'details'
+        ]
+
+        page_lower = page_source.lower()
+        found_indicators = sum(1 for indicator in indicators if indicator in page_lower)
+
+        # Require at least 3 indicators to consider page valid
+        return found_indicators >= 3
+
+    def _validate_extracted_data(self, property_data: Dict[str, Any]) -> bool:
+        """Validate the quality of extracted property data"""
+        # Check for essential fields
+        essential_fields = ['title', 'price', 'area']
+        filled_essential = sum(1 for field in essential_fields if property_data.get(field))
+
+        # Check for additional fields
+        additional_fields = ['amenities', 'description', 'builder_info', 'location_details']
+        filled_additional = sum(1 for field in additional_fields if property_data.get(field))
+
+        # Require at least 2 essential fields and 1 additional field
+        return filled_essential >= 2 and filled_additional >= 1
+
+    def _safe_extract_property_title(self, soup: BeautifulSoup) -> str:
+        """Safely extract property title from individual page with fallbacks"""
         selectors = [
             'h1.mb-ldp__dtls__title',
             'h1[class*="title"]',
             '.property-title',
-            'h1'
+            'h1',
+            '[class*="heading"]',
+            '[class*="name"]'
         ]
 
         for selector in selectors:
-            element = soup.select_one(selector)
-            if element:
-                return element.get_text(strip=True)
+            try:
+                element = soup.select_one(selector)
+                if element:
+                    title = element.get_text(strip=True)
+                    if title and len(title) > 5:  # Ensure meaningful title
+                        return title
+            except Exception as e:
+                self.logger.debug(f"Error extracting title with selector {selector}: {str(e)}")
+                continue
+
+        return ''
+
+    def _extract_property_title(self, soup: BeautifulSoup) -> str:
+        """Extract property title from individual page (legacy method)"""
+        return self._safe_extract_property_title(soup)
+
+    def _safe_extract_property_price(self, soup: BeautifulSoup) -> str:
+        """Safely extract property price from individual page with fallbacks"""
+        selectors = [
+            '.mb-ldp__dtls__price',
+            '[class*="price"]',
+            '.property-price',
+            '[class*="cost"]',
+            '[class*="amount"]'
+        ]
+
+        for selector in selectors:
+            try:
+                element = soup.select_one(selector)
+                if element:
+                    price = element.get_text(strip=True)
+                    # Validate price format (should contain numbers and currency indicators)
+                    if price and any(char.isdigit() for char in price):
+                        return price
+            except Exception as e:
+                self.logger.debug(f"Error extracting price with selector {selector}: {str(e)}")
+                continue
 
         return ''
 
     def _extract_property_price(self, soup: BeautifulSoup) -> str:
-        """Extract property price from individual page"""
+        """Extract property price from individual page (legacy method)"""
+        return self._safe_extract_property_price(soup)
+
+    def _safe_extract_property_area(self, soup: BeautifulSoup) -> str:
+        """Safely extract property area from individual page with fallbacks"""
         selectors = [
-            '.mb-ldp__dtls__price',
-            '[class*="price"]',
-            '.property-price'
+            '.mb-ldp__dtls__area',
+            '[class*="area"]',
+            '.property-area',
+            '[class*="sqft"]',
+            '[class*="size"]'
         ]
 
         for selector in selectors:
-            element = soup.select_one(selector)
-            if element:
-                return element.get_text(strip=True)
+            try:
+                element = soup.select_one(selector)
+                if element:
+                    area = element.get_text(strip=True)
+                    # Validate area format (should contain numbers and area units)
+                    if area and any(char.isdigit() for char in area):
+                        return area
+            except Exception as e:
+                self.logger.debug(f"Error extracting area with selector {selector}: {str(e)}")
+                continue
 
         return ''
 
     def _extract_property_area(self, soup: BeautifulSoup) -> str:
-        """Extract property area from individual page"""
+        """Extract property area from individual page (legacy method)"""
+        return self._safe_extract_property_area(soup)
+
+    def _safe_extract_amenities(self, soup: BeautifulSoup) -> List[str]:
+        """Safely extract amenities from individual page with fallbacks"""
+        amenities = []
+
+        amenity_selectors = [
+            '.mb-ldp__amenities li',
+            '.amenities-list li',
+            '[class*="amenity"]',
+            '[class*="facility"] li',
+            '[class*="feature"] li'
+        ]
+
+        for selector in amenity_selectors:
+            try:
+                elements = soup.select(selector)
+                for element in elements:
+                    amenity = element.get_text(strip=True)
+                    if amenity and len(amenity) > 2 and amenity not in amenities:
+                        amenities.append(amenity)
+            except Exception as e:
+                self.logger.debug(f"Error extracting amenities with selector {selector}: {str(e)}")
+                continue
+
+        return amenities
+
+    def _safe_extract_description(self, soup: BeautifulSoup) -> str:
+        """Safely extract property description from individual page with fallbacks"""
         selectors = [
-            '.mb-ldp__dtls__area',
-            '[class*="area"]',
-            '.property-area'
+            '.mb-ldp__dtls__desc',
+            '.property-description',
+            '[class*="description"]',
+            '[class*="about"]',
+            '[class*="detail"] p'
         ]
 
         for selector in selectors:
-            element = soup.select_one(selector)
-            if element:
-                return element.get_text(strip=True)
+            try:
+                element = soup.select_one(selector)
+                if element:
+                    description = element.get_text(strip=True)
+                    if description and len(description) > 20:  # Ensure meaningful description
+                        return description
+            except Exception as e:
+                self.logger.debug(f"Error extracting description with selector {selector}: {str(e)}")
+                continue
 
         return ''
+
+    def _safe_extract_builder_info(self, soup: BeautifulSoup) -> Dict[str, str]:
+        """Safely extract builder information from individual page with fallbacks"""
+        builder_info = {}
+
+        builder_selectors = [
+            '.mb-ldp__builder__name',
+            '.builder-name',
+            '[class*="builder"]',
+            '[class*="developer"]'
+        ]
+
+        for selector in builder_selectors:
+            try:
+                element = soup.select_one(selector)
+                if element:
+                    name = element.get_text(strip=True)
+                    if name and len(name) > 2:
+                        builder_info['name'] = name
+                        break
+            except Exception as e:
+                self.logger.debug(f"Error extracting builder info with selector {selector}: {str(e)}")
+                continue
+
+        return builder_info
+
+    def _safe_extract_location_details(self, soup: BeautifulSoup) -> Dict[str, str]:
+        """Safely extract detailed location information with fallbacks"""
+        location_details = {}
+
+        location_selectors = [
+            '.mb-ldp__location',
+            '.property-location',
+            '[class*="location"]',
+            '[class*="address"]'
+        ]
+
+        for selector in location_selectors:
+            try:
+                element = soup.select_one(selector)
+                if element:
+                    address = element.get_text(strip=True)
+                    if address and len(address) > 5:
+                        location_details['address'] = address
+                        break
+            except Exception as e:
+                self.logger.debug(f"Error extracting location with selector {selector}: {str(e)}")
+                continue
+
+        return location_details
+
+    def _safe_extract_specifications(self, soup: BeautifulSoup) -> Dict[str, str]:
+        """Safely extract detailed specifications with fallbacks"""
+        specifications = {}
+
+        spec_selectors = [
+            '.mb-ldp__specs tr',
+            '.specifications tr',
+            '[class*="spec"] tr',
+            '[class*="detail"] tr'
+        ]
+
+        for selector in spec_selectors:
+            try:
+                rows = soup.select(selector)
+                for row in rows:
+                    cells = row.find_all(['td', 'th'])
+                    if len(cells) >= 2:
+                        key = cells[0].get_text(strip=True)
+                        value = cells[1].get_text(strip=True)
+                        if key and value and len(key) > 1 and len(value) > 1:
+                            specifications[key] = value
+            except Exception as e:
+                self.logger.debug(f"Error extracting specifications with selector {selector}: {str(e)}")
+                continue
+
+        return specifications
 
     def _extract_amenities(self, soup: BeautifulSoup) -> List[str]:
         """Extract amenities from individual page"""
@@ -1172,6 +2075,126 @@ class IntegratedMagicBricksScraper:
 
         except Exception as e:
             self.logger.error(f"   ❌ Failed to update CSV with detailed data: {str(e)}")
+
+    def scrape_multiple_cities_parallel(self, cities: List[str], mode: ScrapingMode = ScrapingMode.INCREMENTAL,
+                                      max_pages_per_city: int = None, include_individual_pages: bool = False,
+                                      export_formats: List[str] = ['csv'], max_workers: int = 3) -> Dict[str, Any]:
+        """
+        Scrape multiple cities in parallel with proper resource management
+
+        Args:
+            cities: List of city names to scrape
+            mode: Scraping mode for all cities
+            max_pages_per_city: Maximum pages per city
+            include_individual_pages: Whether to include individual property scraping
+            export_formats: Export formats for each city
+            max_workers: Maximum number of parallel workers (recommended: 2-4)
+
+        Returns:
+            Dict containing results for all cities
+        """
+
+        self.logger.info(f"[HOUSE] Starting parallel city scraping for {len(cities)} cities")
+        self.logger.info(f"   [LIST] Cities: {', '.join(cities)}")
+        self.logger.info(f"   [WORKERS] Workers: {max_workers}")
+        self.logger.info(f"   [PAGES] Max pages per city: {max_pages_per_city}")
+        self.logger.info(f"   [HOUSE] Individual pages: {include_individual_pages}")
+
+        start_time = time.time()
+        results = {}
+        failed_cities = []
+
+        # Thread-safe progress tracking
+        progress_lock = threading.Lock()
+        completed_cities = 0
+
+        def scrape_single_city(city: str) -> Tuple[str, Dict[str, Any]]:
+            """Scrape a single city in a separate thread"""
+            nonlocal completed_cities
+
+            try:
+                # Create a separate scraper instance for this thread
+                city_scraper = IntegratedMagicBricksScraper()
+
+                self.logger.info(f"   [LIST] Starting {city} scraping...")
+
+                result = city_scraper.scrape_properties_with_incremental(
+                    city=city,
+                    mode=mode,
+                    max_pages=max_pages_per_city,
+                    include_individual_pages=include_individual_pages,
+                    export_formats=export_formats
+                )
+
+                # Update progress safely
+                with progress_lock:
+                    completed_cities += 1
+                    self.logger.info(f"   [SUCCESS] {city} completed ({completed_cities}/{len(cities)})")
+
+                return city, result
+
+            except Exception as e:
+                with progress_lock:
+                    completed_cities += 1
+                    self.logger.error(f"   [ERROR] {city} failed ({completed_cities}/{len(cities)}): {str(e)}")
+
+                return city, {'success': False, 'error': str(e)}
+
+        # Execute parallel scraping with controlled concurrency
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            # Submit all city scraping tasks
+            future_to_city = {executor.submit(scrape_single_city, city): city for city in cities}
+
+            # Collect results as they complete
+            for future in as_completed(future_to_city):
+                city = future_to_city[future]
+                try:
+                    city_name, result = future.result()
+                    results[city_name] = result
+
+                    if not result.get('success', False):
+                        failed_cities.append(city_name)
+
+                except Exception as e:
+                    self.logger.error(f"   [ERROR] Unexpected error for {city}: {str(e)}")
+                    results[city] = {'success': False, 'error': str(e)}
+                    failed_cities.append(city)
+
+        # Calculate overall statistics
+        total_duration = time.time() - start_time
+        successful_cities = len(cities) - len(failed_cities)
+        total_properties = sum(result.get('properties_scraped', 0) for result in results.values() if result.get('success'))
+        total_pages = sum(result.get('pages_scraped', 0) for result in results.values() if result.get('success'))
+
+        # Compile summary
+        summary = {
+            'success': len(failed_cities) == 0,
+            'total_cities': len(cities),
+            'successful_cities': successful_cities,
+            'failed_cities': failed_cities,
+            'total_properties_scraped': total_properties,
+            'total_pages_scraped': total_pages,
+            'total_duration': total_duration,
+            'duration_formatted': f"{int(total_duration // 60)}m {int(total_duration % 60)}s",
+            'average_properties_per_city': total_properties / successful_cities if successful_cities > 0 else 0,
+            'properties_per_minute': (total_properties * 60) / total_duration if total_duration > 0 else 0,
+            'parallel_efficiency': f"{(total_properties / total_duration) / max_workers:.1f} props/min/worker" if total_duration > 0 else "N/A",
+            'city_results': results,
+            'export_formats': export_formats,
+            'parallel_workers': max_workers
+        }
+
+        # Log summary
+        self.logger.info(f"\\n[HOUSE] PARALLEL CITY SCRAPING COMPLETE")
+        self.logger.info(f"   [SUCCESS] Successful cities: {successful_cities}/{len(cities)}")
+        self.logger.info(f"   [LIST] Total properties: {total_properties}")
+        self.logger.info(f"   [TIMER] Total duration: {summary['duration_formatted']}")
+        self.logger.info(f"   [ROCKET] Efficiency: {summary['parallel_efficiency']}")
+
+        if failed_cities:
+            self.logger.warning(f"   [ERROR] Failed cities: {', '.join(failed_cities)}")
+
+        return summary
 
     def close(self):
         """Close the WebDriver"""
