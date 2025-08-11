@@ -463,10 +463,19 @@ class MagicBricksGUI:
         action_section.columnconfigure(0, weight=1)
         current_row += 1
 
-        # Start scraping button - large and prominent
-        self.start_button = ttk.Button(action_section, text="🚀 Ready to Start Scraping",
+        # Start/Stop scraping buttons - large and prominent
+        main_action_frame = ttk.Frame(action_section)
+        main_action_frame.pack(fill=tk.X, pady=(0, 10))
+        main_action_frame.columnconfigure(0, weight=2)
+        main_action_frame.columnconfigure(1, weight=1)
+
+        self.start_button = ttk.Button(main_action_frame, text="🚀 Ready to Start Scraping",
                                      command=self.start_scraping, style='Primary.TButton')
-        self.start_button.pack(fill=tk.X, pady=(0, 10))
+        self.start_button.grid(row=0, column=0, sticky=(tk.W, tk.E), padx=(0, 10))
+
+        self.stop_btn = ttk.Button(main_action_frame, text="⏹️ Stop Scraping",
+                                 command=self.stop_scraping, state='disabled', style='Secondary.TButton')
+        self.stop_btn.grid(row=0, column=1, sticky=(tk.W, tk.E))
 
         # Quick action buttons
         button_frame = ttk.Frame(action_section)
@@ -2543,7 +2552,7 @@ For production deployment, schedules integrate with:
             
             # Update UI state
             self.is_scraping = True
-            self.start_btn.config(state='disabled')
+            self.start_button.config(state='disabled')
             self.stop_btn.config(state='normal')
             
             # Clear previous results and initialize progress tracking
@@ -2746,7 +2755,7 @@ For production deployment, schedules integrate with:
     def reset_ui_state(self):
         """Reset UI state after scraping"""
         self.is_scraping = False
-        self.start_btn.config(state='normal')
+        self.start_button.config(state='normal')
         self.stop_btn.config(state='disabled')
         self.update_status("Ready to start scraping")
     
