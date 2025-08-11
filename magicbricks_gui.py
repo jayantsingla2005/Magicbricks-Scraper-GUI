@@ -454,6 +454,26 @@ class MagicBricksGUI:
         ttk.Spinbox(delay_range_frame, from_=1, to=30, textvariable=self.individual_delay_max_var, width=5).grid(row=0, column=2)
         ttk.Label(delay_range_frame, text=" seconds").grid(row=0, column=3)
 
+        # Additional timing settings
+        ttk.Label(timing_section, text="Batch Break Delay (seconds):", style='Heading.TLabel').grid(row=3, column=0, sticky=tk.W, pady=(10, 5))
+        self.batch_break_var = tk.StringVar(value="15")
+        ttk.Spinbox(timing_section, from_=5, to=60, textvariable=self.batch_break_var, width=10).grid(row=3, column=1, sticky=tk.W, padx=(10, 0))
+
+        ttk.Label(timing_section, text="Batch Size:", style='Heading.TLabel').grid(row=4, column=0, sticky=tk.W, pady=(5, 5))
+        self.batch_size_var = tk.StringVar(value="10")
+        ttk.Spinbox(timing_section, from_=1, to=50, textvariable=self.batch_size_var, width=10).grid(row=4, column=1, sticky=tk.W, padx=(10, 0))
+
+        # Memory optimization
+        self.memory_optimization_var = tk.BooleanVar(value=True)
+        ttk.Checkbutton(timing_section, text="Memory Optimization", variable=self.memory_optimization_var).grid(row=5, column=0, columnspan=2, sticky=tk.W, pady=(10, 0))
+
+        # Initialize filtering variables with defaults
+        self.enable_filtering_var = tk.BooleanVar(value=False)
+        self.price_min_var = tk.StringVar(value="")
+        self.price_max_var = tk.StringVar(value="")
+        self.area_min_var = tk.StringVar(value="")
+        self.area_max_var = tk.StringVar(value="")
+
         # Initially hide individual delay settings
         self.toggle_individual_delay_settings()
 
