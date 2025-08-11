@@ -27,7 +27,7 @@ from pathlib import Path
 from incremental_scraping_system import IncrementalScrapingSystem
 from user_mode_options import ScrapingMode
 from date_parsing_system import DateParsingSystem
-from src.core.detailed_property_extractor import DetailedPropertyExtractor
+# from src.core.detailed_property_extractor import DetailedPropertyExtractor  # Available for future individual page scraping
 from smart_stopping_logic import SmartStoppingLogic
 from url_tracking_system import URLTrackingSystem
 
