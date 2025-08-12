@@ -2296,7 +2296,7 @@ class IntegratedMagicBricksScraper:
             else:
                 validation_issues.append('Missing area')
 
-            # Validate and clean property URL
+            # Validate and clean property URL (FIXED: Don't mark missing URLs as invalid)
             url = cleaned_data.get('property_url', '').strip()
             if url:
                 if not url.startswith('http'):
@@ -2304,8 +2304,7 @@ class IntegratedMagicBricksScraper:
                         cleaned_data['property_url'] = f"https://www.magicbricks.com{url}"
                     else:
                         validation_issues.append('Invalid URL format')
-            else:
-                validation_issues.append('Missing property URL')
+            # NOTE: Missing URLs are normal for builder floors/plots - don't mark as invalid
 
             # Clean locality and society
             for field in ['locality', 'society']:
