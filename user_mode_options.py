@@ -97,7 +97,7 @@ class UserModeOptions:
             }
         }
         
-        print("⚙️ User Mode Options System Initialized")
+        print("[CONFIG] User Mode Options System Initialized")
     
     def connect_db(self):
         """Connect to database"""
@@ -106,7 +106,7 @@ class UserModeOptions:
             self.connection = sqlite3.connect(self.db_path)
             return True
         except Exception as e:
-            print(f"❌ Database connection failed: {str(e)}")
+            print(f"[ERROR] Database connection failed: {str(e)}")
             return False
     
     def get_available_modes(self) -> Dict[str, Dict[str, Any]]:
@@ -177,7 +177,7 @@ class UserModeOptions:
             session_id = cursor.lastrowid
             self.connection.commit()
             
-            print(f"✅ Created scraping session {session_id} for {city} in {mode.value} mode")
+            print(f"[SUCCESS] Created scraping session {session_id} for {city} in {mode.value} mode")
             
             return {
                 'success': True,
@@ -369,7 +369,7 @@ class UserModeOptions:
     def test_user_mode_options(self) -> Dict[str, Any]:
         """Test the user mode options system"""
         
-        print("🧪 TESTING USER MODE OPTIONS SYSTEM")
+        print("[TEST] TESTING USER MODE OPTIONS SYSTEM")
         print("="*50)
         
         test_results = {
@@ -381,25 +381,25 @@ class UserModeOptions:
         }
         
         # Test 1: Get available modes
-        print("📋 Testing available modes...")
+        print("[TEST] Testing available modes...")
         modes = self.get_available_modes()
         test_results['modes_available'] = len(modes)
-        print(f"   ✅ Found {len(modes)} available modes")
+        print(f"   [SUCCESS] Found {len(modes)} available modes")
         
         # Test 2: Create sessions for different modes
-        print("\n📋 Testing session creation...")
+        print("\n[TEST] Testing session creation...")
         test_modes = [ScrapingMode.INCREMENTAL, ScrapingMode.CONSERVATIVE, ScrapingMode.FULL]
         
         for mode in test_modes:
             session_result = self.create_scraping_session('test_city', mode)
             if session_result['success']:
                 test_results['sessions_created'] += 1
-                print(f"   ✅ Created session for {mode.value} mode")
+                print(f"   [SUCCESS] Created session for {mode.value} mode")
             else:
-                print(f"   ❌ Failed to create session for {mode.value} mode")
+                print(f"   [ERROR] Failed to create session for {mode.value} mode")
         
         # Test 3: Validate configurations
-        print("\n📋 Testing configuration validation...")
+        print("\n[TEST] Testing configuration validation...")
         test_configs = [
             {'stop_threshold_percentage': 80, 'max_pages': 100, 'date_buffer_hours': 2},
             {'stop_threshold_percentage': 30, 'max_pages': 5, 'date_buffer_hours': -1},  # Should have errors
@@ -411,29 +411,29 @@ class UserModeOptions:
             if validation['is_valid'] or len(validation['warnings']) > 0:
                 test_results['validations_passed'] += 1
         
-        print(f"   ✅ Validated {test_results['validations_passed']}/{len(test_configs)} configurations")
+        print(f"   [SUCCESS] Validated {test_results['validations_passed']}/{len(test_configs)} configurations")
         
         # Test 4: Get recommendations
-        print("\n📋 Testing mode recommendations...")
+        print("\n[TEST] Testing mode recommendations...")
         
         # Test with no previous scrape
         recommendations = self.get_mode_recommendations('test_city')
         if recommendations['primary_recommendation']:
             test_results['recommendations_generated'] += 1
-            print(f"   ✅ Generated recommendation: {recommendations['primary_recommendation']}")
+            print(f"   [SUCCESS] Generated recommendation: {recommendations['primary_recommendation']}")
         
         # Test with recent scrape
         last_scrape_info = {'last_scrape_date': datetime.now() - timedelta(hours=12)}
         recommendations = self.get_mode_recommendations('test_city', last_scrape_info)
         if recommendations['primary_recommendation']:
             test_results['recommendations_generated'] += 1
-            print(f"   ✅ Generated recommendation for recent scrape: {recommendations['primary_recommendation']}")
+            print(f"   [SUCCESS] Generated recommendation for recent scrape: {recommendations['primary_recommendation']}")
         
         # Test 5: Get session history
-        print("\n📋 Testing session history...")
+        print("\n[TEST] Testing session history...")
         history = self.get_session_history('test_city', limit=5)
         if history['success']:
-            print(f"   ✅ Retrieved {history['total_sessions']} session records")
+            print(f"   [SUCCESS] Retrieved {history['total_sessions']} session records")
         
         # Overall test success
         test_results['test_success'] = (
@@ -443,13 +443,13 @@ class UserModeOptions:
             test_results['recommendations_generated'] >= 2
         )
         
-        print(f"\n📊 USER MODE OPTIONS TEST RESULTS")
+        print(f"\n[RESULTS] USER MODE OPTIONS TEST RESULTS")
         print("="*50)
-        print(f"✅ Available modes: {test_results['modes_available']}")
-        print(f"✅ Sessions created: {test_results['sessions_created']}")
-        print(f"✅ Validations passed: {test_results['validations_passed']}")
-        print(f"✅ Recommendations generated: {test_results['recommendations_generated']}")
-        print(f"🎯 Overall test success: {test_results['test_success']}")
+        print(f"[SUCCESS] Available modes: {test_results['modes_available']}")
+        print(f"[SUCCESS] Sessions created: {test_results['sessions_created']}")
+        print(f"[SUCCESS] Validations passed: {test_results['validations_passed']}")
+        print(f"[SUCCESS] Recommendations generated: {test_results['recommendations_generated']}")
+        print(f"[TARGET] Overall test success: {test_results['test_success']}")
         
         return test_results
 
@@ -462,7 +462,7 @@ def main():
         test_results = mode_options.test_user_mode_options()
         
         if test_results['test_success']:
-            print("\n✅ User mode options system test successful!")
+            print("\n[SUCCESS] User mode options system test successful!")
             return True
         else:
             print("\n⚠️ User mode options system needs improvement!")

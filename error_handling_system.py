@@ -26,7 +26,7 @@ except ImportError:
         EMAIL_AVAILABLE = True
     except ImportError:
         EMAIL_AVAILABLE = False
-        print("⚠️ Email functionality not available - notifications disabled")
+        print("[WARNING] Email functionality not available - notifications disabled")
 
 
 class ErrorSeverity(Enum):
@@ -86,9 +86,9 @@ class ErrorHandlingSystem:
         # Error patterns and suggestions
         self.error_patterns = self._initialize_error_patterns()
         
-        print("🛡️ Error Handling System Initialized")
-        print(f"   📧 Email notifications: {'Enabled' if self.notification_config.get('email_enabled') else 'Disabled'}")
-        print(f"   📝 Error logging: Enabled")
+        print("[SYSTEM] Error Handling System Initialized")
+        print(f"   [EMAIL] Email notifications: {'Enabled' if self.notification_config.get('email_enabled') else 'Disabled'}")
+        print(f"   [LOG] Error logging: Enabled")
     
     def load_configuration(self):
         """Load error handling configuration"""
@@ -112,7 +112,7 @@ class ErrorHandlingSystem:
                     loaded_config = json.load(f)
                     default_config.update(loaded_config)
             except Exception as e:
-                print(f"⚠️ Error loading config: {str(e)}, using defaults")
+                print(f"[WARNING] Error loading config: {str(e)}, using defaults")
         
         self.notification_config = default_config
     
@@ -123,7 +123,7 @@ class ErrorHandlingSystem:
             with open(self.config_file, 'w') as f:
                 json.dump(self.notification_config, f, indent=2)
         except Exception as e:
-            print(f"⚠️ Error saving config: {str(e)}")
+            print(f"[WARNING] Error saving config: {str(e)}")
     
     def setup_logging(self):
         """Setup enhanced logging system"""
@@ -332,7 +332,7 @@ class ErrorHandlingSystem:
             try:
                 callback(error_info)
             except Exception as e:
-                print(f"⚠️ Error in callback: {str(e)}")
+                print(f"[WARNING] Error in callback: {str(e)}")
     
     def _should_notify(self, error_info: ErrorInfo) -> bool:
         """Check if notification should be sent"""
@@ -347,7 +347,7 @@ class ErrorHandlingSystem:
         """Send email notification"""
 
         if not EMAIL_AVAILABLE:
-            print("⚠️ Email functionality not available - skipping notification")
+            print("[WARNING] Email functionality not available - skipping notification")
             return
 
         try:
@@ -380,10 +380,10 @@ class ErrorHandlingSystem:
             )
             server.quit()
             
-            print(f"📧 Notification sent for {error_info.severity.value} error")
+            print(f"[EMAIL] Notification sent for {error_info.severity.value} error")
             
         except Exception as e:
-            print(f"⚠️ Failed to send notification: {str(e)}")
+            print(f"[WARNING] Failed to send notification: {str(e)}")
     
     def _create_email_body(self, error_info: ErrorInfo) -> str:
         """Create HTML email body"""
@@ -487,7 +487,7 @@ class ErrorHandlingSystem:
     def clear_error_log(self):
         """Clear error log"""
         self.error_log.clear()
-        print("🗑️ Error log cleared")
+        print("[SYSTEM] Error log cleared")
     
     def export_error_log(self, filename: str = None) -> str:
         """Export error log to JSON file"""
@@ -515,11 +515,11 @@ class ErrorHandlingSystem:
             with open(filename, 'w') as f:
                 json.dump(export_data, f, indent=2)
             
-            print(f"📁 Error log exported to {filename}")
+            print(f"[EXPORT] Error log exported to {filename}")
             return filename
             
         except Exception as e:
-            print(f"⚠️ Error exporting log: {str(e)}")
+            print(f"[WARNING] Error exporting log: {str(e)}")
             return None
 
 
@@ -527,14 +527,14 @@ def main():
     """Test the error handling system"""
     
     try:
-        print("🧪 TESTING ERROR HANDLING SYSTEM")
+        print("[TEST] TESTING ERROR HANDLING SYSTEM")
         print("="*50)
         
         # Initialize system
         error_system = ErrorHandlingSystem()
         
         # Test different types of errors
-        print("\n🔍 Testing error handling...")
+        print("\n[TEST] Testing error handling...")
         
         # Test network error
         try:
@@ -558,23 +558,23 @@ def main():
             print(f"Validation error handled: {error_info.category.value} - {error_info.suggestion}")
         
         # Test error summary
-        print("\n📊 Error summary:")
+        print("\n[STATS] Error summary:")
         summary = error_system.get_error_summary()
         print(f"Total errors: {summary['total_errors']}")
         print(f"Recent errors: {summary['recent_errors']}")
         print(f"Severity counts: {summary['severity_counts']}")
         
         # Test export
-        print("\n📁 Testing export...")
+        print("\n[TEST] Testing export...")
         export_file = error_system.export_error_log()
         if export_file:
             print(f"Export successful: {export_file}")
         
-        print("\n✅ Error handling system test completed successfully!")
+        print("\n[SUCCESS] Error handling system test completed successfully!")
         return True
         
     except Exception as e:
-        print(f"❌ Error handling system test failed: {str(e)}")
+        print(f"[ERROR] Error handling system test failed: {str(e)}")
         return False
 
 

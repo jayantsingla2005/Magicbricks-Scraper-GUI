@@ -23,7 +23,7 @@ class IncrementalDatabaseSchema:
         self.db_path = db_path
         self.connection = None
         
-        print("🗄️ Incremental Database Schema Enhancement Initialized")
+        print("[DATABASE] Incremental Database Schema Enhancement Initialized")
     
     def connect(self):
         """Connect to database"""
@@ -31,10 +31,10 @@ class IncrementalDatabaseSchema:
         try:
             self.connection = sqlite3.connect(self.db_path)
             self.connection.execute('PRAGMA foreign_keys = ON')
-            print(f"✅ Connected to database: {self.db_path}")
+            print(f"[SUCCESS] Connected to database: {self.db_path}")
             return True
         except Exception as e:
-            print(f"❌ Database connection failed: {str(e)}")
+            print(f"[ERROR] Database connection failed: {str(e)}")
             return False
     
     def create_incremental_tables(self):
@@ -132,11 +132,11 @@ class IncrementalDatabaseSchema:
             ''')
             
             self.connection.commit()
-            print("✅ All incremental tables created successfully")
+            print("[SUCCESS] All incremental tables created successfully")
             return True
             
         except Exception as e:
-            print(f"❌ Error creating incremental tables: {str(e)}")
+            print(f"[ERROR] Error creating incremental tables: {str(e)}")
             self.connection.rollback()
             return False
     
@@ -170,16 +170,16 @@ class IncrementalDatabaseSchema:
                 if column_name not in existing_columns:
                     try:
                         cursor.execute(f'ALTER TABLE properties ADD COLUMN {column_name} {column_type}')
-                        print(f"   ✅ Added column: {column_name}")
+                        print(f"   [SUCCESS] Added column: {column_name}")
                     except Exception as e:
                         print(f"   ⚠️ Column {column_name} might already exist: {str(e)}")
             
             self.connection.commit()
-            print("✅ Incremental columns added to existing tables")
+            print("[SUCCESS] Incremental columns added to existing tables")
             return True
             
         except Exception as e:
-            print(f"❌ Error adding incremental columns: {str(e)}")
+            print(f"[ERROR] Error adding incremental columns: {str(e)}")
             self.connection.rollback()
             return False
     
@@ -222,16 +222,16 @@ class IncrementalDatabaseSchema:
             for index_name, table_name, columns in indexes:
                 try:
                     cursor.execute(f'CREATE INDEX IF NOT EXISTS {index_name} ON {table_name} ({columns})')
-                    print(f"   ✅ Created index: {index_name}")
+                    print(f"   [SUCCESS] Created index: {index_name}")
                 except Exception as e:
                     print(f"   ⚠️ Index {index_name} might already exist: {str(e)}")
             
             self.connection.commit()
-            print("✅ Performance indexes created successfully")
+            print("[SUCCESS] Performance indexes created successfully")
             return True
             
         except Exception as e:
-            print(f"❌ Error creating indexes: {str(e)}")
+            print(f"[ERROR] Error creating indexes: {str(e)}")
             self.connection.rollback()
             return False
     
@@ -267,16 +267,16 @@ class IncrementalDatabaseSchema:
                         (setting_name, setting_value, setting_type, description)
                         VALUES (?, ?, ?, ?)
                     ''', (setting_name, setting_value, setting_type, description))
-                    print(f"   ✅ Added setting: {setting_name} = {setting_value}")
+                    print(f"   [SUCCESS] Added setting: {setting_name} = {setting_value}")
                 except Exception as e:
                     print(f"   ⚠️ Setting {setting_name} might already exist: {str(e)}")
             
             self.connection.commit()
-            print("✅ Default settings inserted successfully")
+            print("[SUCCESS] Default settings inserted successfully")
             return True
             
         except Exception as e:
-            print(f"❌ Error inserting default settings: {str(e)}")
+            print(f"[ERROR] Error inserting default settings: {str(e)}")
             self.connection.rollback()
             return False
     
@@ -304,26 +304,26 @@ class IncrementalDatabaseSchema:
             for table in tables_to_check:
                 cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table,))
                 if cursor.fetchone():
-                    print(f"   ✅ Table exists: {table}")
+                    print(f"   [SUCCESS] Table exists: {table}")
                 else:
-                    print(f"   ❌ Table missing: {table}")
+                    print(f"   [ERROR] Table missing: {table}")
                     return False
             
             # Check settings are inserted
             cursor.execute("SELECT COUNT(*) FROM incremental_settings")
             settings_count = cursor.fetchone()[0]
-            print(f"   ✅ Settings configured: {settings_count}")
+            print(f"   [SUCCESS] Settings configured: {settings_count}")
             
             # Check indexes exist
             cursor.execute("SELECT name FROM sqlite_master WHERE type='index' AND name LIKE 'idx_%'")
             indexes = cursor.fetchall()
-            print(f"   ✅ Performance indexes: {len(indexes)}")
+            print(f"   [SUCCESS] Performance indexes: {len(indexes)}")
             
-            print("✅ Schema enhancement validation successful")
+            print("[SUCCESS] Schema enhancement validation successful")
             return True
             
         except Exception as e:
-            print(f"❌ Schema validation failed: {str(e)}")
+            print(f"[ERROR] Schema validation failed: {str(e)}")
             return False
     
     def close(self):
@@ -331,12 +331,12 @@ class IncrementalDatabaseSchema:
         
         if self.connection:
             self.connection.close()
-            print("✅ Database connection closed")
+            print("[SUCCESS] Database connection closed")
     
     def enhance_database_schema(self):
         """Complete database schema enhancement process"""
         
-        print("🚀 STARTING DATABASE SCHEMA ENHANCEMENT")
+        print("[ROCKET] STARTING DATABASE SCHEMA ENHANCEMENT")
         print("="*60)
         
         try:
@@ -366,16 +366,16 @@ class IncrementalDatabaseSchema:
             
             print("\n🎉 DATABASE SCHEMA ENHANCEMENT COMPLETE!")
             print("="*60)
-            print("✅ All incremental tables created")
-            print("✅ Performance indexes added")
-            print("✅ Default settings configured")
-            print("✅ Schema validation passed")
-            print("🚀 Ready for incremental scraping implementation")
+            print("[SUCCESS] All incremental tables created")
+            print("[SUCCESS] Performance indexes added")
+            print("[SUCCESS] Default settings configured")
+            print("[SUCCESS] Schema validation passed")
+            print("[ROCKET] Ready for incremental scraping implementation")
             
             return True
             
         except Exception as e:
-            print(f"❌ Database schema enhancement failed: {str(e)}")
+            print(f"[ERROR] Database schema enhancement failed: {str(e)}")
             return False
         
         finally:
@@ -390,14 +390,14 @@ def main():
         success = schema_enhancer.enhance_database_schema()
         
         if success:
-            print("\n✅ Database schema enhancement completed successfully!")
+            print("\n[SUCCESS] Database schema enhancement completed successfully!")
             return True
         else:
-            print("\n❌ Database schema enhancement failed!")
+            print("\n[ERROR] Database schema enhancement failed!")
             return False
             
     except Exception as e:
-        print(f"❌ Schema enhancement error: {str(e)}")
+        print(f"[ERROR] Schema enhancement error: {str(e)}")
         return False
 
 

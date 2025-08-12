@@ -63,7 +63,7 @@ class DateParsingSystem:
             'confidence_distribution': {}
         }
         
-        print("📅 Date Parsing System Initialized")
+        print("[DATE] Date Parsing System Initialized")
     
     def connect_db(self):
         """Connect to database"""
@@ -72,7 +72,7 @@ class DateParsingSystem:
             self.connection = sqlite3.connect(self.db_path)
             return True
         except Exception as e:
-            print(f"❌ Database connection failed: {str(e)}")
+            print(f"[ERROR] Database connection failed: {str(e)}")
             return False
     
     def parse_posting_date(self, text: str, extraction_date: datetime = None) -> Dict[str, Any]:
@@ -242,7 +242,7 @@ class DateParsingSystem:
             results.append(result)
             
             if (i + 1) % 100 == 0:
-                print(f"   ✅ Processed {i + 1}/{len(text_list)} texts")
+                print(f"   [SUCCESS] Processed {i + 1}/{len(text_list)} texts")
         
         return results
     
@@ -255,7 +255,7 @@ class DateParsingSystem:
         try:
             cursor = self.connection.cursor()
             
-            print(f"💾 Saving {len(parsing_results)} parsing results to database...")
+            print(f"[SAVE] Saving {len(parsing_results)} parsing results to database...")
             
             for i, result in enumerate(parsing_results):
                 property_url = property_urls[i] if property_urls and i < len(property_urls) else f"test_url_{i}"
@@ -276,7 +276,7 @@ class DateParsingSystem:
                 ))
             
             self.connection.commit()
-            print(f"✅ Saved {len(parsing_results)} parsing results to database")
+            print(f"[SUCCESS] Saved {len(parsing_results)} parsing results to database")
             return True
             
         except Exception as e:
@@ -346,11 +346,11 @@ class DateParsingSystem:
             
             if result['success']:
                 test_results['successful_parses'] += 1
-                print(f"   ✅ Success: {result['parsed_datetime']} (confidence: {result['confidence_score']})")
-                print(f"   📋 Pattern: {result['pattern_type']}")
+                print(f"   [SUCCESS] Success: {result['parsed_datetime']} (confidence: {result['confidence_score']})")
+                print(f"   [PATTERN] Pattern: {result['pattern_type']}")
             else:
                 test_results['failed_parses'] += 1
-                print(f"   ❌ Failed: {result['error']}")
+                print(f"   [ERROR] Failed: {result['error']}")
             
             test_results['detailed_results'].append({
                 'test_text': test_text,
@@ -360,13 +360,13 @@ class DateParsingSystem:
         # Calculate overall statistics
         stats = self.get_parsing_statistics()
         
-        print(f"\n📊 DATE PARSING SYSTEM TEST RESULTS")
+        print(f"\n[RESULTS] DATE PARSING SYSTEM TEST RESULTS")
         print("="*50)
-        print(f"✅ Test cases run: {test_results['test_cases_run']}")
-        print(f"✅ Successful parses: {test_results['successful_parses']}")
-        print(f"❌ Failed parses: {test_results['failed_parses']}")
-        print(f"📈 Success rate: {stats['success_rate_percentage']}%")
-        print(f"🔥 Most common pattern: {stats['most_common_pattern']}")
+        print(f"[SUCCESS] Test cases run: {test_results['test_cases_run']}")
+        print(f"[SUCCESS] Successful parses: {test_results['successful_parses']}")
+        print(f"[ERROR] Failed parses: {test_results['failed_parses']}")
+        print(f"[RATE] Success rate: {stats['success_rate_percentage']}%")
+        print(f"[COMMON] Most common pattern: {stats['most_common_pattern']}")
         
         test_results['statistics'] = stats
         
@@ -381,14 +381,14 @@ def main():
         test_results = date_parser.test_date_parsing_system()
         
         if test_results['successful_parses'] >= test_results['test_cases_run'] * 0.8:
-            print("\n✅ Date parsing system test successful!")
+            print("\n[SUCCESS] Date parsing system test successful!")
             return True
         else:
-            print("\n⚠️ Date parsing system needs improvement!")
+            print("\n[WARNING] Date parsing system needs improvement!")
             return False
             
     except Exception as e:
-        print(f"❌ Date parsing system test failed: {str(e)}")
+        print(f"[ERROR] Date parsing system test failed: {str(e)}")
         return False
 
 

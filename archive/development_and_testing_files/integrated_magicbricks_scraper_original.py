@@ -30,7 +30,6 @@ from date_parsing_system import DateParsingSystem
 # from src.core.detailed_property_extractor import DetailedPropertyExtractor  # Available for future individual page scraping
 from smart_stopping_logic import SmartStoppingLogic
 from url_tracking_system import URLTrackingSystem
-from individual_property_tracking_system import IndividualPropertyTracker
 
 
 class IntegratedMagicBricksScraper:
@@ -58,7 +57,6 @@ class IntegratedMagicBricksScraper:
             self.date_parser = DateParsingSystem()
             self.stopping_logic = SmartStoppingLogic()
             self.url_tracker = URLTrackingSystem()
-            self.individual_tracker = IndividualPropertyTracker()
         
         # Session tracking
         self.session_stats = {
@@ -102,18 +100,6 @@ class IntegratedMagicBricksScraper:
         if not hasattr(self, 'date_parser') or self.date_parser is None:
             self.date_parser = DateParsingSystem()
 
-        # Setup premium selectors for enhanced extraction
-        self.premium_selectors = self._setup_premium_selectors()
-        
-        # Setup extraction tracking
-        self.extraction_stats = {
-            'total_extracted': 0,
-            'successful_extractions': 0,
-            'premium_properties': 0,
-            'standard_properties': 0,
-            'failed_extractions': 0
-        }
-
         # Note: DetailedPropertyExtractor is available for individual page scraping if needed
         # For now, we're doing comprehensive extraction from listing pages
 
@@ -121,9 +107,9 @@ class IntegratedMagicBricksScraper:
         if self.incremental_enabled:
             self.setup_incremental_system()
         
-        print("[ROCKET] Integrated MagicBricks Scraper Initialized")
-        print(f"   [STATS] Incremental scraping: {'Enabled' if incremental_enabled else 'Disabled'}")
-        print(f"   [CONFIG] Custom configuration: {'Enabled' if custom_config else 'Default'}")
+        print("🚀 Integrated MagicBricks Scraper Initialized")
+        print(f"   📊 Incremental scraping: {'Enabled' if incremental_enabled else 'Disabled'}")
+        print(f"   ⚙️ Custom configuration: {'Enabled' if custom_config else 'Default'}")
 
     def _setup_default_config(self) -> Dict[str, Any]:
         """Setup default configuration for the scraper"""
@@ -184,98 +170,6 @@ class IntegratedMagicBricksScraper:
             'exclude_keywords': []  # Keywords to exclude from title/description
         }
 
-    def _setup_premium_selectors(self) -> Dict[str, List[str]]:
-        """Setup enhanced selectors for premium properties"""
-        return {
-            'title': [
-                # Standard selectors
-                'h2.mb-srp__card--title',
-                'h2[class*="title"]',
-                'h3[class*="title"]',
-                'a[class*="title"]',
-                '.mb-srp__card--title',
-                # Premium property selectors
-                '.preferred-agent h2',
-                '.card-luxury h2',
-                '.premium-listing h2',
-                '.sponsored-card h2',
-                # Fallback selectors
-                'h1', 'h2', 'h3', 'h4',
-                'a[href*="property"]',
-                '.SRPTuple__title',
-                '[data-testid*="title"]',
-                # Text-based fallback
-                '.card-title', '.property-title', '.listing-title'
-            ],
-            'price': [
-                # Standard selectors
-                'div.mb-srp__card__price--amount',
-                'span[class*="price"]',
-                'div[class*="price"]',
-                '.mb-srp__card__price--amount',
-                # Premium property selectors
-                '.preferred-agent .price',
-                '.card-luxury .price',
-                '.premium-listing .price',
-                '.sponsored-card .price',
-                # Enhanced selectors
-                '.SRPTuple__price',
-                '[data-testid*="price"]',
-                '*[class*="cost"]',
-                '*[class*="amount"]',
-                '*[class*="value"]',
-                # Fallback selectors
-                '.price-value', '.cost-value', '.amount-value'
-            ],
-            'area': [
-                # Standard selectors
-                'div.mb-srp__card__summary--value',
-                'span[class*="area"]',
-                'div[class*="area"]',
-                '.mb-srp__card__summary--value',
-                # Premium property selectors
-                '.preferred-agent .area',
-                '.card-luxury .area',
-                '.premium-listing .area',
-                '.sponsored-card .area',
-                # Enhanced area selectors
-                '.SRPTuple__area',
-                '[data-testid*="area"]',
-                '*[class*="sqft"]',
-                '*[class*="size"]',
-                '*[class*="carpet"]',
-                # Fallback selectors
-                '.area-value', '.size-value', '.sqft-value'
-            ],
-            'url': [
-                # Current MagicBricks URL patterns (2025)
-                'a[href*="pdpid"]',  # Most common current pattern
-                'a[href*="propertyDetails"]',
-                'a[href*="property-details"]',
-                'a[href*="/property/"]',
-                'a[href*="propertydetail"]',
-                # Title-based URL selectors
-                'h2.mb-srp__card--title a',
-                'h2 a[href]',
-                'a[class*="title"]',
-                '.mb-srp__card--title a',
-                # Premium property URL selectors
-                '.preferred-agent a[href*="property"]',
-                '.card-luxury a[href*="property"]',
-                '.premium-listing a[href*="property"]',
-                '.sponsored-card a[href*="property"]',
-                # Broad fallback URL selectors
-                'a[href*="magicbricks.com"]',
-                'a[href*="-gurgaon-"]',  # Location-based URLs
-                'a[href*="-mumbai-"]',
-                'a[href*="-delhi-"]',
-                'a[href*="-bangalore-"]',
-                # Generic fallbacks
-                'a[href^="/"]',  # Relative URLs
-                'a[href]'  # Any link as last resort
-            ]
-        }
-
     def setup_logging(self):
         """Setup logging for the scraper with Unicode support"""
 
@@ -299,8 +193,7 @@ class IntegratedMagicBricksScraper:
                                     .replace('🎉', '[COMPLETE]')
                                     .replace('🚨', '[ALERT]')
                                     .replace('🔄', '[RETRY]')
-                                    .replace('⏸️', '[PAUSE]')
-                                    .replace('🚀', '[ROCKET]'))
+                                    .replace('⏸️', '[PAUSE]'))
                 return super().format(record)
 
         # Setup logging with safe formatter
@@ -332,17 +225,17 @@ class IntegratedMagicBricksScraper:
         """Setup the incremental scraping system"""
         
         try:
-            print("[SETUP] Setting up incremental scraping system...")
+            print("🔧 Setting up incremental scraping system...")
             success = self.incremental_system.setup_system()
             
             if success:
-                print("[SUCCESS] Incremental scraping system ready")
+                print("✅ Incremental scraping system ready")
             else:
-                print("[WARNING] Incremental system setup failed - falling back to full scraping")
+                print("⚠️ Incremental system setup failed - falling back to full scraping")
                 self.incremental_enabled = False
                 
         except Exception as e:
-            print(f"[ERROR] Error setting up incremental system: {str(e)}")
+            print(f"❌ Error setting up incremental system: {str(e)}")
             self.incremental_enabled = False
     
     def setup_driver(self):
@@ -424,8 +317,8 @@ class IntegratedMagicBricksScraper:
                 self.session_stats['last_scrape_date'] = session_result.get('last_scrape_date')
                 
                 mode_str = mode.value if hasattr(mode, 'value') else str(mode)
-                print(f"[SUCCESS] Started {mode_str} scraping session for {city}")
-                print(f"   [INFO] Session ID: {session_result['session_id']}")
+                print(f"✅ Started {mode_str} scraping session for {city}")
+                print(f"   📋 Session ID: {session_result['session_id']}")
                 
                 if session_result.get('last_scrape_date'):
                     print(f"   📅 Last scrape: {session_result['last_scrape_date']}")
@@ -434,17 +327,16 @@ class IntegratedMagicBricksScraper:
                 
                 return True
             else:
-                print(f"[ERROR] Failed to start incremental session: {session_result['error']}")
+                print(f"❌ Failed to start incremental session: {session_result['error']}")
                 return False
         else:
             # Non-incremental session
-            print(f"[SUCCESS] Started full scraping session for {city}")
+            print(f"✅ Started full scraping session for {city}")
             return True
     
     def scrape_properties_with_incremental(self, city: str, mode: ScrapingMode = ScrapingMode.INCREMENTAL,
                                          max_pages: int = None, include_individual_pages: bool = False,
-                                         export_formats: List[str] = ['csv'], progress_callback=None,
-                                         force_rescrape_individual: bool = False) -> Dict[str, Any]:
+                                         export_formats: List[str] = ['csv'], progress_callback=None) -> Dict[str, Any]:
         """Main scraping method with incremental support"""
         
         try:
@@ -462,7 +354,7 @@ class IntegratedMagicBricksScraper:
             if mode in [ScrapingMode.INCREMENTAL, ScrapingMode.CONSERVATIVE, ScrapingMode.DATE_RANGE]:
                 base_url += "?sort=date_desc"  # Force chronological sorting
             
-            print(f"[URL] Base URL: {base_url}")
+            print(f"🔗 Base URL: {base_url}")
             
             # Initialize progress tracking
             estimated_total_pages = max_pages if max_pages else 50  # Default estimate
@@ -486,15 +378,11 @@ class IntegratedMagicBricksScraper:
             page_number = 1
             consecutive_old_pages = 0
             self.session_start_time = time.time()
-            page_retry_count = 0  # Track retries for current page
-            max_retries_per_page = 3  # Maximum retries per page
-            consecutive_skipped_pages = 0  # Track consecutive skipped pages
-            max_consecutive_skips = 5  # Stop if too many consecutive pages fail
 
             while True:
                 # Check page limits
                 if max_pages and page_number > max_pages:
-                    print(f"[STOP] Reached maximum page limit: {max_pages}")
+                    print(f"🛑 Reached maximum page limit: {max_pages}")
                     break
                 
                 # Build page URL
@@ -504,7 +392,7 @@ class IntegratedMagicBricksScraper:
                     separator = '&' if '?' in base_url else '?'
                     page_url = f"{base_url}{separator}page={page_number}"
                 
-                print(f"\n[PAGE] Scraping page {page_number}: {page_url}")
+                print(f"\n📄 Scraping page {page_number}: {page_url}")
 
                 # Update progress before scraping page
                 progress_data.update({
@@ -529,45 +417,16 @@ class IntegratedMagicBricksScraper:
 
                 if not page_result['success']:
                     self.consecutive_failures += 1
-                    page_retry_count += 1
-                    print(f"[ERROR] Failed to scrape page {page_number}: {page_result['error']} (Retry {page_retry_count}/{max_retries_per_page})")
+                    print(f"❌ Failed to scrape page {page_number}: {page_result['error']}")
 
                     # Check if it's bot detection
                     if 'bot' in page_result['error'].lower() or 'captcha' in page_result['error'].lower():
-                        if page_retry_count < max_retries_per_page:
-                            self._handle_bot_detection()
-                            continue  # Retry after recovery
-                        else:
-                            print(f"[SKIP] Skipping page {page_number} after {max_retries_per_page} failed attempts")
-                            print(f"[DEBUG] Moving from page {page_number} to page {page_number + 1}")
-                            consecutive_skipped_pages += 1
-                            if consecutive_skipped_pages >= max_consecutive_skips:
-                                print(f"[STOP] Stopping scraper: {max_consecutive_skips} consecutive pages failed")
-                                break
-                            page_retry_count = 0  # Reset for next page
-                            page_number += 1  # Skip to next page
-                            print(f"[DEBUG] Now attempting page {page_number}")
-                            continue
+                        self._handle_bot_detection()
+                        continue  # Retry after recovery
                     else:
-                        if page_retry_count < max_retries_per_page:
-                            print(f"[RETRY] Retrying page {page_number} in 5 seconds...")
-                            time.sleep(5)
-                            continue
-                        else:
-                            print(f"[SKIP] Skipping page {page_number} after {max_retries_per_page} failed attempts")
-                            print(f"[DEBUG] Moving from page {page_number} to page {page_number + 1}")
-                            consecutive_skipped_pages += 1
-                            if consecutive_skipped_pages >= max_consecutive_skips:
-                                print(f"[STOP] Stopping scraper: {max_consecutive_skips} consecutive pages failed")
-                                break
-                            page_retry_count = 0  # Reset for next page
-                            page_number += 1  # Skip to next page
-                            print(f"[DEBUG] Now attempting page {page_number}")
-                            continue
+                        break
                 else:
                     self.consecutive_failures = 0  # Reset on success
-                    page_retry_count = 0  # Reset retry count on success
-                    consecutive_skipped_pages = 0  # Reset skipped pages counter on success
                 
                 # Update statistics
                 self.session_stats['pages_scraped'] += 1
@@ -584,7 +443,7 @@ class IntegratedMagicBricksScraper:
                     if should_stop['should_stop']:
                         self.session_stats['incremental_stopped'] = True
                         self.session_stats['stop_reason'] = should_stop['reason']
-                        print(f"[STOP] Incremental stopping: {should_stop['reason']}")
+                        print(f"🛑 Incremental stopping: {should_stop['reason']}")
                         break
                 
                 # Enhanced delay strategy
@@ -644,18 +503,17 @@ class IntegratedMagicBricksScraper:
                         property_urls,
                         batch_size=10,
                         progress_callback=progress_callback,
-                        progress_data=progress_data,
-                        force_rescrape=force_rescrape_individual
+                        progress_data=progress_data
                     )
                     individual_properties_scraped = len(detailed_properties)
 
                     # Update CSV with detailed information if any were scraped
                     if detailed_properties:
                         self._update_csv_with_individual_data(output_file, detailed_properties)
-                        self.logger.info(f"   [SUCCESS] Updated CSV with {individual_properties_scraped} detailed properties")
+                        self.logger.info(f"   ✅ Updated CSV with {individual_properties_scraped} detailed properties")
 
                 else:
-                    self.logger.warning("   [WARNING] No property URLs found for individual page scraping")
+                    self.logger.warning("   ⚠️ No property URLs found for individual page scraping")
 
             return {
                 'success': True,
@@ -750,7 +608,7 @@ class IntegratedMagicBricksScraper:
             # Store properties
             self.properties.extend(page_properties)
             
-            print(f"   [SUCCESS] Extracted {len(page_properties)} properties from page {page_number}")
+            print(f"   ✅ Extracted {len(page_properties)} properties from page {page_number}")
             
             return {
                 'success': True,
@@ -804,9 +662,8 @@ class IntegratedMagicBricksScraper:
         for selector in selectors:
             cards = soup.select(selector)
             # Choose the first selector that yields a reasonable number of cards
-            # Lowered threshold from 10 to 5 to be more inclusive
-            if cards and len(cards) >= 5:
-                print(f"   [TARGET] Found {len(cards)} properties using selector: {selector}")
+            if cards and len(cards) >= 10:
+                print(f"   🎯 Found {len(cards)} properties using selector: {selector}")
                 return cards
 
         # Last resort: broader query
@@ -817,254 +674,57 @@ class IntegratedMagicBricksScraper:
             property_cards = soup.find_all("div", class_=re.compile(r"mb-srp|property|card", re.I))
 
         if property_cards:
-            print(f"   [TARGET] Found {len(property_cards)} properties using fallback selectors")
+            print(f"   🎯 Found {len(property_cards)} properties using fallback selectors")
 
         return property_cards
 
-    def detect_premium_property_type(self, card) -> Dict[str, Any]:
-        """Detect if a property card is a premium/special type"""
-        premium_info = {
-            'is_premium': False,
-            'premium_type': 'standard',
-            'classes': [],
-            'indicators': []
-        }
-        
-        try:
-            # Get all classes from the card
-            card_classes = card.get('class', [])
-            if isinstance(card_classes, str):
-                card_classes = [card_classes]
-            
-            # Check for premium indicators
-            premium_indicators = {
-                'preferred-agent': 'preferred_agent',
-                'card-luxury': 'luxury',
-                'premium-listing': 'premium',
-                'card--premium': 'premium',
-                '--premium': 'premium',
-                'sponsored-card': 'sponsored',
-                '--sponsored': 'sponsored',
-                'featured': 'featured',
-                'highlighted': 'highlighted'
-            }
-            
-            for class_name in card_classes:
-                for indicator, type_name in premium_indicators.items():
-                    if indicator in class_name:
-                        premium_info['is_premium'] = True
-                        premium_info['premium_type'] = type_name
-                        premium_info['classes'].append(class_name)
-                        premium_info['indicators'].append(indicator)
-            
-            # Check for premium text indicators
-            card_text = card.get_text().lower()
-            text_indicators = ['premium', 'luxury', 'featured', 'sponsored', 'preferred']
-            for indicator in text_indicators:
-                if indicator in card_text:
-                    premium_info['indicators'].append(f'text_{indicator}')
-                    if not premium_info['is_premium']:
-                        premium_info['is_premium'] = True
-                        premium_info['premium_type'] = indicator
-            
-        except Exception as e:
-            self.logger.warning(f"Error detecting premium property type: {e}")
-        
-        return premium_info
-
-    def _extract_with_enhanced_fallback(self, card, selectors: List[str], field_type: str = 'text', default: str = 'N/A') -> str:
-        """Enhanced extraction with premium property support and intelligent fallback"""
-        import re
-        
-        # First try standard selectors
-        for selector in selectors:
-            try:
-                elem = card.select_one(selector)
-                if elem:
-                    text = elem.get_text(strip=True)
-                    if text and text != default and len(text) > 1:
-                        # Additional validation for meaningful content
-                        if not text.lower() in ['n/a', 'na', 'null', 'none', '--', '...']:
-                            return text
-            except Exception:
-                continue
-        
-        # Enhanced fallback extraction based on field type
-        try:
-            all_text = card.get_text()
-            
-            if field_type == 'price':
-                # Enhanced price pattern matching
-                price_patterns = [
-                    r'₹[\d,.]+ (?:Crore|Lakh|crore|lakh)',
-                    r'₹[\d,.]+\s*(?:Cr|L|cr|l)\b',
-                    r'₹[\d,.]+',
-                    r'\b[\d,.]+ (?:Crore|Lakh|crore|lakh)\b',
-                    r'Price[:\s]*₹[\d,.]+',
-                    r'Cost[:\s]*₹[\d,.]+'
-                ]
-                for pattern in price_patterns:
-                    match = re.search(pattern, all_text)
-                    if match:
-                        return match.group().strip()
-            
-            elif field_type == 'area':
-                # Enhanced area pattern matching
-                area_patterns = [
-                    r'\b\d+[\d,.]* (?:sqft|sq ft|Sq\.? ?ft|SQFT)\b',
-                    r'\b\d+[\d,.]* (?:sq\.?m|sqm|Sq\.?M)\b',
-                    r'(?:Carpet|Super|Built)[\s:]*\d+[\d,.]* (?:sqft|sq ft)',
-                    r'Area[:\s]*\d+[\d,.]* (?:sqft|sq ft)',
-                    r'Size[:\s]*\d+[\d,.]* (?:sqft|sq ft)',
-                    r'\d+[\d,.]* (?:Sq\.? ?Ft|SQFT)'
-                ]
-                for pattern in area_patterns:
-                    match = re.search(pattern, all_text, re.I)
-                    if match:
-                        return match.group().strip()
-            
-            elif field_type == 'title':
-                # Enhanced title extraction for premium properties
-                title_patterns = [
-                    r'\b\d+ BHK .+',
-                    r'\b\d+ Bedroom .+',
-                    r'(?:Apartment|House|Villa|Plot) .+',
-                    r'[A-Z][a-z]+ [A-Z][a-z]+ .+'
-                ]
-                for pattern in title_patterns:
-                    match = re.search(pattern, all_text)
-                    if match:
-                        return match.group().strip()
-        
-        except Exception:
-            pass
-        
-        return default
-
-    def _extract_premium_property_url(self, card) -> str:
-        """Extract property URL with premium property support"""
-        url_selectors = self.premium_selectors.get('url', [])
-
-        # Try premium selectors first
-        for selector in url_selectors:
-            try:
-                elem = card.select_one(selector)
-                if elem and elem.get('href'):
-                    url = elem.get('href')
-                    if self._is_valid_property_url(url):
-                        # Convert relative URLs to absolute
-                        if url.startswith('/'):
-                            url = f"https://www.magicbricks.com{url}"
-                        return url
-            except Exception:
-                continue
-
-        # Fallback: try any link in the card that might be valid
-        try:
-            all_links = card.select('a[href]')
-            for link in all_links:
-                url = link.get('href', '')
-                if url and self._is_valid_property_url(url):
-                    # Convert relative URLs to absolute
-                    if url.startswith('/'):
-                        url = f"https://www.magicbricks.com{url}"
-                    return url
-        except Exception:
-            pass
-
-        return ''
-
-    def _is_valid_property_url(self, url: str) -> bool:
-        """Validate if URL is a valid property URL"""
-        if not url:
-            return False
-
-        # Skip invalid URLs
-        invalid_patterns = ['javascript:', 'mailto:', '#', 'tel:', 'void(0)']
-        if any(pattern in url.lower() for pattern in invalid_patterns):
-            return False
-
-        # Check for valid property URL patterns (updated for 2025)
-        valid_patterns = [
-            'pdpid',  # Most common current pattern
-            'property-detail',
-            'propertyDetails',
-            'property-details',
-            '/property/',
-            'propertydetail',
-            'magicbricks.com',
-            # Location-based patterns
-            '-gurgaon-',
-            '-mumbai-',
-            '-delhi-',
-            '-bangalore-',
-            '-pune-',
-            '-hyderabad-',
-            '-chennai-',
-            '-kolkata-'
-        ]
-
-        return any(pattern in url for pattern in valid_patterns)
-
-
-
     def extract_property_data(self, card, page_number: int, property_index: int) -> Optional[Dict[str, Any]]:
-        """Enhanced property data extraction with premium property support"""
+        """Extract comprehensive data from a single property card using robust selectors"""
 
         try:
-            # Update extraction stats
-            self.extraction_stats['total_extracted'] += 1
-            
-            # Detect premium property type
-            premium_info = self.detect_premium_property_type(card)
-            
-            if premium_info['is_premium']:
-                self.extraction_stats['premium_properties'] += 1
-            else:
-                self.extraction_stats['standard_properties'] += 1
-            
-            # Extract title with enhanced fallback
-            title = self._extract_with_enhanced_fallback(
-                card, 
-                self.premium_selectors['title'], 
-                'title', 
-                'N/A'
-            )
-            
-            # Extract price with enhanced fallback
-            price = self._extract_with_enhanced_fallback(
-                card, 
-                self.premium_selectors['price'], 
-                'price', 
-                'N/A'
-            )
-            
-            # Extract area with enhanced fallback
-            area = self._extract_with_enhanced_fallback(
-                card, 
-                self.premium_selectors['area'], 
-                'area', 
-                'N/A'
-            )
-            
-            # Extract property URL with premium support
-            property_url = self._extract_premium_property_url(card)
+            # Extract title using comprehensive selectors
+            title = self._extract_with_fallback(card, [
+                'h2.mb-srp__card--title',
+                'h2[class*="title"]',
+                'h3[class*="title"]',
+                'a[class*="title"]',
+                '.mb-srp__card--title',
+                'h1', 'h2', 'h3', 'h4',  # Generic headers
+                'a[href*="property"]',  # Property links
+                '.SRPTuple__title',  # Alternative structure
+                '[data-testid*="title"]'  # Test ID based
+            ], 'N/A')
 
-            # More lenient validation - save properties with partial data
-            # Only require at least one meaningful field
-            has_title = title and title != 'N/A' and len(title.strip()) > 3
-            has_price = price and price != 'N/A' and len(price.strip()) > 1
-            has_area = area and area != 'N/A' and len(area.strip()) > 1
+            # Extract price using comprehensive selectors
+            price = self._extract_with_fallback(card, [
+                'div.mb-srp__card__price--amount',
+                'span[class*="price"]',
+                'div[class*="price"]',
+                '.mb-srp__card__price--amount',
+                '.SRPTuple__price',  # Alternative structure
+                '[data-testid*="price"]',  # Test ID based
+                '*[class*="cost"]',  # Cost variations
+                '*[class*="amount"]'  # Amount variations
+            ], 'N/A')
 
-            # For premium properties, be very lenient
-            if premium_info['is_premium']:
-                is_valid = has_title or has_price or has_area
-            else:
-                # For standard properties, require at least title OR (price AND area)
-                is_valid = has_title or (has_price and has_area)
+            # Extract area using comprehensive selectors
+            area = self._extract_with_fallback(card, [
+                'div.mb-srp__card__summary--value',
+                'span[class*="area"]',
+                'div[class*="area"]',
+                '.mb-srp__card__summary--value',
+                '.SRPTuple__area',  # Alternative structure
+                '[data-testid*="area"]',  # Test ID based
+                '*[class*="sqft"]',  # Square feet variations
+                '*[class*="size"]',  # Size variations
+                '*[class*="carpet"]'  # Carpet area variations
+            ], 'N/A')
 
-            if not is_valid:
-                self.extraction_stats['failed_extractions'] += 1
+            # Extract property URL for validation
+            property_url = self._extract_property_url(card)
+
+            # Only proceed if we have a valid property URL (avoids wrapper duplicates)
+            if not property_url:
                 return None
 
             # Extract posting date using specific date selector
@@ -1117,7 +777,7 @@ class IntegratedMagicBricksScraper:
                 '*[class*="locality"]'
             ], '')
 
-            # Build comprehensive property data with premium information
+            # Build comprehensive property data
             property_data = {
                 # Basic fields (existing)
                 'title': title,
@@ -1129,11 +789,6 @@ class IntegratedMagicBricksScraper:
                 'scraped_at': datetime.now(),
                 'posting_date_text': posting_date_text,
                 'parsed_posting_date': parsed_posting_date,
-
-                # Premium property information
-                'is_premium': premium_info['is_premium'],
-                'premium_type': premium_info['premium_type'],
-                'premium_indicators': premium_info['indicators'],
 
                 # Comprehensive fields (new)
                 'bathrooms': bathrooms,
@@ -1150,14 +805,10 @@ class IntegratedMagicBricksScraper:
                 'transaction': transaction,
                 'overlooking': overlooking
             }
-            
-            # Update successful extraction stats
-            self.extraction_stats['successful_extractions'] += 1
 
             return property_data
 
         except Exception as e:
-            self.extraction_stats['failed_extractions'] += 1
             self.logger.error(f"Error extracting property data: {str(e)}")
             return None
 
@@ -1320,16 +971,16 @@ class IntegratedMagicBricksScraper:
             self.session_stats['duration_seconds'] = duration.total_seconds()
             self.session_stats['duration_formatted'] = f"{duration.total_seconds()//60:.0f}m {duration.total_seconds()%60:.0f}s"
         
-        print(f"\n[REPORT] SCRAPING SESSION COMPLETE")
+        print(f"\n📊 SCRAPING SESSION COMPLETE")
         print("="*50)
-        print(f"[SUCCESS] Mode: {self.session_stats['mode']}")
-        print(f"[SUCCESS] Pages scraped: {self.session_stats['pages_scraped']}")
-        print(f"[SUCCESS] Properties found: {self.session_stats['properties_found']}")
-        print(f"[SUCCESS] Properties saved: {self.session_stats['properties_saved']}")
-        print(f"[SUCCESS] Duration: {self.session_stats.get('duration_formatted', 'N/A')}")
+        print(f"✅ Mode: {self.session_stats['mode']}")
+        print(f"✅ Pages scraped: {self.session_stats['pages_scraped']}")
+        print(f"✅ Properties found: {self.session_stats['properties_found']}")
+        print(f"✅ Properties saved: {self.session_stats['properties_saved']}")
+        print(f"✅ Duration: {self.session_stats.get('duration_formatted', 'N/A')}")
         
         if self.session_stats.get('incremental_stopped'):
-            print(f"[STOP] Stopped by incremental logic: {self.session_stats['stop_reason']}")
+            print(f"🛑 Stopped by incremental logic: {self.session_stats['stop_reason']}")
     
     def save_to_csv(self, filename: str = None) -> tuple:
         """Save scraped properties to CSV
@@ -1339,7 +990,7 @@ class IntegratedMagicBricksScraper:
         """
 
         if not self.properties:
-            print("[WARNING] No properties to save")
+            print("⚠️ No properties to save")
             return None, None
 
         if filename is None:
@@ -1351,7 +1002,7 @@ class IntegratedMagicBricksScraper:
             df = pd.DataFrame(self.properties)
             df.to_csv(filename, index=False)
 
-            print(f"[SAVE] Saved {len(self.properties)} properties to {filename}")
+            print(f"💾 Saved {len(self.properties)} properties to {filename}")
             return df, filename
 
         except Exception as e:
@@ -1390,7 +1041,7 @@ class IntegratedMagicBricksScraper:
             with open(filename, 'w', encoding='utf-8') as f:
                 json.dump(json_data, f, indent=2, ensure_ascii=False, default=str)
 
-            print(f"[SAVE] Saved {len(self.properties)} properties to {filename}")
+            print(f"💾 Saved {len(self.properties)} properties to {filename}")
             return json_data, filename
 
         except Exception as e:
@@ -1448,7 +1099,7 @@ class IntegratedMagicBricksScraper:
                     city_df = pd.DataFrame(self.session_stats['city_stats'])
                     city_df.to_excel(writer, sheet_name='City_Stats', index=False)
 
-            print(f"[SAVE] Saved {len(self.properties)} properties to {filename}")
+            print(f"💾 Saved {len(self.properties)} properties to {filename}")
             return df, filename
 
         except Exception as e:
@@ -1539,9 +1190,9 @@ class IntegratedMagicBricksScraper:
 
         self.logger.warning(f"🚨 Bot detection #{self.bot_detection_count} - Implementing recovery strategy")
 
-        if self.bot_detection_count <= 2:
+        if self.bot_detection_count <= 3:
             # Strategy 1: Extended delay and user agent rotation
-            delay = min(45 + (self.bot_detection_count * 15), 90)  # 45s to 90s
+            delay = min(30 + (self.bot_detection_count * 15), 120)  # 30s to 120s
             self.logger.info(f"   🔄 Strategy 1: Extended delay ({delay}s) + User agent rotation")
 
             # Rotate user agent
@@ -1553,19 +1204,18 @@ class IntegratedMagicBricksScraper:
             # Restart browser session
             self._restart_browser_session()
 
-        elif self.bot_detection_count <= 4:
+        elif self.bot_detection_count <= 5:
             # Strategy 2: Longer delay and session reset
-            delay = 120 + (self.bot_detection_count * 30)  # 2-4 minutes
+            delay = 180 + (self.bot_detection_count * 30)  # 3-5 minutes
             self.logger.info(f"   🔄 Strategy 2: Long delay ({delay}s) + Complete session reset")
 
             time.sleep(delay)
             self._restart_browser_session()
 
         else:
-            # Strategy 3: Very long break - likely need to stop
-            delay = 300  # 5 minutes
+            # Strategy 3: Extended break
+            delay = 600  # 10 minutes
             self.logger.warning(f"   ⏸️ Strategy 3: Extended break ({delay}s) - Multiple detections")
-            self.logger.warning(f"   ⚠️ Consider stopping scraper - persistent bot detection")
             time.sleep(delay)
             self._restart_browser_session()
 
@@ -1577,8 +1227,8 @@ class IntegratedMagicBricksScraper:
                 time.sleep(2)
 
             # Create new session with rotated user agent
-            self.setup_driver()
-            self.logger.info("   [SUCCESS] Browser session restarted successfully")
+            self._setup_webdriver()
+            self.logger.info("   ✅ Browser session restarted successfully")
 
         except Exception as e:
             self.logger.error(f"   ❌ Failed to restart browser session: {str(e)}")
@@ -1609,194 +1259,26 @@ class IntegratedMagicBricksScraper:
         time.sleep(final_delay)
 
     def scrape_individual_property_pages(self, property_urls: List[str], batch_size: int = 10,
-                                        progress_callback=None, progress_data=None,
-                                        force_rescrape: bool = False) -> List[Dict[str, Any]]:
+                                        progress_callback=None, progress_data=None) -> List[Dict[str, Any]]:
         """
-        Enhanced individual property page scraping with duplicate detection and concurrent processing
-
-        Args:
-            property_urls: List of property URLs to scrape
-            batch_size: Number of properties to process in each batch
-            progress_callback: Callback function for progress updates
-            progress_data: Additional data for progress callback
-            force_rescrape: If True, re-scrape even if already scraped
-
-        Returns:
-            List of scraped property data dictionaries
+        Enhanced individual property page scraping with concurrent processing and advanced anti-scraping measures
         """
         detailed_properties = []
         total_urls = len(property_urls)
-
+        
+        # Check if concurrent scraping is enabled
+        concurrent_enabled = self.config.get('concurrent_enabled', True)
+        concurrent_pages = min(self.config.get('concurrent_pages', 4), self.config.get('max_concurrent_pages', 8))
+        
         self.logger.info(f"🏠 Starting individual property page scraping for {total_urls} properties")
+        self.logger.info(f"   📦 Batch size: {batch_size}")
+        self.logger.info(f"   🛡️ Enhanced anti-scraping: Enabled")
+        self.logger.info(f"   🔄 Concurrent processing: {'Enabled' if concurrent_enabled else 'Disabled'}")
+        if concurrent_enabled:
+            self.logger.info(f"   ⚡ Concurrent workers: {concurrent_pages}")
 
-        # PHASE 1: Smart URL Filtering with Duplicate Detection
-        if self.incremental_enabled and hasattr(self, 'individual_tracker'):
-            self.logger.info("🔍 Phase 1: Filtering URLs with duplicate detection...")
-
-            # Create scraping session
-            session_name = f"Individual Scraping - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-            session_id = self.individual_tracker.create_scraping_session(session_name, total_urls)
-
-            # Filter URLs to avoid duplicates
-            filter_result = self.individual_tracker.filter_urls_for_scraping(
-                property_urls,
-                force_rescrape=force_rescrape
-            )
-
-            if filter_result['success']:
-                filtered_urls = filter_result['urls_to_scrape']
-                skipped_urls = filter_result['urls_to_skip']
-
-                self.logger.info(f"   📊 Filtering Results:")
-                self.logger.info(f"   🆕 New URLs to scrape: {len(filtered_urls)}")
-                self.logger.info(f"   ⏭️ Already scraped (skipped): {len(skipped_urls)}")
-                self.logger.info(f"   🎯 Efficiency gain: {len(skipped_urls)}/{total_urls} duplicates avoided")
-
-                # Update URLs to scrape
-                property_urls = filtered_urls
-                total_urls = len(property_urls)
-
-                if total_urls == 0:
-                    self.logger.info("✅ All properties already scraped with good quality. No scraping needed.")
-                    return []
-            else:
-                self.logger.warning(f"⚠️ URL filtering failed: {filter_result.get('error', 'Unknown error')}")
-                session_id = None
-        else:
-            session_id = None
-
-        # PHASE 2: Enhanced Scraping with Tracking
-        if total_urls > 0:
-            # Check if concurrent scraping is enabled
-            concurrent_enabled = self.config.get('concurrent_enabled', True)
-            concurrent_pages = min(self.config.get('concurrent_pages', 4), self.config.get('max_concurrent_pages', 8))
-
-            self.logger.info(f"🚀 Phase 2: Enhanced scraping for {total_urls} properties")
-            self.logger.info(f"   📦 Batch size: {batch_size}")
-            self.logger.info(f"   🛡️ Enhanced anti-scraping: Enabled")
-            self.logger.info(f"   🔄 Concurrent processing: {'Enabled' if concurrent_enabled else 'Disabled'}")
-            if concurrent_enabled:
-                self.logger.info(f"   ⚡ Concurrent workers: {concurrent_pages}")
-
-            if concurrent_enabled and total_urls > 1:
-                detailed_properties = self._scrape_individual_pages_concurrent_enhanced(
-                    property_urls, batch_size, progress_callback, progress_data, session_id
-                )
-            else:
-                detailed_properties = self._scrape_individual_pages_sequential_enhanced(
-                    property_urls, batch_size, progress_callback, progress_data, session_id
-                )
-
-        return detailed_properties
-
-    def _scrape_individual_pages_concurrent_enhanced(self, property_urls: List[str], batch_size: int,
-                                                   progress_callback=None, progress_data=None,
-                                                   session_id: int = None) -> List[Dict[str, Any]]:
-        """Enhanced concurrent scraping with tracking integration"""
-
-        detailed_properties = []
-        total_urls = len(property_urls)
-
-        # Process URLs in batches
-        for batch_start in range(0, total_urls, batch_size):
-            batch_end = min(batch_start + batch_size, total_urls)
-            batch_urls = property_urls[batch_start:batch_end]
-
-            self.logger.info(f"🔄 Processing batch {batch_start//batch_size + 1}: URLs {batch_start+1}-{batch_end}")
-
-            # Concurrent processing for this batch
-            concurrent_pages = min(self.config.get('concurrent_pages', 4), len(batch_urls))
-
-            with ThreadPoolExecutor(max_workers=concurrent_pages) as executor:
-                # Submit scraping tasks
-                future_to_url = {
-                    executor.submit(self._scrape_single_property_enhanced, url, i + batch_start, session_id): url
-                    for i, url in enumerate(batch_urls)
-                }
-
-                # Collect results
-                batch_properties = []
-                for future in as_completed(future_to_url):
-                    url = future_to_url[future]
-                    try:
-                        property_data = future.result()
-                        if property_data:
-                            batch_properties.append(property_data)
-
-                            # Track successful scraping
-                            if session_id and self.incremental_enabled and hasattr(self, 'individual_tracker'):
-                                self.individual_tracker.track_scraped_property(url, property_data, session_id)
-
-                        # Update progress
-                        if progress_callback:
-                            progress_callback(len(detailed_properties) + len(batch_properties), total_urls, progress_data)
-
-                    except Exception as e:
-                        self.logger.error(f"❌ Failed to scrape {url}: {str(e)}")
-
-                detailed_properties.extend(batch_properties)
-
-                # Inter-batch delay for anti-scraping
-                if batch_end < total_urls:
-                    delay = random.uniform(3, 8)
-                    self.logger.info(f"⏱️ Inter-batch delay: {delay:.1f} seconds")
-                    time.sleep(delay)
-
-        return detailed_properties
-
-    def _scrape_individual_pages_sequential_enhanced(self, property_urls: List[str], batch_size: int,
-                                                   progress_callback=None, progress_data=None,
-                                                   session_id: int = None) -> List[Dict[str, Any]]:
-        """Enhanced sequential scraping with tracking integration"""
-
-        detailed_properties = []
-        total_urls = len(property_urls)
-
-        for i, url in enumerate(property_urls):
-            try:
-                self.logger.info(f"🏠 Scraping property {i+1}/{total_urls}: {url}")
-
-                property_data = self._scrape_single_property_enhanced(url, i, session_id)
-                if property_data:
-                    detailed_properties.append(property_data)
-
-                    # Track successful scraping
-                    if session_id and self.incremental_enabled and hasattr(self, 'individual_tracker'):
-                        self.individual_tracker.track_scraped_property(url, property_data, session_id)
-
-                # Update progress
-                if progress_callback:
-                    progress_callback(i + 1, total_urls, progress_data)
-
-                # Anti-scraping delay
-                if i < total_urls - 1:
-                    delay = random.uniform(4, 10)
-                    self.logger.info(f"⏱️ Delay before next property: {delay:.1f} seconds")
-                    time.sleep(delay)
-
-            except Exception as e:
-                self.logger.error(f"❌ Failed to scrape property {i+1}: {str(e)}")
-
-        return detailed_properties
-
-    def _scrape_single_property_enhanced(self, url: str, property_index: int, session_id: int = None) -> Optional[Dict[str, Any]]:
-        """Enhanced single property scraping with quality scoring"""
-
-        try:
-            # Use existing single property scraping logic
-            property_data = self._scrape_single_property_page(url, property_index)
-
-            if property_data and self.incremental_enabled and hasattr(self, 'individual_tracker'):
-                # Calculate and add quality score
-                quality_score = self.individual_tracker.calculate_data_quality_score(property_data)
-                property_data['data_quality_score'] = quality_score
-                property_data['scraping_session_id'] = session_id
-
-            return property_data
-
-        except Exception as e:
-            self.logger.error(f"❌ Enhanced scraping failed for {url}: {str(e)}")
-            return None
+        if concurrent_enabled and total_urls > 1:
+            return self._scrape_individual_pages_concurrent(property_urls, batch_size, progress_callback, progress_data)
         else:
             return self._scrape_individual_pages_sequential(property_urls, batch_size, progress_callback, progress_data)
 
@@ -1855,7 +1337,7 @@ class IntegratedMagicBricksScraper:
                             
                         with results_lock:
                             processed_count += 1
-                            self.logger.info(f"   [SUCCESS] Property {processed_count}/{total_urls}: {'Success' if property_data else 'Failed'}")
+                            self.logger.info(f"   ✅ Property {processed_count}/{total_urls}: {'Success' if property_data else 'Failed'}")
                             
                             # Update progress
                             if progress_callback and progress_data:
@@ -1945,7 +1427,7 @@ class IntegratedMagicBricksScraper:
 
                     if property_data:
                         detailed_properties.append(property_data)
-                        self.logger.info(f"   [SUCCESS] Property {batch_start + i}/{total_urls}: Success")
+                        self.logger.info(f"   ✅ Property {batch_start + i}/{total_urls}: Success")
                     else:
                         self.logger.warning(f"   ❌ Property {batch_start + i}/{total_urls}: Failed")
 
@@ -2441,7 +1923,7 @@ class IntegratedMagicBricksScraper:
 
                 # Validate extracted data quality
                 if self._validate_extracted_data(property_data):
-                    self.logger.info(f"   [SUCCESS] Property {property_index} scraped successfully")
+                    self.logger.info(f"   ✅ Property {property_index} scraped successfully")
                     return property_data
                 else:
                     self.logger.warning(f"   ⚠️ Poor data quality on attempt {attempt + 1}")
@@ -2836,7 +2318,7 @@ class IntegratedMagicBricksScraper:
 
             # Save updated CSV
             df.to_csv(csv_file, index=False)
-            self.logger.info(f"   [SAVE] CSV updated with detailed property information")
+            self.logger.info(f"   💾 CSV updated with detailed property information")
 
         except Exception as e:
             self.logger.error(f"   ❌ Failed to update CSV with detailed data: {str(e)}")
@@ -3139,71 +2621,36 @@ class IntegratedMagicBricksScraper:
             self.logger.warning(f"Error extracting property ID from URL {url}: {str(e)}")
             return 'unknown'
 
-    def get_extraction_statistics(self) -> Dict[str, Any]:
-        """Get comprehensive extraction statistics"""
-        stats = self.extraction_stats.copy()
-        
-        # Calculate success rate
-        total = stats.get('total_extracted', 0)
-        successful = stats.get('successful_extractions', 0)
-        failed = stats.get('failed_extractions', 0)
-        
-        if total > 0:
-            stats['success_rate'] = (successful / total) * 100
-            stats['failure_rate'] = (failed / total) * 100
-        else:
-            stats['success_rate'] = 0
-            stats['failure_rate'] = 0
-        
-        # Calculate premium property percentage
-        premium = stats.get('premium_properties', 0)
-        if total > 0:
-            stats['premium_percentage'] = (premium / total) * 100
-        else:
-            stats['premium_percentage'] = 0
-        
-        return stats
-
-    def reset_extraction_statistics(self):
-        """Reset extraction statistics"""
-        self.extraction_stats = {
-            'total_extracted': 0,
-            'successful_extractions': 0,
-            'failed_extractions': 0,
-            'premium_properties': 0,
-            'standard_properties': 0
-        }
-
 
 def main():
     """Main function for testing integrated scraper"""
     
     try:
-        # Initialize integrated scraper with incremental disabled for full scrape
-        scraper = IntegratedMagicBricksScraper(headless=True, incremental_enabled=False)
+        # Initialize integrated scraper
+        scraper = IntegratedMagicBricksScraper(headless=True, incremental_enabled=True)
         
-        # Test full scraping for 100 pages
-        print("🧪 Testing integrated scraper with full mode for 100 pages...")
+        # Test incremental scraping
+        print("🧪 Testing integrated scraper with incremental mode...")
         
         result = scraper.scrape_properties_with_incremental(
             city='gurgaon',
-            mode=ScrapingMode.FULL,
-            max_pages=100  # Test with 100 pages for comprehensive validation
+            mode=ScrapingMode.INCREMENTAL,
+            max_pages=5  # Limit for testing
         )
         
         if result['success']:
-            print(f"\n[SUCCESS] Scraping successful!")
+            print(f"\n✅ Scraping successful!")
             print(f"📊 Properties scraped: {result['properties_scraped']}")
             print(f"📄 Pages scraped: {result['pages_scraped']}")
             print(f"📁 Output file: {result.get('output_file', 'N/A')}")
 
             if result.get('output_file'):
-                print(f"[SAVE] Data saved successfully to {result['output_file']}")
+                print(f"💾 Data saved successfully to {result['output_file']}")
         else:
-            print(f"[ERROR] Scraping failed: {result['error']}")
+            print(f"❌ Scraping failed: {result['error']}")
         
     except Exception as e:
-        print(f"[ERROR] Test failed: {str(e)}")
+        print(f"❌ Test failed: {str(e)}")
     
     finally:
         if 'scraper' in locals():

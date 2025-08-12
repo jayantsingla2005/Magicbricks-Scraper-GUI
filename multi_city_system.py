@@ -70,10 +70,10 @@ class MultiCitySystem:
             'max_concurrent_cities': 3
         }
         
-        print("🏙️ Multi-City System Initialized")
-        print(f"   📊 Total cities available: {len(self.cities)}")
-        print(f"   🏢 Metro cities: {len([c for c in self.cities.values() if c.is_metro])}")
-        print(f"   🌟 Tier 1 cities: {len([c for c in self.cities.values() if c.tier == CityTier.TIER_1])}")
+        print("[CITY] Multi-City System Initialized")
+        print(f"   [STATS] Total cities available: {len(self.cities)}")
+        print(f"   [METRO] Metro cities: {len([c for c in self.cities.values() if c.is_metro])}")
+        print(f"   [TIER1] Tier 1 cities: {len([c for c in self.cities.values() if c.tier == CityTier.TIER_1])}")
     
     def _initialize_city_database(self) -> Dict[str, CityInfo]:
         """Initialize comprehensive city database"""
@@ -325,7 +325,7 @@ class MultiCitySystem:
             connection.close()
             
         except Exception as e:
-            print(f"⚠️ Error saving city statistics: {str(e)}")
+            print(f"[WARNING] Error saving city statistics: {str(e)}")
     
     def get_city_statistics_summary(self) -> Dict[str, Any]:
         """Get summary of city statistics"""
@@ -408,7 +408,7 @@ def main():
             print(f"   - {city.name}, {city.state} ({city.tier.value})")
         
         # Test recommendations
-        print("\n🎯 Testing recommendations...")
+        print("\n[TARGET] Testing recommendations...")
         recommendations = city_system.get_city_recommendations({
             'auto_select_metros': True,
             'preferred_tier': CityTier.TIER_1
@@ -418,7 +418,7 @@ def main():
             print(f"   - {city.name} ({city.tier.value}, {city.region.value})")
         
         # Test validation
-        print("\n✅ Testing validation...")
+        print("\n[SUCCESS] Testing validation...")
         selected_cities = ['DEL', 'MUM', 'BLR', 'CHE', 'HYD']
         validation = city_system.validate_city_selection(selected_cities)
         print(f"Valid cities: {len(validation['valid_cities'])}")
@@ -432,17 +432,17 @@ def main():
             print(f"   {city_code}: {url}")
         
         # Test statistics
-        print("\n📊 Testing statistics...")
+        print("\n[STATS] Testing statistics...")
         stats = city_system.get_city_statistics_summary()
         print(f"Total cities: {stats['total_cities']}")
         print(f"Metro cities: {stats['metro_cities']}")
         print(f"Tier 1 cities: {stats['tier_1_cities']}")
         
-        print("\n✅ Multi-city system test completed successfully!")
+        print("\n[SUCCESS] Multi-city system test completed successfully!")
         return True
         
     except Exception as e:
-        print(f"❌ Multi-city system test failed: {str(e)}")
+        print(f"[ERROR] Multi-city system test failed: {str(e)}")
         return False
 
 

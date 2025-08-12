@@ -1,0 +1,31 @@
+property_index,original_success,enhanced_success,original_title,enhanced_title,original_area,enhanced_area,is_premium,premium_type,improvement
+0,True,True,"4 BHK Flat  for Sale in  Golf Course Road, Gurgaon","4 BHK Flat  for Sale in  Golf Course Road, Gurgaon",3120 sqft,3120 sqft,True,premium,MAINTAINED
+1,True,True,"3 BHK Flat  for Sale in  Sector 77, Delhi Gurgaon Expressway, Gurgaon","3 BHK Flat  for Sale in  Sector 77, Delhi Gurgaon Expressway, Gurgaon",1450 sqft,1450 sqft,False,standard,MAINTAINED
+2,False,True,N/A,"4 BHK Flat  for Sale in  Block F DLF Phase 1, Gurgaon",N/A,2300 sqft,True,premium,RECOVERED
+3,True,True,"3 BHK Flat  for Sale in  Pataudi Road, Gurgaon","3 BHK Flat  for Sale in  Pataudi Road, Gurgaon",2200 sqft,2200 sqft,True,premium,MAINTAINED
+4,True,True,"4 BHK Flat  for Sale in  Sector 91, Gurgaon","4 BHK Flat  for Sale in  Sector 91, Gurgaon",2700 sqft,2700 sqft,False,standard,MAINTAINED
+5,True,True,"3 BHK Flat  for Sale in  Sector 63A, Gurgaon","3 BHK Flat  for Sale in  Sector 63A, Gurgaon",1900 sqft,1900 sqft,True,premium,MAINTAINED
+6,False,True,N/A,"4 BHK Flat  for Sale in  Sushant Lok 2 Sector 57, Gurgaon",N/A,275 sqyrd,True,premium,RECOVERED
+7,True,True,"3 BHK Flat  for Sale in  Sector 89, Gurgaon","3 BHK Flat  for Sale in  Sector 89, Gurgaon",1320 sqft,1320 sqft,False,standard,MAINTAINED
+8,False,True,N/A,"4 BHK Flat  for Sale in  Sector 55, Gurgaon",N/A,230 sqyrd,True,premium,RECOVERED
+9,True,True,"3 BHK Flat  for Sale in  Dwarka Expressway, Gurgaon","3 BHK Flat  for Sale in  Dwarka Expressway, Gurgaon",2570 sqft,2570 sqft,True,premium,MAINTAINED
+10,True,True,"2 BHK Flat  for Sale in  Sector 68, Gurgaon","2 BHK Flat  for Sale in  Sector 68, Gurgaon",1325 sqft,1325 sqft,True,premium,MAINTAINED
+11,True,True,"4 BHK Flat  for Sale in  Sector 66, Gurgaon","4 BHK Flat  for Sale in  Sector 66, Gurgaon",1542 sqft,1542 sqft,True,premium,MAINTAINED
+12,True,True,"3 BHK Flat  for Sale in  Sector 49, Gurgaon","3 BHK Flat  for Sale in  Sector 49, Gurgaon",1993 sqft,1993 sqft,False,standard,MAINTAINED
+13,False,True,N/A,"2 BHK Flat  for Sale in  Sector 70, Gurgaon",N/A,1250 sqft,False,standard,RECOVERED
+14,True,True,"3 BHK Flat  for Sale in  Sector 49, Gurgaon","3 BHK Flat  for Sale in  Sector 49, Gurgaon",2238 sqft,2238 sqft,True,premium,MAINTAINED
+15,True,True,"3 BHK Flat  for Sale in  South City 1, Gurgaon","3 BHK Flat  for Sale in  South City 1, Gurgaon",2300 sqft,2300 sqft,True,premium,MAINTAINED
+16,True,True,"4 BHK Flat  for Sale in  Sector 69, Gurgaon","4 BHK Flat  for Sale in  Sector 69, Gurgaon",2010 sqft,2010 sqft,False,standard,MAINTAINED
+17,True,True,"4 BHK Flat  for Sale in  Sector 90, Gurgaon","4 BHK Flat  for Sale in  Sector 90, Gurgaon",1800 sqft,1800 sqft,True,premium,MAINTAINED
+18,True,True,"3 BHK Flat  for Sale in  Sector 112, Gurgaon","3 BHK Flat  for Sale in  Sector 112, Gurgaon",2520 sqft,2520 sqft,True,premium,MAINTAINED
+19,True,True,"3 BHK Flat  for Sale in  Sector 84, Gurgaon","3 BHK Flat  for Sale in  Sector 84, Gurgaon",14009 sqft,14009 sqft,True,premium,MAINTAINED
+20,True,True,"4 BHK Flat  for Sale in  Sector 106, Gurgaon","4 BHK Flat  for Sale in  Sector 106, Gurgaon",1692 sqft,1692 sqft,True,premium,MAINTAINED
+21,False,True,N/A,"5 BHK Flat  for Sale in  Sohna Road, Gurgaon",N/A,3101 sqft,True,premium,RECOVERED
+22,True,True,"4 BHK Flat  for Sale in  Fazilpur Jharsa, Sector 72, Sohna Road, Gurgaon","4 BHK Flat  for Sale in  Fazilpur Jharsa, Sector 72, Sohna Road, Gurgaon",2080 sqft,2080 sqft,True,premium,MAINTAINED
+23,True,True,"4 BHK Flat  for Sale in  Malibu Town, Sector 47, Gurgaon","4 BHK Flat  for Sale in  Malibu Town, Sector 47, Gurgaon",3600 sqft,3600 sqft,True,premium,MAINTAINED
+24,True,True,"3 BHK Flat  for Sale in  Sector 69, Gurgaon","3 BHK Flat  for Sale in  Sector 69, Gurgaon",1200 sqft,1200 sqft,True,premium,MAINTAINED
+25,False,True,N/A,"3 BHK Flat  for Sale in  Dharampur, Sector 108, Gurgaon",N/A,1000 sqft,True,premium,RECOVERED
+26,False,True,N/A,"4 BHK Flat  for Sale in  Sushant Lok-I, Sector 43, Gurgaon",N/A,2125 sqft,True,premium,RECOVERED
+27,True,True,"3 BHK Flat  for Sale in  Gwal Pahari, Gurgaon","3 BHK Flat  for Sale in  Gwal Pahari, Gurgaon",1300 sqft,1300 sqft,True,premium,MAINTAINED
+28,True,True,"2 BHK Flat  for Sale in  Sector 82, Gurgaon","2 BHK Flat  for Sale in  Sector 82, Gurgaon",1133 sqft,1133 sqft,True,premium,MAINTAINED
+29,True,True,"3 BHK Flat  for Sale in  Sector 79, Gurgaon","3 BHK Flat  for Sale in  Sector 79, Gurgaon",1335 sqft,1335 sqft,True,premium,MAINTAINED

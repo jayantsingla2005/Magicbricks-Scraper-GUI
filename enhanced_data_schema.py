@@ -340,7 +340,7 @@ class EnhancedDataSchema:
     def create_all_tables(self):
         """Create all tables in the database"""
         Base.metadata.create_all(bind=self.engine)
-        print("✅ All enhanced database tables created successfully")
+        print("[SUCCESS] All enhanced database tables created successfully")
     
     def drop_all_tables(self):
         """Drop all tables in the database"""
@@ -630,20 +630,20 @@ def main():
         session.add(property_record)
         session.commit()
         
-        print(f"✅ Property record created with ID: {property_record.id}")
+        print(f"[SUCCESS] Property record created with ID: {property_record.id}")
         print(f"📊 Property type: {property_record.property_type}")
         print(f"💰 Price type: {property_record.price_type}")
         print(f"🏠 Furnishing: {property_record.furnishing}")
         
     except Exception as e:
-        print(f"❌ Error creating property record: {str(e)}")
+        print(f"[ERROR] Error creating property record: {str(e)}")
         session.rollback()
     
     finally:
         session.close()
     
-    print("\n✅ Enhanced Data Schema demonstration complete!")
-    print("🎯 Schema supports:")
+    print("\n[SUCCESS] Enhanced Data Schema demonstration complete!")
+    print("[TARGET] Schema supports:")
     print("   • Comprehensive property information")
     print("   • Edge case handling and tracking")
     print("   • Data quality metrics")

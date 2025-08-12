@@ -36,26 +36,26 @@ class IncrementalScrapingSystem:
         self.url_tracker = URLTrackingSystem(db_path)
         self.mode_options = UserModeOptions(db_path)
         
-        print("🚀 Complete Incremental Scraping System Initialized")
+        print("[SYSTEM] Complete Incremental Scraping System Initialized")
         print("="*60)
     
     def setup_system(self) -> bool:
         """Set up the complete incremental scraping system"""
         
-        print("🔧 Setting up incremental scraping system...")
+        print("[SETUP] Setting up incremental scraping system...")
         
         try:
             # Step 1: Enhance database schema
-            print("\n📋 Step 1: Database Schema Enhancement")
+            print("\n[STEP1] Step 1: Database Schema Enhancement")
             if not self.db_schema.enhance_database_schema():
-                print("❌ Database schema enhancement failed")
+                print("[ERROR] Database schema enhancement failed")
                 return False
             
-            print("✅ Database schema enhancement complete")
+            print("[SUCCESS] Database schema enhancement complete")
             return True
             
         except Exception as e:
-            print(f"❌ System setup failed: {str(e)}")
+            print(f"[ERROR] System setup failed: {str(e)}")
             return False
     
     def start_incremental_scraping(self, city: str, mode: ScrapingMode = ScrapingMode.INCREMENTAL,
@@ -63,7 +63,7 @@ class IncrementalScrapingSystem:
         """Start incremental scraping with specified mode"""
         
         mode_str = mode.value if hasattr(mode, 'value') else str(mode)
-        print(f"🚀 Starting incremental scraping for {city} in {mode_str} mode")
+        print(f"[START] Starting incremental scraping for {city} in {mode_str} mode")
         
         try:
             # Step 1: Create scraping session
@@ -75,7 +75,7 @@ class IncrementalScrapingSystem:
             session_id = session_result['session_id']
             config = session_result['configuration']
             
-            print(f"✅ Created session {session_id} with configuration:")
+            print(f"[SUCCESS] Created session {session_id} with configuration:")
             for key, value in config.items():
                 print(f"   {key}: {value}")
             
@@ -83,11 +83,11 @@ class IncrementalScrapingSystem:
             last_scrape_date = self.stopping_logic.get_last_scrape_date(city)
             
             if last_scrape_date:
-                print(f"📅 Last scrape date: {last_scrape_date}")
+                print(f"[DATE] Last scrape date: {last_scrape_date}")
             else:
-                print("📅 No previous scrape found - will perform full scrape")
+                print("[DATE] No previous scrape found - will perform full scrape")
                 if mode == ScrapingMode.INCREMENTAL:
-                    print("⚠️ Switching to FULL mode for first scrape")
+                    print("[WARNING] Switching to FULL mode for first scrape")
                     mode = ScrapingMode.FULL
             
             # Step 3: Return session information for actual scraping
@@ -166,7 +166,7 @@ class IncrementalScrapingSystem:
             connection.commit()
             connection.close()
             
-            print(f"✅ Finalized incremental scraping session {session_id}")
+            print(f"[SUCCESS] Finalized incremental scraping session {session_id}")
             return True
             
         except Exception as e:
@@ -259,7 +259,7 @@ class IncrementalScrapingSystem:
                 })
             
             # Test 4: System status
-            print("\n📋 Testing system status...")
+            print("\n[TEST] Testing system status...")
             status = self.get_system_status()
             test_results['system_status'] = status['system_ready']
             
@@ -271,24 +271,24 @@ class IncrementalScrapingSystem:
                 test_results['system_status']
             ])
             
-            print(f"\n📊 COMPLETE SYSTEM TEST RESULTS")
+            print(f"\n[RESULTS] COMPLETE SYSTEM TEST RESULTS")
             print("="*60)
-            print(f"✅ System setup: {test_results['system_setup']}")
-            print(f"✅ Session creation: {test_results['session_creation']}")
-            print(f"✅ Page analysis: {test_results['page_analysis']}")
-            print(f"✅ System status: {test_results['system_status']}")
-            print(f"🎯 Overall success: {test_results['overall_success']}")
+            print(f"[SUCCESS] System setup: {test_results['system_setup']}")
+            print(f"[SUCCESS] Session creation: {test_results['session_creation']}")
+            print(f"[SUCCESS] Page analysis: {test_results['page_analysis']}")
+            print(f"[SUCCESS] System status: {test_results['system_status']}")
+            print(f"[OVERALL] Overall success: {test_results['overall_success']}")
             
             if test_results['overall_success']:
-                print("\n🎉 INCREMENTAL SCRAPING SYSTEM READY FOR PRODUCTION!")
-                print("⚡ Expected time savings: 60-75%")
-                print("🛡️ High reliability with multiple validation methods")
-                print("🎮 User-friendly with 5 different scraping modes")
+                print("\n[READY] INCREMENTAL SCRAPING SYSTEM READY FOR PRODUCTION!")
+                print("[SAVINGS] Expected time savings: 60-75%")
+                print("[RELIABLE] High reliability with multiple validation methods")
+                print("[USER] User-friendly with 5 different scraping modes")
             
             return test_results
             
         except Exception as e:
-            print(f"❌ Complete system test failed: {str(e)}")
+            print(f"[ERROR] Complete system test failed: {str(e)}")
             test_results['error'] = str(e)
             return test_results
 
@@ -301,14 +301,14 @@ def main():
         test_results = incremental_system.test_complete_system()
         
         if test_results['overall_success']:
-            print("\n✅ Complete incremental scraping system test successful!")
+            print("\n[SUCCESS] Complete incremental scraping system test successful!")
             return True
         else:
-            print("\n⚠️ Complete incremental scraping system needs attention!")
+            print("\n[WARNING] Complete incremental scraping system needs attention!")
             return False
             
     except Exception as e:
-        print(f"❌ Complete system test failed: {str(e)}")
+        print(f"[ERROR] Complete system test failed: {str(e)}")
         return False
 
 

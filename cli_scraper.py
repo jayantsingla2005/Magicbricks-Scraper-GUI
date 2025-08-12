@@ -52,7 +52,13 @@ Examples:
         action='store_true',
         help='Include individual property page scraping'
     )
-    
+
+    parser.add_argument(
+        '--force-rescrape-individual',
+        action='store_true',
+        help='Force re-scrape individual properties even if already scraped'
+    )
+
     parser.add_argument(
         '--force-full',
         action='store_true',
@@ -95,7 +101,7 @@ Examples:
     
     # Validate arguments
     if not args.city:
-        print("❌ Error: City is required")
+        print("[ERROR] Error: City is required")
         sys.exit(1)
     
     # Convert mode string to ScrapingMode enum
@@ -119,14 +125,14 @@ Examples:
     if args.export_excel:
         export_formats.append('excel')
     
-    print(f"🚀 Starting MagicBricks CLI Scraper")
-    print(f"   🏙️ City: {args.city}")
-    print(f"   📋 Mode: {args.mode}")
-    print(f"   📄 Max pages: {args.max_pages or 'No limit'}")
-    print(f"   🏠 Individual pages: {args.include_individual_pages}")
-    print(f"   🔄 Force full: {args.force_full}")
-    print(f"   👻 Headless: {headless}")
-    print(f"   📁 Export formats: {', '.join(export_formats)}")
+    print(f"[START] Starting MagicBricks CLI Scraper")
+    print(f"   [CITY] City: {args.city}")
+    print(f"   [MODE] Mode: {args.mode}")
+    print(f"   [PAGES] Max pages: {args.max_pages or 'No limit'}")
+    print(f"   [INDIVIDUAL] Individual pages: {args.include_individual_pages}")
+    print(f"   [FORCE] Force full: {args.force_full}")
+    print(f"   [HEADLESS] Headless: {headless}")
+    print(f"   [EXPORT] Export formats: {', '.join(export_formats)}")
     print()
     
     try:
@@ -149,35 +155,36 @@ Examples:
             mode=mode,
             max_pages=args.max_pages,
             include_individual_pages=args.include_individual_pages,
-            export_formats=export_formats
+            export_formats=export_formats,
+            force_rescrape_individual=args.force_rescrape_individual
         )
         
         if result['success']:
-            print(f"\n✅ Scraping completed successfully!")
-            print(f"   📊 Properties scraped: {result.get('properties_scraped', 0)}")
-            print(f"   📄 Pages scraped: {result.get('pages_scraped', 0)}")
-            print(f"   ⏱️ Duration: {result.get('session_stats', {}).get('duration_formatted', 'N/A')}")
+            print(f"\n[SUCCESS] Scraping completed successfully!")
+            print(f"   [STATS] Properties scraped: {result.get('properties_scraped', 0)}")
+            print(f"   [STATS] Pages scraped: {result.get('pages_scraped', 0)}")
+            print(f"   [TIME] Duration: {result.get('session_stats', {}).get('duration_formatted', 'N/A')}")
             
             if result.get('output_file'):
-                print(f"   💾 Output file: {result['output_file']}")
+                print(f"   [FILE] Output file: {result['output_file']}")
             
             # Print session statistics
             session_stats = result.get('session_stats', {})
             if session_stats:
-                print(f"\n📈 Session Statistics:")
-                print(f"   🆔 Session ID: {session_stats.get('session_id', 'N/A')}")
-                print(f"   🎯 Data quality: {session_stats.get('average_data_quality', 'N/A')}%")
-                print(f"   🔍 Properties found: {session_stats.get('properties_found', 0)}")
-                print(f"   💾 Properties saved: {session_stats.get('properties_saved', 0)}")
+                print(f"\n[STATS] Session Statistics:")
+                print(f"   [ID] Session ID: {session_stats.get('session_id', 'N/A')}")
+                print(f"   [QUALITY] Data quality: {session_stats.get('average_data_quality', 'N/A')}%")
+                print(f"   [FOUND] Properties found: {session_stats.get('properties_found', 0)}")
+                print(f"   [SAVE] Properties saved: {session_stats.get('properties_saved', 0)}")
         else:
-            print(f"\n❌ Scraping failed: {result.get('error', 'Unknown error')}")
+            print(f"\n[ERROR] Scraping failed: {result.get('error', 'Unknown error')}")
             sys.exit(1)
     
     except KeyboardInterrupt:
-        print("\n⚠️ Scraping interrupted by user")
+        print("\n[WARNING] Scraping interrupted by user")
         sys.exit(1)
     except Exception as e:
-        print(f"\n❌ Unexpected error: {str(e)}")
+        print(f"\n[ERROR] Unexpected error: {str(e)}")
         sys.exit(1)
     finally:
         if 'scraper' in locals():

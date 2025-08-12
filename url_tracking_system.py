@@ -45,7 +45,7 @@ class URLTrackingSystem:
             'validation_matches': 0
         }
         
-        print("🔗 URL Tracking System Initialized")
+        print("[URL] URL Tracking System Initialized")
     
     def connect_db(self):
         """Connect to database"""
@@ -54,7 +54,7 @@ class URLTrackingSystem:
             self.connection = sqlite3.connect(self.db_path)
             return True
         except Exception as e:
-            print(f"❌ Database connection failed: {str(e)}")
+            print(f"[ERROR] Database connection failed: {str(e)}")
             return False
     
     def normalize_url(self, url: str) -> str:
@@ -85,7 +85,7 @@ class URLTrackingSystem:
             return normalized_url.lower().strip()
             
         except Exception as e:
-            print(f"⚠️ Error normalizing URL {url}: {str(e)}")
+            print(f"[WARNING] Error normalizing URL {url}: {str(e)}")
             return url.lower().strip()
     
     def generate_url_hash(self, url: str) -> str:
@@ -115,7 +115,7 @@ class URLTrackingSystem:
             return None
             
         except Exception as e:
-            print(f"⚠️ Error extracting property ID from {url}: {str(e)}")
+            print(f"[WARNING] Error extracting property ID from {url}: {str(e)}")
             return None
     
     def track_property_url(self, url: str, title: str = None, city: str = None, 
@@ -209,7 +209,7 @@ class URLTrackingSystem:
     def batch_track_urls(self, url_data: List[Dict[str, Any]], session_id: int = None) -> Dict[str, Any]:
         """Track multiple URLs in batch for efficiency"""
         
-        print(f"🔗 Batch tracking {len(url_data)} URLs...")
+        print(f"[URL] Batch tracking {len(url_data)} URLs...")
         
         batch_results = {
             'total_urls': len(url_data),
@@ -241,11 +241,11 @@ class URLTrackingSystem:
             
             # Progress reporting
             if (i + 1) % 100 == 0:
-                print(f"   ✅ Processed {i + 1}/{len(url_data)} URLs")
+                print(f"   [SUCCESS] Processed {i + 1}/{len(url_data)} URLs")
         
         batch_results['processing_time'] = (datetime.now() - start_time).total_seconds()
         
-        print(f"   📊 Batch tracking complete: {batch_results['new_urls']} new, {batch_results['duplicate_urls']} duplicates")
+        print(f"   [STATS] Batch tracking complete: {batch_results['new_urls']} new, {batch_results['duplicate_urls']} duplicates")
         
         return batch_results
     
@@ -336,8 +336,8 @@ class URLTrackingSystem:
             else:
                 validation_result['recommendation'] = 'Very low confidence - likely reached old territory, should stop'
             
-            print(f"   📊 Validation confidence: {validation_result['validation_confidence']:.2f}")
-            print(f"   💡 Recommendation: {validation_result['recommendation']}")
+            print(f"   [STATS] Validation confidence: {validation_result['validation_confidence']:.2f}")
+            print(f"   [INFO] Recommendation: {validation_result['recommendation']}")
             
             return validation_result
             
@@ -462,7 +462,7 @@ class URLTrackingSystem:
             'validation_test_passed': False
         }
         
-        print(f"📋 Testing URL tracking with {len(test_urls)} URLs...")
+        print(f"[TEST] Testing URL tracking with {len(test_urls)} URLs...")
         
         # Test batch tracking
         batch_result = self.batch_track_urls(test_urls)
@@ -481,18 +481,18 @@ class URLTrackingSystem:
         # Get statistics
         stats_result = self.get_tracking_statistics()
         
-        print(f"\n📊 URL TRACKING SYSTEM TEST RESULTS")
+        print(f"\n[STATS] URL TRACKING SYSTEM TEST RESULTS")
         print("="*50)
-        print(f"✅ URLs tested: {test_results['urls_tested']}")
-        print(f"✅ Tracking successful: {test_results['tracking_successful']}")
-        print(f"🆕 New URLs detected: {test_results['new_urls_detected']}")
-        print(f"🔄 Duplicates detected: {test_results['duplicates_detected']}")
-        print(f"✅ Validation test passed: {test_results['validation_test_passed']}")
+        print(f"[SUCCESS] URLs tested: {test_results['urls_tested']}")
+        print(f"[SUCCESS] Tracking successful: {test_results['tracking_successful']}")
+        print(f"[NEW] New URLs detected: {test_results['new_urls_detected']}")
+        print(f"[DUP] Duplicates detected: {test_results['duplicates_detected']}")
+        print(f"[SUCCESS] Validation test passed: {test_results['validation_test_passed']}")
         
         if stats_result['success']:
             db_stats = stats_result['statistics']['database_stats']
-            print(f"📊 Total URLs in database: {db_stats['total_urls']}")
-            print(f"📊 Active URLs: {db_stats['active_urls']}")
+            print(f"[STATS] Total URLs in database: {db_stats['total_urls']}")
+            print(f"[STATS] Active URLs: {db_stats['active_urls']}")
         
         return test_results
 
@@ -506,14 +506,14 @@ def main():
         
         if (test_results['tracking_successful'] >= test_results['urls_tested'] * 0.8 and
             test_results['validation_test_passed']):
-            print("\n✅ URL tracking system test successful!")
+            print("\n[SUCCESS] URL tracking system test successful!")
             return True
         else:
-            print("\n⚠️ URL tracking system needs improvement!")
+            print("\n[WARNING] URL tracking system needs improvement!")
             return False
             
     except Exception as e:
-        print(f"❌ URL tracking system test failed: {str(e)}")
+        print(f"[ERROR] URL tracking system test failed: {str(e)}")
         return False
 
 

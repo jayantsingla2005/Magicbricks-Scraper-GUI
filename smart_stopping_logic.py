@@ -46,7 +46,7 @@ class SmartStoppingLogic:
             'decision_confidence': 0.0
         }
         
-        print("🛑 Smart Stopping Logic Initialized")
+        print("[STOP] Smart Stopping Logic Initialized")
     
     def connect_db(self):
         """Connect to database"""
@@ -55,7 +55,7 @@ class SmartStoppingLogic:
             self.connection = sqlite3.connect(self.db_path)
             return True
         except Exception as e:
-            print(f"❌ Database connection failed: {str(e)}")
+            print(f"[ERROR] Database connection failed: {str(e)}")
             return False
     
     def get_last_scrape_date(self, city: str, scrape_mode: str = 'incremental') -> Optional[datetime]:
@@ -90,7 +90,7 @@ class SmartStoppingLogic:
                 return datetime.fromisoformat(result[0]) if result else None
                 
         except Exception as e:
-            print(f"❌ Error getting last scrape date: {str(e)}")
+            print(f"[ERROR] Error getting last scrape date: {str(e)}")
             return None
         
         finally:
@@ -176,15 +176,15 @@ class SmartStoppingLogic:
         self.stopping_stats['new_properties_found'] += page_analysis['new_properties']
         self.stopping_stats['stopping_decisions'].append(page_analysis)
         
-        print(f"   📊 Page {page_number}: {page_analysis['old_percentage']:.1f}% old properties")
-        print(f"   🛑 Should stop: {page_analysis['should_stop']}")
+        print(f"   [STATS] Page {page_number}: {page_analysis['old_percentage']:.1f}% old properties")
+        print(f"   [STOP] Should stop: {page_analysis['should_stop']}")
         
         return page_analysis
     
     def make_final_stopping_decision(self, page_analyses: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Make final decision based on multiple page analyses"""
         
-        print("🎯 Making final stopping decision...")
+        print("[TARGET] Making final stopping decision...")
         
         final_decision = {
             'should_stop_scraping': False,
@@ -248,7 +248,7 @@ class SmartStoppingLogic:
         self.stopping_stats['final_decision'] = final_decision
         self.stopping_stats['decision_confidence'] = final_decision['confidence']
         
-        print(f"   🎯 Final decision: {'STOP' if final_decision['should_stop_scraping'] else 'CONTINUE'}")
+        print(f"   [TARGET] Final decision: {'STOP' if final_decision['should_stop_scraping'] else 'CONTINUE'}")
         print(f"   📊 Overall old percentage: {final_decision['overall_old_percentage']:.1f}%")
         print(f"   🔄 Consecutive old pages: {consecutive_stop_pages}")
         print(f"   💪 Confidence: {final_decision['confidence']:.2f}")
@@ -265,7 +265,7 @@ class SmartStoppingLogic:
         try:
             cursor = self.connection.cursor()
             
-            print(f"💾 Saving stopping analysis for session {session_id}...")
+            print(f"[SAVE] Saving stopping analysis for session {session_id}...")
             
             # Save page-level statistics
             for analysis in page_analyses:
@@ -306,11 +306,11 @@ class SmartStoppingLogic:
             ))
             
             self.connection.commit()
-            print(f"✅ Saved stopping analysis for session {session_id}")
+            print(f"[SUCCESS] Saved stopping analysis for session {session_id}")
             return True
             
         except Exception as e:
-            print(f"❌ Error saving stopping analysis: {str(e)}")
+            print(f"[ERROR] Error saving stopping analysis: {str(e)}")
             self.connection.rollback()
             return False
         
@@ -400,18 +400,18 @@ class SmartStoppingLogic:
             
             test_results['scenario_results'].append(scenario_result)
             
-            print(f"   📊 Old percentage: {page_analysis['old_percentage']:.1f}%")
-            print(f"   🎯 Decision: {'STOP' if actual_stop else 'CONTINUE'}")
-            print(f"   ✅ Correct: {correct_decision}")
+            print(f"   [STATS] Old percentage: {page_analysis['old_percentage']:.1f}%")
+            print(f"   [DECISION] Decision: {'STOP' if actual_stop else 'CONTINUE'}")
+            print(f"   [RESULT] Correct: {correct_decision}")
         
         # Calculate overall test success
         success_rate = (test_results['correct_decisions'] / test_results['scenarios_tested']) * 100
         
-        print(f"\n📊 SMART STOPPING LOGIC TEST RESULTS")
+        print(f"\n[STATS] SMART STOPPING LOGIC TEST RESULTS")
         print("="*50)
-        print(f"✅ Scenarios tested: {test_results['scenarios_tested']}")
-        print(f"✅ Correct decisions: {test_results['correct_decisions']}")
-        print(f"📈 Success rate: {success_rate:.1f}%")
+        print(f"[SUCCESS] Scenarios tested: {test_results['scenarios_tested']}")
+        print(f"[SUCCESS] Correct decisions: {test_results['correct_decisions']}")
+        print(f"[RATE] Success rate: {success_rate:.1f}%")
         
         test_results['success_rate'] = success_rate
         
@@ -426,14 +426,14 @@ def main():
         test_results = stopping_logic.test_smart_stopping_logic()
         
         if test_results['success_rate'] >= 80:
-            print("\n✅ Smart stopping logic test successful!")
+            print("\n[SUCCESS] Smart stopping logic test successful!")
             return True
         else:
-            print("\n⚠️ Smart stopping logic needs improvement!")
+            print("\n[WARNING] Smart stopping logic needs improvement!")
             return False
             
     except Exception as e:
-        print(f"❌ Smart stopping logic test failed: {str(e)}")
+        print(f"[ERROR] Smart stopping logic test failed: {str(e)}")
         return False
 
 
