@@ -28,14 +28,31 @@ class MagicBricksGUI:
     def __init__(self):
         """Initialize the GUI application"""
 
-        # Create main window
+        # Create main window with enhanced configuration
         self.root = tk.Tk()
         self.root.title("🏠 MagicBricks Property Scraper - Professional Edition v2.0")
-        self.root.geometry("1400x900")
-        self.root.minsize(1200, 700)
-
-        # Set window icon and modern styling
-        self.root.configure(bg='#f8f9fa')
+        self.root.geometry("1450x950")
+        self.root.minsize(1250, 850)
+        
+        # Enhanced window styling and effects
+        self.root.configure(bg='#f8fafc')
+        
+        # Add modern window effects (platform-specific)
+        try:
+            # Subtle transparency for modern look
+            self.root.wm_attributes('-alpha', 0.98)
+            # Remove window decorations for custom styling (optional)
+            # self.root.overrideredirect(False)
+        except:
+            pass  # Not supported on all platforms
+        
+        # Try to set window icon (if available)
+        try:
+            # You can add an icon file here if you have one
+            # self.root.iconbitmap('icon.ico')
+            pass
+        except:
+            pass
 
         # Configure modern styling
         self.setup_modern_styles()
@@ -88,7 +105,7 @@ class MagicBricksGUI:
         print(f"   🎨 Modern interface with scrollable panels")
     
     def setup_modern_styles(self):
-        """Setup modern, professional styling for the GUI"""
+        """Setup modern, professional styling for the GUI with enhanced visual appeal"""
 
         # Configure ttk styles
         self.style = ttk.Style()
@@ -99,78 +116,173 @@ class MagicBricksGUI:
         except:
             self.style.theme_use('default')
 
-        # Modern color palette
+        # Enhanced modern color palette with gradients and depth
         self.colors = {
             'bg_primary': '#ffffff',
-            'bg_secondary': '#f8f9fa',
-            'bg_accent': '#e9ecef',
-            'primary': '#0d6efd',
-            'success': '#198754',
-            'warning': '#fd7e14',
-            'danger': '#dc3545',
-            'info': '#0dcaf0',
-            'dark': '#212529',
-            'light': '#f8f9fa',
-            'border': '#dee2e6'
+            'bg_secondary': '#f8fafc',
+            'bg_accent': '#e2e8f0',
+            'bg_dark': '#1e293b',
+            'bg_card': '#ffffff',
+            'primary': '#3b82f6',
+            'primary_dark': '#1d4ed8',
+            'primary_light': '#93c5fd',
+            'success': '#10b981',
+            'success_light': '#6ee7b7',
+            'warning': '#f59e0b',
+            'warning_light': '#fbbf24',
+            'danger': '#ef4444',
+            'danger_light': '#f87171',
+            'info': '#06b6d4',
+            'info_light': '#67e8f9',
+            'dark': '#0f172a',
+            'light': '#f8fafc',
+            'border': '#e2e8f0',
+            'border_light': '#f1f5f9',
+            'text_primary': '#0f172a',
+            'text_secondary': '#64748b',
+            'text_muted': '#94a3b8',
+            'shadow': '#00000010',
+            'gradient_start': '#3b82f6',
+            'gradient_end': '#1d4ed8'
         }
 
-        # Configure modern styles
+        # Configure enhanced modern styles with better typography
         self.style.configure('Title.TLabel',
-                           font=('Segoe UI', 18, 'bold'),
+                           font=('Segoe UI', 20, 'bold'),
                            background=self.colors['bg_primary'],
-                           foreground=self.colors['dark'])
+                           foreground=self.colors['text_primary'])
 
         self.style.configure('Subtitle.TLabel',
-                           font=('Segoe UI', 11),
+                           font=('Segoe UI', 12),
                            background=self.colors['bg_primary'],
-                           foreground=self.colors['dark'])
+                           foreground=self.colors['text_secondary'])
 
         self.style.configure('Heading.TLabel',
-                           font=('Segoe UI', 10, 'bold'),
+                           font=('Segoe UI', 11, 'bold'),
                            background=self.colors['bg_primary'],
-                           foreground=self.colors['dark'])
+                           foreground=self.colors['text_primary'])
 
         self.style.configure('Info.TLabel',
-                           font=('Segoe UI', 9),
+                           font=('Segoe UI', 10),
                            background=self.colors['bg_primary'],
-                           foreground=self.colors['dark'])
+                           foreground=self.colors['text_secondary'])
 
         self.style.configure('Success.TLabel',
-                           font=('Segoe UI', 9),
+                           font=('Segoe UI', 10, 'bold'),
                            background=self.colors['bg_primary'],
                            foreground=self.colors['success'])
 
         self.style.configure('Warning.TLabel',
-                           font=('Segoe UI', 9),
+                           font=('Segoe UI', 10, 'bold'),
                            background=self.colors['bg_primary'],
                            foreground=self.colors['warning'])
 
         self.style.configure('Error.TLabel',
-                           font=('Segoe UI', 9),
+                           font=('Segoe UI', 10, 'bold'),
                            background=self.colors['bg_primary'],
                            foreground=self.colors['danger'])
 
-        # Modern button styles
+        self.style.configure('Muted.TLabel',
+                           font=('Segoe UI', 9),
+                           background=self.colors['bg_primary'],
+                           foreground=self.colors['text_muted'])
+
+        # Enhanced modern button styles with better visual hierarchy
         self.style.configure('Primary.TButton',
-                           font=('Segoe UI', 10, 'bold'),
-                           padding=(20, 10))
+                           font=('Segoe UI', 11, 'bold'),
+                           padding=(25, 12),
+                           relief='flat')
+        
+        self.style.map('Primary.TButton',
+                      background=[('active', self.colors['primary_dark']),
+                                ('!active', self.colors['primary'])],
+                      foreground=[('active', 'white'),
+                                ('!active', 'white')])
 
         self.style.configure('Success.TButton',
                            font=('Segoe UI', 10, 'bold'),
-                           padding=(15, 8))
+                           padding=(20, 10),
+                           relief='flat')
+        
+        self.style.map('Success.TButton',
+                      background=[('active', '#059669'),
+                                ('!active', self.colors['success'])],
+                      foreground=[('active', 'white'),
+                                ('!active', 'white')])
 
         self.style.configure('Secondary.TButton',
-                           font=('Segoe UI', 9),
-                           padding=(10, 6))
+                           font=('Segoe UI', 10),
+                           padding=(15, 8),
+                           relief='flat')
+        
+        self.style.map('Secondary.TButton',
+                      background=[('active', self.colors['bg_accent']),
+                                ('!active', self.colors['bg_secondary'])],
+                      foreground=[('active', self.colors['text_primary']),
+                                ('!active', self.colors['text_secondary'])])
 
-        # Frame styles
+        self.style.configure('Danger.TButton',
+                           font=('Segoe UI', 10, 'bold'),
+                           padding=(15, 8),
+                           relief='flat')
+        
+        self.style.map('Danger.TButton',
+                      background=[('active', '#dc2626'),
+                                ('!active', self.colors['danger'])],
+                      foreground=[('active', 'white'),
+                                ('!active', 'white')])
+
+        # Enhanced frame styles with modern cards
         self.style.configure('Card.TFrame',
-                           background=self.colors['bg_primary'],
-                           relief='solid',
-                           borderwidth=1)
+                           background=self.colors['bg_card'],
+                           relief='flat',
+                           borderwidth=0)
 
         self.style.configure('Sidebar.TFrame',
-                           background=self.colors['bg_secondary'])
+                           background=self.colors['bg_secondary'],
+                           relief='flat')
+        
+        self.style.configure('Modern.TLabelframe',
+                           background=self.colors['bg_card'],
+                           relief='flat',
+                           borderwidth=1,
+                           lightcolor=self.colors['border'],
+                           darkcolor=self.colors['border'])
+        
+        self.style.configure('Modern.TLabelframe.Label',
+                           background=self.colors['bg_card'],
+                           foreground=self.colors['text_primary'],
+                           font=('Segoe UI', 11, 'bold'))
+
+        # Enhanced entry and combobox styles
+        self.style.configure('Modern.TEntry',
+                           fieldbackground=self.colors['bg_primary'],
+                           borderwidth=2,
+                           relief='flat',
+                           insertcolor=self.colors['primary'])
+        
+        self.style.map('Modern.TEntry',
+                      focuscolor=[('focus', self.colors['primary'])],
+                      bordercolor=[('focus', self.colors['primary']),
+                                 ('!focus', self.colors['border'])])
+
+        self.style.configure('Modern.TCombobox',
+                           fieldbackground=self.colors['bg_primary'],
+                           borderwidth=2,
+                           relief='flat')
+        
+        self.style.map('Modern.TCombobox',
+                      focuscolor=[('focus', self.colors['primary'])],
+                      bordercolor=[('focus', self.colors['primary']),
+                                 ('!focus', self.colors['border'])])
+
+        # Progress bar styling
+        self.style.configure('Modern.Horizontal.TProgressbar',
+                           background=self.colors['primary'],
+                           troughcolor=self.colors['bg_accent'],
+                           borderwidth=0,
+                           lightcolor=self.colors['primary'],
+                           darkcolor=self.colors['primary'])
     
     def create_modern_interface(self):
         """Create modern, professional interface with proper scrolling"""
@@ -204,43 +316,80 @@ class MagicBricksGUI:
         self.create_modern_status_bar(main_container)
 
     def create_header(self, parent):
-        """Create modern header section"""
+        """Create modern header section with enhanced visual appeal"""
 
-        header_frame = ttk.Frame(parent, style='Card.TFrame')
-        header_frame.grid(row=0, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 10))
+        # Main header container with gradient-like effect
+        header_container = ttk.Frame(parent)
+        header_container.grid(row=0, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 15))
+        header_container.columnconfigure(0, weight=1)
+
+        # Primary header card
+        header_frame = ttk.Frame(header_container, style='Card.TFrame')
+        header_frame.grid(row=0, column=0, sticky=(tk.W, tk.E), padx=5, pady=5)
         header_frame.columnconfigure(1, weight=1)
 
-        # Icon and title
+        # Left side - Icon and title with better spacing
         title_frame = ttk.Frame(header_frame)
-        title_frame.grid(row=0, column=0, sticky=tk.W, padx=20, pady=15)
+        title_frame.grid(row=0, column=0, sticky=tk.W, padx=25, pady=20)
 
-        ttk.Label(title_frame, text="🏠", font=('Segoe UI', 24)).pack(side=tk.LEFT)
+        # Enhanced icon with background
+        icon_frame = ttk.Frame(title_frame)
+        icon_frame.pack(side=tk.LEFT)
+        
+        icon_label = ttk.Label(icon_frame, text="🏠", font=('Segoe UI', 28))
+        icon_label.pack()
 
+        # Title section with better typography
         title_text_frame = ttk.Frame(title_frame)
-        title_text_frame.pack(side=tk.LEFT, padx=(10, 0))
+        title_text_frame.pack(side=tk.LEFT, padx=(15, 0))
 
-        ttk.Label(title_text_frame, text="MagicBricks Property Scraper",
-                 style='Title.TLabel').pack(anchor=tk.W)
-        ttk.Label(title_text_frame, text="Professional Edition v2.0 - Advanced Property Data Extraction",
-                 style='Subtitle.TLabel').pack(anchor=tk.W)
+        # Main title with enhanced styling
+        main_title = ttk.Label(title_text_frame, text="MagicBricks Property Scraper",
+                              style='Title.TLabel')
+        main_title.pack(anchor=tk.W)
+        
+        # Subtitle with better description
+        subtitle = ttk.Label(title_text_frame, 
+                            text="Professional Edition v2.0 • Advanced Property Data Extraction",
+                            style='Subtitle.TLabel')
+        subtitle.pack(anchor=tk.W, pady=(2, 0))
+        
+        # Feature highlights
+        features = ttk.Label(title_text_frame, 
+                            text="⚡ Incremental Scraping • 🏙️ Multi-City Support • 📊 Advanced Analytics",
+                            style='Muted.TLabel')
+        features.pack(anchor=tk.W, pady=(5, 0))
 
-        # Quick stats frame
+        # Right side - Enhanced stats and status
         stats_frame = ttk.Frame(header_frame)
-        stats_frame.grid(row=0, column=1, sticky=tk.E, padx=20, pady=15)
+        stats_frame.grid(row=0, column=1, sticky=tk.E, padx=25, pady=20)
 
-        # Version info
-        version_frame = ttk.Frame(stats_frame)
-        version_frame.pack(anchor=tk.E)
-
-        ttk.Label(version_frame, text="v2.0 - Incremental Scraping Edition",
-                 style='Info.TLabel').pack(anchor=tk.E)
+        # Status indicators
+        status_frame = ttk.Frame(stats_frame)
+        status_frame.pack(anchor=tk.E)
+        
+        # System status
+        system_status = ttk.Label(status_frame, text="🟢 System Ready", 
+                                 style='Success.TLabel', font=('Segoe UI', 10, 'bold'))
+        system_status.pack(anchor=tk.E)
+        
+        # Version badge
+        version_badge = ttk.Label(status_frame, text="v2.0.0 • Build 2024",
+                                 style='Info.TLabel')
+        version_badge.pack(anchor=tk.E, pady=(3, 0))
+        
+        # Quick stats
+        stats_text = ttk.Label(status_frame, text="Ready for Multi-City Scraping",
+                              style='Muted.TLabel')
+        stats_text.pack(anchor=tk.E, pady=(2, 0))
     
     def create_scrollable_control_panel(self, parent):
         """Create scrollable control panel with all scraping options"""
 
-        # Control panel container
-        control_container = ttk.LabelFrame(parent, text="📋 Scraping Configuration", padding="10")
-        control_container.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), padx=(0, 10))
+        # Control panel container with modern styling
+        control_container = ttk.LabelFrame(parent, text="📋 Scraping Configuration", 
+                                         padding="15", style='Modern.TLabelframe')
+        control_container.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), padx=(0, 15))
         control_container.columnconfigure(0, weight=1)
         control_container.rowconfigure(0, weight=1)
 
@@ -281,8 +430,9 @@ class MagicBricksGUI:
         current_row = 0
 
         # === CITY SELECTION SECTION ===
-        city_section = ttk.LabelFrame(parent, text="🏙️ City Selection", padding="15")
-        city_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        city_section = ttk.LabelFrame(parent, text="🏙️ City Selection", 
+                                    padding="20", style='Modern.TLabelframe')
+        city_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 20))
         city_section.columnconfigure(1, weight=1)
         current_row += 1
 
@@ -295,25 +445,27 @@ class MagicBricksGUI:
         cities_frame.columnconfigure(0, weight=1)
 
         selected_cities_label = ttk.Label(cities_frame, textvariable=self.selected_cities_var,
-                                        style='Info.TLabel', relief='solid', padding="8")
-        selected_cities_label.grid(row=0, column=0, sticky=(tk.W, tk.E), padx=(0, 10))
+                                        style='Info.TLabel', relief='solid', padding="12")
+        selected_cities_label.grid(row=0, column=0, sticky=(tk.W, tk.E), padx=(0, 15))
 
-        select_cities_btn = ttk.Button(cities_frame, text="Select Cities",
+        select_cities_btn = ttk.Button(cities_frame, text="🌍 Select Cities",
                                      command=self.open_city_selector, style='Secondary.TButton')
         select_cities_btn.grid(row=0, column=1)
 
         # === SCRAPING MODE SECTION ===
-        mode_section = ttk.LabelFrame(parent, text="⚙️ Scraping Mode", padding="15")
-        mode_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        mode_section = ttk.LabelFrame(parent, text="⚙️ Scraping Mode", 
+                                    padding="20", style='Modern.TLabelframe')
+        mode_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 20))
         mode_section.columnconfigure(1, weight=1)
         current_row += 1
 
         ttk.Label(mode_section, text="Mode:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
 
         self.mode_var = tk.StringVar(value=self.config['mode'].value)
-        mode_combo = ttk.Combobox(mode_section, textvariable=self.mode_var, width=25, state='readonly')
+        mode_combo = ttk.Combobox(mode_section, textvariable=self.mode_var, width=25, 
+                                state='readonly', style='Modern.TCombobox')
         mode_combo['values'] = ('incremental', 'full', 'conservative', 'date_range', 'custom')
-        mode_combo.grid(row=0, column=1, sticky=(tk.W, tk.E), pady=(0, 10), padx=(10, 0))
+        mode_combo.grid(row=0, column=1, sticky=(tk.W, tk.E), pady=(0, 15), padx=(15, 0))
         mode_combo.bind('<<ComboboxSelected>>', self.on_mode_changed)
 
         # Mode description with better formatting
@@ -324,34 +476,37 @@ class MagicBricksGUI:
         mode_desc_label.grid(row=1, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 10))
 
         # === BASIC SETTINGS SECTION ===
-        basic_section = ttk.LabelFrame(parent, text="📊 Basic Settings", padding="15")
-        basic_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        basic_section = ttk.LabelFrame(parent, text="📊 Basic Settings", 
+                                     padding="20", style='Modern.TLabelframe')
+        basic_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 20))
         basic_section.columnconfigure(1, weight=1)
         current_row += 1
 
-        # Max pages
-        ttk.Label(basic_section, text="Max Pages:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
+        # Max pages with icon
+        ttk.Label(basic_section, text="📄 Max Pages:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 8))
         self.max_pages_var = tk.StringVar(value=str(self.config['max_pages']))
-        max_pages_entry = ttk.Entry(basic_section, textvariable=self.max_pages_var, width=15)
-        max_pages_entry.grid(row=0, column=1, sticky=tk.W, pady=(0, 10), padx=(10, 0))
+        max_pages_entry = ttk.Entry(basic_section, textvariable=self.max_pages_var, 
+                                  width=15, style='Modern.TEntry')
+        max_pages_entry.grid(row=0, column=1, sticky=tk.W, pady=(0, 15), padx=(15, 0))
 
-        # Output directory
-        ttk.Label(basic_section, text="Output Directory:", style='Heading.TLabel').grid(row=1, column=0, sticky=tk.W, pady=(0, 5))
+        # Output directory with icon
+        ttk.Label(basic_section, text="📁 Output Directory:", style='Heading.TLabel').grid(row=1, column=0, sticky=tk.W, pady=(0, 8))
         output_frame = ttk.Frame(basic_section)
-        output_frame.grid(row=1, column=1, sticky=(tk.W, tk.E), pady=(0, 10), padx=(10, 0))
+        output_frame.grid(row=1, column=1, sticky=(tk.W, tk.E), pady=(0, 15), padx=(15, 0))
         output_frame.columnconfigure(0, weight=1)
 
         self.output_dir_var = tk.StringVar(value=self.config['output_directory'])
-        output_entry = ttk.Entry(output_frame, textvariable=self.output_dir_var)
-        output_entry.grid(row=0, column=0, sticky=(tk.W, tk.E), padx=(0, 10))
+        output_entry = ttk.Entry(output_frame, textvariable=self.output_dir_var, style='Modern.TEntry')
+        output_entry.grid(row=0, column=0, sticky=(tk.W, tk.E), padx=(0, 15))
 
-        browse_btn = ttk.Button(output_frame, text="Browse", command=self.browse_output_directory,
+        browse_btn = ttk.Button(output_frame, text="📂 Browse", command=self.browse_output_directory,
                               style='Secondary.TButton')
         browse_btn.grid(row=0, column=1)
 
         # === ADVANCED OPTIONS SECTION ===
-        advanced_section = ttk.LabelFrame(parent, text="🔧 Advanced Options", padding="15")
-        advanced_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        advanced_section = ttk.LabelFrame(parent, text="🔧 Advanced Options", 
+                                        padding="20", style='Modern.TLabelframe')
+        advanced_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 20))
         advanced_section.columnconfigure(0, weight=1)
         current_row += 1
 
@@ -388,8 +543,9 @@ class MagicBricksGUI:
         individual_info_label.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
 
         # === EXPORT OPTIONS SECTION ===
-        export_section = ttk.LabelFrame(parent, text="💾 Export Options", padding="15")
-        export_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        export_section = ttk.LabelFrame(parent, text="💾 Export Options", 
+                                      padding="20", style='Modern.TLabelframe')
+        export_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 20))
         export_section.columnconfigure(0, weight=1)
         current_row += 1
 
@@ -605,26 +761,27 @@ class MagicBricksGUI:
         ] + [child for child in bhk_options_frame.winfo_children() if isinstance(child, ttk.Checkbutton)]
 
         # === ACTION SECTION ===
-        action_section = ttk.Frame(parent)
-        action_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(20, 10))
+        action_section = ttk.LabelFrame(parent, text="🎯 Actions", 
+                                      padding="25", style='Modern.TLabelframe')
+        action_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(25, 15))
         action_section.columnconfigure(0, weight=1)
         current_row += 1
 
-        # Start/Stop scraping buttons - large and prominent
+        # Enhanced Start/Stop scraping buttons - large and prominent
         main_action_frame = ttk.Frame(action_section)
-        main_action_frame.pack(fill=tk.X, pady=(0, 10))
-        main_action_frame.columnconfigure(0, weight=2)
+        main_action_frame.pack(fill=tk.X, pady=(0, 20))
+        main_action_frame.columnconfigure(0, weight=3)
         main_action_frame.columnconfigure(1, weight=1)
 
         self.start_button = ttk.Button(main_action_frame, text="🚀 Ready to Start Scraping",
                                      command=self.start_scraping, style='Primary.TButton')
-        self.start_button.grid(row=0, column=0, sticky=(tk.W, tk.E), padx=(0, 10))
+        self.start_button.grid(row=0, column=0, sticky=(tk.W, tk.E), padx=(0, 15), ipady=8)
 
         self.stop_btn = ttk.Button(main_action_frame, text="⏹️ Stop Scraping",
-                                 command=self.stop_scraping, state='disabled', style='Secondary.TButton')
-        self.stop_btn.grid(row=0, column=1, sticky=(tk.W, tk.E))
+                                 command=self.stop_scraping, state='disabled', style='Danger.TButton')
+        self.stop_btn.grid(row=0, column=1, sticky=(tk.W, tk.E), ipady=8)
 
-        # Quick action buttons
+        # Enhanced quick action buttons with better spacing
         button_frame = ttk.Frame(action_section)
         button_frame.pack(fill=tk.X)
         button_frame.columnconfigure(0, weight=1)
@@ -632,13 +789,13 @@ class MagicBricksGUI:
         button_frame.columnconfigure(2, weight=1)
 
         ttk.Button(button_frame, text="📁 Open Output Folder",
-                  command=self.open_output_folder, style='Secondary.TButton').grid(row=0, column=0, padx=(0, 5), sticky=(tk.W, tk.E))
+                  command=self.open_output_folder, style='Secondary.TButton').grid(row=0, column=0, padx=(0, 8), sticky=(tk.W, tk.E), ipady=4)
 
         ttk.Button(button_frame, text="🔄 Reset Settings",
-                  command=self.reset_settings, style='Secondary.TButton').grid(row=0, column=1, padx=5, sticky=(tk.W, tk.E))
+                  command=self.reset_settings, style='Secondary.TButton').grid(row=0, column=1, padx=8, sticky=(tk.W, tk.E), ipady=4)
 
         ttk.Button(button_frame, text="💾 Save Config",
-                  command=self.save_config, style='Secondary.TButton').grid(row=0, column=2, padx=(5, 0), sticky=(tk.W, tk.E))
+                  command=self.save_config, style='Success.TButton').grid(row=0, column=2, padx=(8, 0), sticky=(tk.W, tk.E), ipady=4)
 
     def toggle_individual_delay_settings(self):
         """Show/hide individual delay settings based on individual pages checkbox"""
@@ -902,34 +1059,41 @@ class MagicBricksGUI:
     def create_monitoring_panel(self, parent):
         """Create modern monitoring panel with progress and logs"""
 
-        # Monitoring panel container
-        monitor_container = ttk.LabelFrame(parent, text="📊 Scraping Progress & Monitoring", padding="10")
+        # Monitoring panel container with modern styling
+        monitor_container = ttk.LabelFrame(parent, text="📊 Scraping Progress & Monitoring", 
+                                         padding="20", style='Modern.TLabelframe')
         monitor_container.grid(row=0, column=1, sticky=(tk.W, tk.E, tk.N, tk.S))
         monitor_container.columnconfigure(0, weight=1)
         monitor_container.rowconfigure(2, weight=1)
 
         # === PROGRESS SECTION ===
-        progress_section = ttk.LabelFrame(monitor_container, text="📈 Progress", padding="15")
-        progress_section.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=(0, 10))
+        progress_section = ttk.LabelFrame(monitor_container, text="📈 Progress", 
+                                        padding="20", style='Modern.TLabelframe')
+        progress_section.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
         progress_section.columnconfigure(1, weight=1)
+        
         # Progress information with modern cards
-        ttk.Label(progress_section, text="Progress:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
+        ttk.Label(progress_section, text="⚡ Progress:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 8))
         self.progress_var = tk.DoubleVar()
-        self.progress_bar = ttk.Progressbar(progress_section, variable=self.progress_var, maximum=100, length=300)
-        self.progress_bar.grid(row=0, column=1, sticky=(tk.W, tk.E), padx=(10, 0), pady=(0, 5))
+        self.progress_bar = ttk.Progressbar(progress_section, variable=self.progress_var, 
+                                          maximum=100, length=350, style='Modern.Horizontal.TProgressbar')
+        self.progress_bar.grid(row=0, column=1, sticky=(tk.W, tk.E), padx=(15, 0), pady=(0, 8))
 
-        # Progress percentage
+        # Progress percentage with enhanced styling
         self.progress_text_var = tk.StringVar(value="0%")
-        ttk.Label(progress_section, textvariable=self.progress_text_var, style='Info.TLabel').grid(row=0, column=2, padx=(10, 0))
+        progress_label = ttk.Label(progress_section, textvariable=self.progress_text_var, 
+                                 style='Success.TLabel', font=('Segoe UI', 10, 'bold'))
+        progress_label.grid(row=0, column=2, padx=(15, 0))
 
         # === STATISTICS SECTION ===
-        stats_section = ttk.LabelFrame(monitor_container, text="📈 Statistics", padding="15")
-        stats_section.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(0, 10))
+        stats_section = ttk.LabelFrame(monitor_container, text="📊 Statistics", 
+                                     padding="20", style='Modern.TLabelframe')
+        stats_section.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
         stats_section.columnconfigure(0, weight=1)
         stats_section.columnconfigure(1, weight=1)
         stats_section.columnconfigure(2, weight=1)
 
-        # Create modern statistics display
+        # Create modern statistics display with enhanced cards
         self.stats_labels = {}
         stats_info = [
             ('session_id', '🆔 Session ID:', 'N/A'),
@@ -947,49 +1111,55 @@ class MagicBricksGUI:
             row = i // 3
             col = i % 3
 
-            # Create a mini card for each stat
+            # Create enhanced mini card for each stat
             stat_frame = ttk.Frame(stats_section, style='Card.TFrame')
-            stat_frame.grid(row=row, column=col, sticky=(tk.W, tk.E), padx=5, pady=5)
+            stat_frame.grid(row=row, column=col, sticky=(tk.W, tk.E), padx=8, pady=8)
             stat_frame.columnconfigure(0, weight=1)
 
-            ttk.Label(stat_frame, text=label_text, style='Heading.TLabel').pack(anchor=tk.W, padx=8, pady=(8, 2))
+            # Enhanced label with better typography
+            label = ttk.Label(stat_frame, text=label_text, style='Heading.TLabel')
+            label.pack(anchor=tk.W, padx=12, pady=(12, 4))
 
-            value_label = ttk.Label(stat_frame, text=default_value, style='Info.TLabel')
-            value_label.pack(anchor=tk.W, padx=8, pady=(0, 8))
+            # Enhanced value label with better styling
+            value_label = ttk.Label(stat_frame, text=default_value, style='Info.TLabel',
+                                  font=('Segoe UI', 10, 'bold'))
+            value_label.pack(anchor=tk.W, padx=12, pady=(0, 12))
             self.stats_labels[key] = value_label
 
         # === LOG SECTION ===
-        log_section = ttk.LabelFrame(monitor_container, text="📝 Scraping Log", padding="10")
+        log_section = ttk.LabelFrame(monitor_container, text="📝 Scraping Log", 
+                                   padding="15", style='Modern.TLabelframe')
         log_section.grid(row=2, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
         log_section.columnconfigure(0, weight=1)
         log_section.rowconfigure(0, weight=1)
 
-        # Log text area with better styling
+        # Enhanced log text area with modern styling
         self.log_text = scrolledtext.ScrolledText(log_section, height=12, wrap=tk.WORD,
-                                                font=('Consolas', 9), bg='#f8f9fa')
-        self.log_text.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 10))
+                                                font=('Consolas', 9), bg='#f8f9fa',
+                                                relief='flat', borderwidth=1)
+        self.log_text.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 15))
 
-        # Log control buttons with modern styling
+        # Enhanced log control buttons with modern styling
         log_btn_frame = ttk.Frame(log_section)
-        log_btn_frame.grid(row=1, column=0, sticky=(tk.W, tk.E))
+        log_btn_frame.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(10, 0))
         log_btn_frame.columnconfigure(0, weight=1)
 
-        # Left side buttons
+        # Left side buttons with enhanced styling
         left_buttons = ttk.Frame(log_btn_frame)
         left_buttons.pack(side=tk.LEFT)
 
         ttk.Button(left_buttons, text="🗑️ Clear Log", command=self.clear_log,
-                  style='Secondary.TButton').pack(side=tk.LEFT, padx=(0, 5))
+                  style='Danger.TButton').pack(side=tk.LEFT, padx=(0, 8))
 
         ttk.Button(left_buttons, text="💾 Save Log", command=self.save_log,
-                  style='Secondary.TButton').pack(side=tk.LEFT, padx=(0, 5))
+                  style='Primary.TButton').pack(side=tk.LEFT, padx=(0, 8))
 
-        # Right side buttons
+        # Right side buttons with enhanced styling
         right_buttons = ttk.Frame(log_btn_frame)
         right_buttons.pack(side=tk.RIGHT)
 
         ttk.Button(right_buttons, text="📊 View Results", command=self.open_results_viewer,
-                  style='Secondary.TButton').pack(side=tk.LEFT, padx=(0, 5))
+                  style='Success.TButton').pack(side=tk.LEFT, padx=(0, 8))
 
         ttk.Button(right_buttons, text="🛡️ Error Log", command=self.open_error_log_viewer,
                   style='Secondary.TButton').pack(side=tk.LEFT)
