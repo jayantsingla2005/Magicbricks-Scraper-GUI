@@ -25,14 +25,15 @@ class SmartStoppingLogic:
         self.connection = None
         self.date_parser = DateParsingSystem(db_path)
         
-        # Default stopping thresholds (evidence-based)
+        # Default stopping thresholds (evidence-based) - FIXED: Less aggressive
         self.stopping_config = {
-            'old_property_threshold_percentage': 80,  # Stop when 80% are old
+            'old_property_threshold_percentage': 95,  # Stop when 95% are old (was 80%)
             'minimum_properties_per_page': 5,         # Need at least 5 properties to decide
             'maximum_pages_to_check': 100,            # Safety limit
             'date_buffer_hours': 2,                   # 2-hour buffer for safety
             'conservative_mode': False,               # More strict thresholds
-            'require_consecutive_old_pages': 2        # Need 2 consecutive old pages
+            'require_consecutive_old_pages': 3,       # Need 3 consecutive old pages (was 2)
+            'minimum_pages_before_stopping': 10      # Must scrape at least 10 pages
         }
         
         # Stopping statistics
@@ -220,12 +221,16 @@ class SmartStoppingLogic:
         
         final_decision['consecutive_old_pages'] = consecutive_stop_pages
         
-        # Decision logic
+        # Decision logic - FIXED: Respect minimum pages requirement
         required_consecutive = self.stopping_config['require_consecutive_old_pages']
-        
-        if consecutive_stop_pages >= required_consecutive:
+        minimum_pages = self.stopping_config.get('minimum_pages_before_stopping', 10)
+
+        # Don't stop if we haven't scraped minimum pages
+        if len(page_analyses) < minimum_pages:
+            final_decision['recommendation'] = f'Continue scraping - only {len(page_analyses)}/{minimum_pages} minimum pages scraped'
+        elif consecutive_stop_pages >= required_consecutive:
             final_decision['should_stop_scraping'] = True
-            final_decision['stop_reason'] = f'{consecutive_stop_pages} consecutive pages with ≥80% old properties'
+            final_decision['stop_reason'] = f'{consecutive_stop_pages} consecutive pages with ≥95% old properties'
             final_decision['confidence'] = min(0.95, consecutive_stop_pages / required_consecutive * 0.8)
             final_decision['recommendation'] = 'Stop scraping - reached old property territory'
         

@@ -1678,14 +1678,11 @@ class IntegratedMagicBricksScraper:
             if concurrent_enabled:
                 self.logger.info(f"   ⚡ Concurrent workers: {concurrent_pages}")
 
-            if concurrent_enabled and total_urls > 1:
-                detailed_properties = self._scrape_individual_pages_concurrent_enhanced(
-                    property_urls, batch_size, progress_callback, progress_data, session_id
-                )
-            else:
-                detailed_properties = self._scrape_individual_pages_sequential_enhanced(
-                    property_urls, batch_size, progress_callback, progress_data, session_id
-                )
+            # TEMPORARY FIX: Use sequential processing to avoid driver issues
+            # TODO: Fix concurrent processing driver management
+            detailed_properties = self._scrape_individual_pages_sequential_enhanced(
+                property_urls, batch_size, progress_callback, progress_data, session_id
+            )
 
         return detailed_properties
 
@@ -2424,7 +2421,7 @@ class IntegratedMagicBricksScraper:
                         return None
 
                 # Validate page loaded correctly
-                if not self._validate_property_page(driver.page_source):
+                if not self._validate_property_page(self.driver.page_source):
                     self.logger.warning(f"   ⚠️ Invalid property page on attempt {attempt + 1}")
                     if attempt < max_retries - 1:
                         time.sleep(3 * (attempt + 1))
