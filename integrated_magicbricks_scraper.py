@@ -114,26 +114,31 @@ class IntegratedMagicBricksScraper:
     def _setup_default_config(self) -> Dict[str, Any]:
         """Setup default configuration for the scraper"""
         return {
-            # Delay configurations
-            'page_delay_min': 3,
-            'page_delay_max': 8,
-            'individual_delay_min': 3,
-            'individual_delay_max': 20,
-            'batch_break_delay': 15,
-            'bot_recovery_delay': 30,
+            # Delay configurations - REDUCED for better performance
+            'page_delay_min': 0.5,
+            'page_delay_max': 2.0,
+            'individual_delay_min': 0.1,
+            'individual_delay_max': 3.0,
+            'batch_break_delay': 5,
+            'bot_recovery_delay': 15,
+            
+            # Concurrent scraping configurations
+            'concurrent_pages': 4,  # Default concurrent pages for individual scraping
+            'max_concurrent_pages': 8,  # Maximum allowed concurrent pages
+            'concurrent_enabled': True,  # Enable concurrent scraping by default
 
-            # City-specific delays (can be customized per city)
+            # City-specific delays (REDUCED for better performance)
             'city_delays': {
-                'mumbai': {'page': (3, 8), 'individual': (4, 15)},
-                'delhi': {'page': (3, 8), 'individual': (4, 15)},
-                'bangalore': {'page': (3, 8), 'individual': (4, 15)},
-                'pune': {'page': (3, 8), 'individual': (4, 15)},
-                'hyderabad': {'page': (3, 8), 'individual': (4, 15)},
-                'chennai': {'page': (3, 8), 'individual': (4, 15)},
-                'kolkata': {'page': (3, 8), 'individual': (4, 15)},
-                'ahmedabad': {'page': (3, 8), 'individual': (4, 15)},
-                'gurgaon': {'page': (3, 8), 'individual': (4, 15)},
-                'noida': {'page': (3, 8), 'individual': (4, 15)}
+                'mumbai': {'page': (0.5, 2.0), 'individual': (0.1, 3.0)},
+                'delhi': {'page': (0.5, 2.0), 'individual': (0.1, 3.0)},
+                'bangalore': {'page': (0.5, 2.0), 'individual': (0.1, 3.0)},
+                'pune': {'page': (0.5, 2.0), 'individual': (0.1, 3.0)},
+                'hyderabad': {'page': (0.5, 2.0), 'individual': (0.1, 3.0)},
+                'chennai': {'page': (0.5, 2.0), 'individual': (0.1, 3.0)},
+                'kolkata': {'page': (0.5, 2.0), 'individual': (0.1, 3.0)},
+                'ahmedabad': {'page': (0.5, 2.0), 'individual': (0.1, 3.0)},
+                'gurgaon': {'page': (0.5, 2.0), 'individual': (0.1, 3.0)},
+                'noida': {'page': (0.5, 2.0), 'individual': (0.1, 3.0)}
             },
 
             # Anti-scraping configurations
@@ -234,32 +239,67 @@ class IntegratedMagicBricksScraper:
             self.incremental_enabled = False
     
     def setup_driver(self):
-        """Setup Chrome WebDriver"""
+        """Setup Chrome WebDriver with enhanced error handling and session management"""
         
-        try:
-            chrome_options = Options()
-            
-            if self.headless:
-                chrome_options.add_argument("--headless")
-            
-            chrome_options.add_argument("--no-sandbox")
-            chrome_options.add_argument("--disable-dev-shm-usage")
-            chrome_options.add_argument("--disable-gpu")
-            chrome_options.add_argument("--window-size=1920,1080")
-            
-            # Anti-detection measures
-            chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-            chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-            chrome_options.add_experimental_option('useAutomationExtension', False)
-            
-            self.driver = webdriver.Chrome(options=chrome_options)
-            self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-            
-            self.logger.info("Chrome WebDriver initialized successfully")
-            
-        except Exception as e:
-            self.logger.error(f"Failed to initialize WebDriver: {str(e)}")
-            raise
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                chrome_options = Options()
+                
+                if self.headless:
+                    chrome_options.add_argument("--headless")
+                
+                # Enhanced stability options
+                chrome_options.add_argument("--no-sandbox")
+                chrome_options.add_argument("--disable-dev-shm-usage")
+                chrome_options.add_argument("--disable-gpu")
+                chrome_options.add_argument("--window-size=1920,1080")
+                chrome_options.add_argument("--disable-web-security")
+                chrome_options.add_argument("--disable-features=VizDisplayCompositor")
+                chrome_options.add_argument("--disable-extensions")
+                chrome_options.add_argument("--disable-plugins")
+                chrome_options.add_argument("--disable-images")  # Faster loading
+                chrome_options.add_argument("--disable-javascript")  # Reduce complexity
+                
+                # Enhanced anti-detection measures
+                chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+                chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+                chrome_options.add_experimental_option('useAutomationExtension', False)
+                
+                # Performance optimizations
+                chrome_options.add_argument("--memory-pressure-off")
+                chrome_options.add_argument("--max_old_space_size=4096")
+                
+                # Create WebDriver with timeout
+                self.driver = webdriver.Chrome(options=chrome_options)
+                
+                # Set timeouts
+                self.driver.implicitly_wait(10)
+                self.driver.set_page_load_timeout(30)
+                self.driver.set_script_timeout(30)
+                
+                # Anti-detection script
+                self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+                
+                # Test connection
+                self.driver.get("https://www.google.com")
+                
+                self.logger.info(f"Chrome WebDriver initialized successfully (attempt {attempt + 1})")
+                return
+                
+            except Exception as e:
+                self.logger.error(f"Failed to initialize WebDriver (attempt {attempt + 1}): {str(e)}")
+                if self.driver:
+                    try:
+                        self.driver.quit()
+                    except:
+                        pass
+                    self.driver = None
+                
+                if attempt < max_retries - 1:
+                    time.sleep(5 * (attempt + 1))  # Progressive delay
+                else:
+                    raise Exception(f"Failed to initialize WebDriver after {max_retries} attempts: {str(e)}")
     
     def start_scraping_session(self, city: str, mode: ScrapingMode = ScrapingMode.INCREMENTAL,
                              custom_config: Dict[str, Any] = None) -> bool:
@@ -1219,21 +1259,157 @@ class IntegratedMagicBricksScraper:
     def scrape_individual_property_pages(self, property_urls: List[str], batch_size: int = 10,
                                         progress_callback=None, progress_data=None) -> List[Dict[str, Any]]:
         """
-        Enhanced individual property page scraping with advanced anti-scraping measures and progress tracking
+        Enhanced individual property page scraping with concurrent processing and advanced anti-scraping measures
         """
         detailed_properties = []
         total_urls = len(property_urls)
-
+        
+        # Check if concurrent scraping is enabled
+        concurrent_enabled = self.config.get('concurrent_enabled', True)
+        concurrent_pages = min(self.config.get('concurrent_pages', 4), self.config.get('max_concurrent_pages', 8))
+        
         self.logger.info(f"🏠 Starting individual property page scraping for {total_urls} properties")
         self.logger.info(f"   📦 Batch size: {batch_size}")
         self.logger.info(f"   🛡️ Enhanced anti-scraping: Enabled")
+        self.logger.info(f"   🔄 Concurrent processing: {'Enabled' if concurrent_enabled else 'Disabled'}")
+        if concurrent_enabled:
+            self.logger.info(f"   ⚡ Concurrent workers: {concurrent_pages}")
+
+        if concurrent_enabled and total_urls > 1:
+            return self._scrape_individual_pages_concurrent(property_urls, batch_size, progress_callback, progress_data)
+        else:
+            return self._scrape_individual_pages_sequential(property_urls, batch_size, progress_callback, progress_data)
+
+    def _scrape_individual_pages_concurrent(self, property_urls: List[str], batch_size: int = 10,
+                                          progress_callback=None, progress_data=None) -> List[Dict[str, Any]]:
+        """
+        Concurrent individual property page scraping using ThreadPoolExecutor
+        """
+        detailed_properties = []
+        total_urls = len(property_urls)
+        concurrent_pages = min(self.config.get('concurrent_pages', 4), self.config.get('max_concurrent_pages', 8))
+        
+        # Thread-safe results collection
+        results_lock = threading.Lock()
+        processed_count = 0
+        
+        def process_property_batch(batch_urls_with_indices):
+            """Process a batch of properties concurrently"""
+            nonlocal processed_count
+            batch_results = []
+            
+            # Create a separate WebDriver for this thread
+            thread_driver = None
+            try:
+                # Setup thread-specific WebDriver
+                chrome_options = Options()
+                if self.headless:
+                    chrome_options.add_argument("--headless")
+                chrome_options.add_argument("--no-sandbox")
+                chrome_options.add_argument("--disable-dev-shm-usage")
+                chrome_options.add_argument("--disable-gpu")
+                chrome_options.add_argument("--window-size=1920,1080")
+                chrome_options.add_argument("--disable-images")
+                chrome_options.add_argument("--disable-javascript")
+                chrome_options.add_argument("--disable-web-security")
+                chrome_options.add_argument("--memory-pressure-off")
+                
+                thread_driver = webdriver.Chrome(options=chrome_options)
+                thread_driver.implicitly_wait(10)
+                thread_driver.set_page_load_timeout(30)
+                
+                for url, original_index in batch_urls_with_indices:
+                    try:
+                        # Apply reduced delay for concurrent processing
+                        delay = random.uniform(
+                            self.config.get('individual_delay_min', 0.1),
+                            self.config.get('individual_delay_max', 3.0)
+                        )
+                        time.sleep(delay)
+                        
+                        # Scrape property using thread-specific driver
+                        property_data = self._scrape_single_property_page_with_driver(thread_driver, url, original_index)
+                        
+                        if property_data:
+                            batch_results.append(property_data)
+                            
+                        with results_lock:
+                            processed_count += 1
+                            self.logger.info(f"   ✅ Property {processed_count}/{total_urls}: {'Success' if property_data else 'Failed'}")
+                            
+                            # Update progress
+                            if progress_callback and progress_data:
+                                progress_data.update({
+                                    'current_page': processed_count,
+                                    'progress_percentage': (processed_count / total_urls) * 100,
+                                    'properties_found': len(detailed_properties) + len(batch_results)
+                                })
+                                progress_callback(progress_data)
+                                
+                    except Exception as e:
+                        with results_lock:
+                            processed_count += 1
+                            self.logger.error(f"   ❌ Property {processed_count}/{total_urls}: Error - {str(e)}")
+                        
+            except Exception as e:
+                self.logger.error(f"Thread setup error: {str(e)}")
+            finally:
+                if thread_driver:
+                    try:
+                        thread_driver.quit()
+                    except:
+                        pass
+                        
+            return batch_results
+        
+        # Process in batches with concurrent workers
+        for batch_start in range(0, total_urls, batch_size):
+            batch_end = min(batch_start + batch_size, total_urls)
+            batch_urls = property_urls[batch_start:batch_end]
+            
+            self.logger.info(f"\n📦 Processing batch {batch_start//batch_size + 1}: Properties {batch_start+1}-{batch_end}")
+            
+            # Prepare URLs with their original indices
+            batch_urls_with_indices = [(url, batch_start + i) for i, url in enumerate(batch_urls)]
+            
+            # Split batch into chunks for concurrent processing
+            chunk_size = max(1, len(batch_urls_with_indices) // concurrent_pages)
+            chunks = [batch_urls_with_indices[i:i + chunk_size] for i in range(0, len(batch_urls_with_indices), chunk_size)]
+            
+            # Process chunks concurrently
+            with ThreadPoolExecutor(max_workers=concurrent_pages) as executor:
+                future_to_chunk = {executor.submit(process_property_batch, chunk): chunk for chunk in chunks}
+                
+                for future in as_completed(future_to_chunk):
+                    try:
+                        chunk_results = future.result()
+                        detailed_properties.extend(chunk_results)
+                    except Exception as e:
+                        self.logger.error(f"Chunk processing error: {str(e)}")
+            
+            # Batch completion break
+            if batch_end < total_urls:
+                batch_break = self.config.get('batch_break_delay', 5)
+                self.logger.info(f"   🛌 Batch break: {batch_break}s")
+                time.sleep(batch_break)
+        
+        self.logger.info(f"\n🎉 Concurrent individual property scraping complete: {len(detailed_properties)}/{total_urls} successful")
+        return detailed_properties
+    
+    def _scrape_individual_pages_sequential(self, property_urls: List[str], batch_size: int = 10,
+                                          progress_callback=None, progress_data=None) -> List[Dict[str, Any]]:
+        """
+        Sequential individual property page scraping (original method)
+        """
+        detailed_properties = []
+        total_urls = len(property_urls)
 
         # Process in batches
         for batch_start in range(0, total_urls, batch_size):
             batch_end = min(batch_start + batch_size, total_urls)
             batch_urls = property_urls[batch_start:batch_end]
 
-            self.logger.info(f"\\n📦 Processing batch {batch_start//batch_size + 1}: Properties {batch_start+1}-{batch_end}")
+            self.logger.info(f"\n📦 Processing batch {batch_start//batch_size + 1}: Properties {batch_start+1}-{batch_end}")
 
             # Process each property in the batch
             for i, url in enumerate(batch_urls, 1):
@@ -1277,12 +1453,81 @@ class IntegratedMagicBricksScraper:
 
             # Batch completion break
             if batch_end < total_urls:
-                batch_break = 15 + (batch_start // batch_size) * 5  # Increasing breaks
+                batch_break = self.config.get('batch_break_delay', 5)
                 self.logger.info(f"   🛌 Batch break: {batch_break}s")
                 time.sleep(batch_break)
 
-        self.logger.info(f"\\n🎉 Individual property scraping complete: {len(detailed_properties)}/{total_urls} successful")
+        self.logger.info(f"\n🎉 Sequential individual property scraping complete: {len(detailed_properties)}/{total_urls} successful")
         return detailed_properties
+
+    def _scrape_single_property_page_with_driver(self, driver, url: str, property_index: int) -> Dict[str, Any]:
+        """
+        Scrape a single property page using a specific WebDriver instance (for concurrent processing)
+        """
+        try:
+            self.logger.debug(f"Navigating to property {property_index}: {url}")
+            
+            # Navigate to the property page
+            driver.get(url)
+            time.sleep(random.uniform(1, 3))  # Brief wait for page load
+            
+            # Check for bot detection
+            if self._detect_bot_detection(driver.page_source, driver.current_url):
+                self.logger.warning(f"Bot detection on property {property_index}, applying recovery")
+                time.sleep(random.uniform(5, 10))
+                return None
+            
+            # Validate that we're on a property page
+            if not self._validate_property_page(driver.page_source):
+                self.logger.warning(f"Invalid property page for {url}")
+                return None
+            
+            # Extract property data using BeautifulSoup
+            soup = BeautifulSoup(driver.page_source, 'html.parser')
+            
+            # Extract all property details
+            property_data = {
+                'url': url,
+                'title': self._safe_extract_property_title(soup),
+                'price': self._safe_extract_property_price(soup),
+                'area': self._safe_extract_property_area(soup),
+                'locality': self._safe_extract_locality(soup),
+                'society': self._safe_extract_society(soup),
+                'property_type': self._safe_extract_property_type(soup),
+                'bhk': self._safe_extract_bhk(soup),
+                'bathrooms': self._safe_extract_bathrooms(soup),
+                'furnishing': self._safe_extract_furnishing(soup),
+                'floor': self._safe_extract_floor(soup),
+                'age': self._safe_extract_age(soup),
+                'facing': self._safe_extract_facing(soup),
+                'parking': self._safe_extract_parking(soup),
+                'amenities': self._safe_extract_amenities(soup),
+                'description': self._safe_extract_description(soup),
+                'builder_info': self._safe_extract_builder_info(soup),
+                'location_details': self._safe_extract_location_details(soup),
+                'specifications': self._safe_extract_specifications(soup),
+                'contact_info': self._safe_extract_contact_info(soup),
+                'images': self._safe_extract_images(soup),
+                'scraped_at': datetime.now().isoformat(),
+                'property_id': self._extract_property_id(url)
+            }
+            
+            # Validate extracted data
+            if self._validate_extracted_data(property_data):
+                self.consecutive_failures = 0  # Reset failure count on success
+                return property_data
+            else:
+                self.logger.warning(f"Invalid data extracted for property {property_index}")
+                return None
+                
+        except TimeoutException:
+            self.logger.error(f"Timeout loading property {property_index}: {url}")
+            self.consecutive_failures += 1
+            return None
+        except Exception as e:
+            self.logger.error(f"Error scraping property {property_index}: {str(e)}")
+            self.consecutive_failures += 1
+            return None
 
     def _calculate_individual_page_delay(self, property_index: int, batch_size: int, city: str = None) -> float:
         """Calculate smart delay for individual property pages using custom configuration"""
@@ -1645,7 +1890,7 @@ class IntegratedMagicBricksScraper:
                         return None
 
                 # Validate page loaded correctly
-                if not self._validate_property_page(page_source):
+                if not self._validate_property_page(driver.page_source):
                     self.logger.warning(f"   ⚠️ Invalid property page on attempt {attempt + 1}")
                     if attempt < max_retries - 1:
                         time.sleep(3 * (attempt + 1))
@@ -2202,6 +2447,177 @@ class IntegratedMagicBricksScraper:
         if self.driver:
             self.driver.quit()
             self.logger.info("WebDriver closed")
+
+    # Missing _safe_extract methods - simple fallback implementations
+    def _safe_extract_locality(self, soup: BeautifulSoup) -> str:
+        """Safely extract locality with fallbacks"""
+        selectors = ['.mb-ldp__location', '[class*="locality"]', '[class*="location"]']
+        for selector in selectors:
+            try:
+                element = soup.select_one(selector)
+                if element:
+                    return element.get_text(strip=True)
+            except:
+                continue
+        return 'N/A'
+
+    def _safe_extract_society(self, soup: BeautifulSoup) -> str:
+        """Safely extract society with fallbacks"""
+        selectors = ['.mb-ldp__society', '[class*="society"]', '[class*="project"]']
+        for selector in selectors:
+            try:
+                element = soup.select_one(selector)
+                if element:
+                    return element.get_text(strip=True)
+            except:
+                continue
+        return 'N/A'
+
+    def _safe_extract_property_type(self, soup: BeautifulSoup) -> str:
+        """Safely extract property type with fallbacks"""
+        selectors = ['.mb-ldp__type', '[class*="type"]', '[class*="category"]']
+        for selector in selectors:
+            try:
+                element = soup.select_one(selector)
+                if element:
+                    return element.get_text(strip=True)
+            except:
+                continue
+        return 'N/A'
+
+    def _safe_extract_bhk(self, soup: BeautifulSoup) -> str:
+        """Safely extract BHK with fallbacks"""
+        selectors = ['.mb-ldp__bhk', '[class*="bhk"]', '[class*="bedroom"]']
+        for selector in selectors:
+            try:
+                element = soup.select_one(selector)
+                if element:
+                    return element.get_text(strip=True)
+            except:
+                continue
+        return 'N/A'
+
+    def _safe_extract_bathrooms(self, soup: BeautifulSoup) -> str:
+        """Safely extract bathrooms with fallbacks"""
+        selectors = ['.mb-ldp__bathroom', '[class*="bathroom"]', '[class*="bath"]']
+        for selector in selectors:
+            try:
+                element = soup.select_one(selector)
+                if element:
+                    return element.get_text(strip=True)
+            except:
+                continue
+        return 'N/A'
+
+    def _safe_extract_furnishing(self, soup: BeautifulSoup) -> str:
+        """Safely extract furnishing with fallbacks"""
+        selectors = ['.mb-ldp__furnishing', '[class*="furnish"]', '[class*="furniture"]']
+        for selector in selectors:
+            try:
+                element = soup.select_one(selector)
+                if element:
+                    return element.get_text(strip=True)
+            except:
+                continue
+        return 'N/A'
+
+    def _safe_extract_floor(self, soup: BeautifulSoup) -> str:
+        """Safely extract floor with fallbacks"""
+        selectors = ['.mb-ldp__floor', '[class*="floor"]']
+        for selector in selectors:
+            try:
+                element = soup.select_one(selector)
+                if element:
+                    return element.get_text(strip=True)
+            except:
+                continue
+        return 'N/A'
+
+    def _safe_extract_age(self, soup: BeautifulSoup) -> str:
+        """Safely extract age with fallbacks"""
+        selectors = ['.mb-ldp__age', '[class*="age"]', '[class*="year"]']
+        for selector in selectors:
+            try:
+                element = soup.select_one(selector)
+                if element:
+                    return element.get_text(strip=True)
+            except:
+                continue
+        return 'N/A'
+
+    def _safe_extract_facing(self, soup: BeautifulSoup) -> str:
+        """Safely extract facing with fallbacks"""
+        selectors = ['.mb-ldp__facing', '[class*="facing"]', '[class*="direction"]']
+        for selector in selectors:
+            try:
+                element = soup.select_one(selector)
+                if element:
+                    return element.get_text(strip=True)
+            except:
+                continue
+        return 'N/A'
+
+    def _safe_extract_parking(self, soup: BeautifulSoup) -> str:
+        """Safely extract parking with fallbacks"""
+        selectors = ['.mb-ldp__parking', '[class*="parking"]', '[class*="garage"]']
+        for selector in selectors:
+            try:
+                element = soup.select_one(selector)
+                if element:
+                    return element.get_text(strip=True)
+            except:
+                continue
+        return 'N/A'
+
+    def _safe_extract_contact_info(self, soup: BeautifulSoup) -> Dict[str, str]:
+        """Safely extract contact info with fallbacks"""
+        contact_info = {}
+        try:
+            phone_selectors = ['.mb-ldp__contact', '[class*="phone"]', '[class*="contact"]']
+            for selector in phone_selectors:
+                element = soup.select_one(selector)
+                if element:
+                    contact_info['phone'] = element.get_text(strip=True)
+                    break
+        except:
+            pass
+        return contact_info
+
+    def _safe_extract_images(self, soup: BeautifulSoup) -> List[str]:
+        """Safely extract images with fallbacks"""
+        images = []
+        try:
+            img_selectors = ['.mb-ldp__gallery img', '[class*="gallery"] img', '[class*="image"] img']
+            for selector in img_selectors:
+                elements = soup.select(selector)
+                for img in elements:
+                    src = img.get('src') or img.get('data-src')
+                    if src:
+                        images.append(src)
+                if images:
+                    break
+        except:
+            pass
+        return images[:10]  # Limit to 10 images
+    
+    def _extract_property_id(self, url: str) -> str:
+        """Extract property ID from URL"""
+        try:
+            # Extract property ID from URL parts
+            url_parts = url.split('/')
+            for part in url_parts:
+                if part.startswith('property'):
+                    return part
+            # If no property part found, try to extract from URL pattern
+            import re
+            match = re.search(r'property[^/]*-([^/]+)', url)
+            if match:
+                return match.group(1)
+            # Fallback: use last part of URL
+            return url_parts[-1] if url_parts else 'unknown'
+        except Exception as e:
+            self.logger.warning(f"Error extracting property ID from URL {url}: {str(e)}")
+            return 'unknown'
 
 
 def main():
