@@ -1728,8 +1728,15 @@ class IntegratedMagicBricksScraper:
                                 self.individual_tracker.track_scraped_property(url, property_data, session_id)
 
                         # Update progress
-                        if progress_callback:
-                            progress_callback(len(detailed_properties) + len(batch_properties), total_urls, progress_data)
+                        if progress_callback and progress_data:
+                            # Update progress data with current status
+                            progress_data.update({
+                                'current_page': len(detailed_properties) + len(batch_properties),
+                                'total_pages': total_urls,
+                                'properties_found': len(detailed_properties) + len(batch_properties),
+                                'phase': 'individual_property_extraction'
+                            })
+                            progress_callback(progress_data)
 
                     except Exception as e:
                         self.logger.error(f"❌ Failed to scrape {url}: {str(e)}")
@@ -1765,8 +1772,15 @@ class IntegratedMagicBricksScraper:
                         self.individual_tracker.track_scraped_property(url, property_data, session_id)
 
                 # Update progress
-                if progress_callback:
-                    progress_callback(i + 1, total_urls, progress_data)
+                if progress_callback and progress_data:
+                    # Update progress data with current status
+                    progress_data.update({
+                        'current_page': i + 1,
+                        'total_pages': total_urls,
+                        'properties_found': len(detailed_properties),
+                        'phase': 'individual_property_extraction'
+                    })
+                    progress_callback(progress_data)
 
                 # Anti-scraping delay
                 if i < total_urls - 1:
