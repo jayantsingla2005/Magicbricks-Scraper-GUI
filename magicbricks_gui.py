@@ -477,6 +477,133 @@ class MagicBricksGUI:
         # Initially hide individual delay settings
         self.toggle_individual_delay_settings()
 
+        # === PERFORMANCE SETTINGS SECTION ===
+        performance_section = ttk.LabelFrame(parent, text="⚡ Performance Settings", padding="15")
+        performance_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        performance_section.columnconfigure(1, weight=1)
+        current_row += 1
+
+        # Batch size for individual properties
+        ttk.Label(performance_section, text="Individual Property Batch Size:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
+        self.batch_size_var = tk.StringVar(value="10")
+        batch_spinbox = ttk.Spinbox(performance_section, from_=1, to=50, textvariable=self.batch_size_var, width=10)
+        batch_spinbox.grid(row=0, column=1, sticky=tk.W, padx=(10, 0), pady=(0, 10))
+        self.create_tooltip(batch_spinbox, "How many properties to process at once. Higher = faster but uses more memory.")
+
+        # Max Workers (Parallel Processing)
+        ttk.Label(performance_section, text="Parallel Workers:", style='Heading.TLabel').grid(row=1, column=0, sticky=tk.W, pady=(0, 5))
+        self.max_workers_var = tk.IntVar(value=3)
+        workers_spinbox = ttk.Spinbox(performance_section, from_=1, to=8, textvariable=self.max_workers_var, width=10)
+        workers_spinbox.grid(row=1, column=1, sticky=tk.W, padx=(10, 0), pady=(0, 10))
+        self.create_tooltip(workers_spinbox, "Number of browser windows working simultaneously. More workers = faster scraping but uses more computer resources.")
+
+        # Memory optimization
+        self.memory_optimization_var = tk.BooleanVar(value=True)
+        memory_check = ttk.Checkbutton(performance_section, text="Memory Optimization", variable=self.memory_optimization_var)
+        memory_check.grid(row=2, column=0, columnspan=2, sticky=tk.W, pady=(5, 0))
+        self.create_tooltip(memory_check, "Reduces memory usage during scraping. Recommended for long scraping sessions.")
+
+        # === BROWSER SPEED SETTINGS SECTION ===
+        browser_section = ttk.LabelFrame(parent, text="🌐 Browser Speed Settings", padding="15")
+        browser_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        browser_section.columnconfigure(1, weight=1)
+        current_row += 1
+
+        # Page Load Strategy
+        ttk.Label(browser_section, text="Page Loading Speed:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
+        self.page_load_strategy_var = tk.StringVar(value="normal")
+        strategy_combo = ttk.Combobox(browser_section, textvariable=self.page_load_strategy_var, 
+                                    values=["normal", "eager", "none"], state="readonly", width=12)
+        strategy_combo.grid(row=0, column=1, sticky=tk.W, padx=(10, 0), pady=(0, 10))
+        self.create_tooltip(strategy_combo, "How long to wait for pages to load. 'Normal' = wait for everything (slower but safer), 'Eager' = faster loading, 'None' = fastest but may miss some content.")
+
+        # Disable Images
+        self.disable_images_var = tk.BooleanVar(value=True)
+        images_check = ttk.Checkbutton(browser_section, text="Skip Images (Faster Loading)", variable=self.disable_images_var)
+        images_check.grid(row=1, column=0, columnspan=2, sticky=tk.W, pady=(5, 0))
+        self.create_tooltip(images_check, "Don't load property images. Makes scraping much faster and saves internet data. Property image links are still collected.")
+
+        # Disable CSS
+        self.disable_css_var = tk.BooleanVar(value=False)
+        css_check = ttk.Checkbutton(browser_section, text="Skip Styling (CSS)", variable=self.disable_css_var)
+        css_check.grid(row=2, column=0, columnspan=2, sticky=tk.W, pady=(5, 0))
+        self.create_tooltip(css_check, "Don't load website styling. Makes pages load faster but may affect data extraction accuracy.")
+
+        # Disable JavaScript
+        self.disable_js_var = tk.BooleanVar(value=False)
+        js_check = ttk.Checkbutton(browser_section, text="Skip JavaScript", variable=self.disable_js_var)
+        js_check.grid(row=3, column=0, columnspan=2, sticky=tk.W, pady=(5, 0))
+        self.create_tooltip(js_check, "Don't run website scripts. Fastest option but may miss some property data that loads dynamically.")
+
+        # === PROPERTY FILTERING SECTION ===
+        filtering_section = ttk.LabelFrame(parent, text="🔍 Property Filtering", padding="15")
+        filtering_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        filtering_section.columnconfigure(1, weight=1)
+        current_row += 1
+
+        # Enable filtering checkbox
+        self.enable_filtering_var = tk.BooleanVar(value=False)
+        enable_filter_check = ttk.Checkbutton(filtering_section, text="Enable Property Filtering",
+                                            variable=self.enable_filtering_var,
+                                            command=self.toggle_filtering_options)
+        enable_filter_check.grid(row=0, column=0, columnspan=2, sticky=tk.W, pady=(0, 10))
+
+        # Price range filtering
+        price_frame = ttk.Frame(filtering_section)
+        price_frame.grid(row=1, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(2, 0))
+        price_frame.columnconfigure(1, weight=1)
+
+        ttk.Label(price_frame, text="Price Range (Lakhs):", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W)
+        price_range_frame = ttk.Frame(price_frame)
+        price_range_frame.grid(row=0, column=1, sticky=tk.W, padx=(10, 0))
+
+        self.price_min_var = tk.StringVar()
+        self.price_max_var = tk.StringVar()
+
+        ttk.Entry(price_range_frame, textvariable=self.price_min_var, width=8, state='disabled').grid(row=0, column=0)
+        ttk.Label(price_range_frame, text=" - ").grid(row=0, column=1)
+        ttk.Entry(price_range_frame, textvariable=self.price_max_var, width=8, state='disabled').grid(row=0, column=2)
+
+        # Area range filtering
+        area_frame = ttk.Frame(filtering_section)
+        area_frame.grid(row=2, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 0))
+        area_frame.columnconfigure(1, weight=1)
+
+        ttk.Label(area_frame, text="Area Range (Sq.Ft):", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W)
+        area_range_frame = ttk.Frame(area_frame)
+        area_range_frame.grid(row=0, column=1, sticky=tk.W, padx=(10, 0))
+
+        self.area_min_var = tk.StringVar()
+        self.area_max_var = tk.StringVar()
+
+        ttk.Entry(area_range_frame, textvariable=self.area_min_var, width=8, state='disabled').grid(row=0, column=0)
+        ttk.Label(area_range_frame, text=" - ").grid(row=0, column=1)
+        ttk.Entry(area_range_frame, textvariable=self.area_max_var, width=8, state='disabled').grid(row=0, column=2)
+
+        # BHK filtering
+        bhk_frame = ttk.Frame(filtering_section)
+        bhk_frame.grid(row=3, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 0))
+
+        ttk.Label(bhk_frame, text="BHK Types:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W)
+
+        bhk_options_frame = ttk.Frame(bhk_frame)
+        bhk_options_frame.grid(row=0, column=1, sticky=tk.W, padx=(10, 0))
+
+        self.bhk_vars = {}
+        bhk_options = ['1', '2', '3', '4', '4+']
+        for i, bhk in enumerate(bhk_options):
+            var = tk.BooleanVar()
+            self.bhk_vars[bhk] = var
+            ttk.Checkbutton(bhk_options_frame, text=f"{bhk} BHK", variable=var, state='disabled').grid(row=0, column=i, padx=(0, 10))
+
+        # Store filtering widgets for enabling/disabling
+        self.filtering_widgets = [
+            price_range_frame.winfo_children()[0],  # price min entry
+            price_range_frame.winfo_children()[2],  # price max entry
+            area_range_frame.winfo_children()[0],   # area min entry
+            area_range_frame.winfo_children()[2],   # area max entry
+        ] + [child for child in bhk_options_frame.winfo_children() if isinstance(child, ttk.Checkbutton)]
+
         # === ACTION SECTION ===
         action_section = ttk.Frame(parent)
         action_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(20, 10))
@@ -749,87 +876,9 @@ class MagicBricksGUI:
         self.batch_break_var = tk.StringVar(value="15")
         ttk.Spinbox(delay_config_frame, from_=5, to=60, textvariable=self.batch_break_var, width=10).grid(row=1, column=1, sticky=tk.W, padx=(10, 0), pady=(5, 0))
 
-        # Performance settings
-        performance_frame = ttk.LabelFrame(advanced_frame, text="Performance Settings", padding="10")
-        performance_frame.grid(row=8, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 15))
-        performance_frame.columnconfigure(1, weight=1)
 
-        # Batch size for individual properties
-        ttk.Label(performance_frame, text="Individual Property Batch Size:").grid(row=0, column=0, sticky=tk.W)
-        self.batch_size_var = tk.StringVar(value="10")
-        ttk.Spinbox(performance_frame, from_=1, to=50, textvariable=self.batch_size_var, width=10).grid(row=0, column=1, sticky=tk.W, padx=(10, 0))
 
-        # Memory optimization
-        self.memory_optimization_var = tk.BooleanVar(value=True)
-        ttk.Checkbutton(performance_frame, text="Memory Optimization", variable=self.memory_optimization_var).grid(row=1, column=0, columnspan=2, sticky=tk.W, pady=(5, 0))
 
-        # Advanced filtering options
-        filtering_frame = ttk.LabelFrame(advanced_frame, text="Property Filtering", padding="10")
-        filtering_frame.grid(row=9, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 15))
-        filtering_frame.columnconfigure(1, weight=1)
-
-        # Enable filtering checkbox
-        self.enable_filtering_var = tk.BooleanVar(value=False)
-        enable_filter_check = ttk.Checkbutton(filtering_frame, text="Enable Property Filtering",
-                                            variable=self.enable_filtering_var,
-                                            command=self.toggle_filtering_options)
-        enable_filter_check.grid(row=0, column=0, columnspan=2, sticky=tk.W, pady=(0, 10))
-
-        # Price range filtering
-        price_frame = ttk.Frame(filtering_frame)
-        price_frame.grid(row=1, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(2, 0))
-        price_frame.columnconfigure(1, weight=1)
-
-        ttk.Label(price_frame, text="Price Range (Lakhs):").grid(row=0, column=0, sticky=tk.W)
-        price_range_frame = ttk.Frame(price_frame)
-        price_range_frame.grid(row=0, column=1, sticky=tk.W, padx=(10, 0))
-
-        self.price_min_var = tk.StringVar()
-        self.price_max_var = tk.StringVar()
-
-        ttk.Entry(price_range_frame, textvariable=self.price_min_var, width=8, state='disabled').grid(row=0, column=0)
-        ttk.Label(price_range_frame, text=" - ").grid(row=0, column=1)
-        ttk.Entry(price_range_frame, textvariable=self.price_max_var, width=8, state='disabled').grid(row=0, column=2)
-
-        # Area range filtering
-        area_frame = ttk.Frame(filtering_frame)
-        area_frame.grid(row=2, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 0))
-        area_frame.columnconfigure(1, weight=1)
-
-        ttk.Label(area_frame, text="Area Range (Sq.Ft):").grid(row=0, column=0, sticky=tk.W)
-        area_range_frame = ttk.Frame(area_frame)
-        area_range_frame.grid(row=0, column=1, sticky=tk.W, padx=(10, 0))
-
-        self.area_min_var = tk.StringVar()
-        self.area_max_var = tk.StringVar()
-
-        ttk.Entry(area_range_frame, textvariable=self.area_min_var, width=8, state='disabled').grid(row=0, column=0)
-        ttk.Label(area_range_frame, text=" - ").grid(row=0, column=1)
-        ttk.Entry(area_range_frame, textvariable=self.area_max_var, width=8, state='disabled').grid(row=0, column=2)
-
-        # BHK filtering
-        bhk_frame = ttk.Frame(filtering_frame)
-        bhk_frame.grid(row=3, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 0))
-
-        ttk.Label(bhk_frame, text="BHK Types:").grid(row=0, column=0, sticky=tk.W)
-
-        bhk_options_frame = ttk.Frame(bhk_frame)
-        bhk_options_frame.grid(row=0, column=1, sticky=tk.W, padx=(10, 0))
-
-        self.bhk_vars = {}
-        bhk_options = ['1', '2', '3', '4', '4+']
-        for i, bhk in enumerate(bhk_options):
-            var = tk.BooleanVar()
-            self.bhk_vars[bhk] = var
-            ttk.Checkbutton(bhk_options_frame, text=f"{bhk} BHK", variable=var, state='disabled').grid(row=0, column=i, padx=(0, 10))
-
-        # Store filtering widgets for enabling/disabling
-        self.filtering_widgets = [
-            price_range_frame.winfo_children()[0],  # price min entry
-            price_range_frame.winfo_children()[2],  # price max entry
-            area_range_frame.winfo_children()[0],   # area min entry
-            area_range_frame.winfo_children()[2],   # area max entry
-        ] + [child for child in bhk_options_frame.winfo_children() if isinstance(child, ttk.Checkbutton)]
         
         # Action buttons
         button_frame = ttk.Frame(control_frame)
@@ -1085,6 +1134,17 @@ class MagicBricksGUI:
         self.config['output_directory'] = self.output_dir_var.get()
         self.config['headless'] = self.headless_var.get()
         self.config['incremental_enabled'] = self.incremental_var.get()
+        
+        # Performance settings
+        self.config['batch_size'] = int(self.batch_size_var.get()) if hasattr(self, 'batch_size_var') else 10
+        self.config['max_workers'] = int(self.max_workers_var.get()) if hasattr(self, 'max_workers_var') else 3
+        self.config['memory_optimization'] = self.memory_optimization_var.get() if hasattr(self, 'memory_optimization_var') else True
+        
+        # Browser optimization settings
+        self.config['page_load_strategy'] = self.page_load_strategy_var.get() if hasattr(self, 'page_load_strategy_var') else 'normal'
+        self.config['disable_images'] = self.disable_images_var.get() if hasattr(self, 'disable_images_var') else True
+        self.config['disable_css'] = self.disable_css_var.get() if hasattr(self, 'disable_css_var') else False
+        self.config['disable_javascript'] = self.disable_js_var.get() if hasattr(self, 'disable_js_var') else False
     
     def log_message(self, message: str, level: str = 'INFO'):
         """Add message to log with timestamp"""
@@ -2778,6 +2838,27 @@ For production deployment, schedules integrate with:
         self.start_button.config(state='normal')
         self.stop_btn.config(state='disabled')
         self.update_status("Ready to start scraping")
+    
+    def create_tooltip(self, widget, text):
+        """Create a tooltip for a widget"""
+        def on_enter(event):
+            tooltip = tk.Toplevel()
+            tooltip.wm_overrideredirect(True)
+            tooltip.wm_geometry(f"+{event.x_root+10}+{event.y_root+10}")
+            
+            label = tk.Label(tooltip, text=text, background="#ffffe0", 
+                           relief="solid", borderwidth=1, font=("Arial", 9))
+            label.pack()
+            
+            widget.tooltip = tooltip
+        
+        def on_leave(event):
+            if hasattr(widget, 'tooltip'):
+                widget.tooltip.destroy()
+                del widget.tooltip
+        
+        widget.bind("<Enter>", on_enter)
+        widget.bind("<Leave>", on_leave)
     
     def run(self):
         """Run the GUI application"""
