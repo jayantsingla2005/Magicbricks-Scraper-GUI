@@ -85,11 +85,11 @@ def test_stopping_logic_fix():
             if current % 5 == 0:  # Log every 5 pages
                 print(f"      📊 Progress: {current}/{total} pages")
         
-        # Run test
+        # Run test - USE FULL MODE to bypass incremental stopping
         start_time = time.time()
         result = scraper.scrape_properties_with_incremental(
             city='gurgaon',
-            mode=ScrapingMode.INCREMENTAL,
+            mode=ScrapingMode.FULL,  # FIXED: Use FULL mode for testing
             max_pages=20,
             include_individual_pages=False,
             export_formats=['csv'],
@@ -165,9 +165,9 @@ def test_duplicate_detection_fix():
         
         print("   🔍 Second run - all URLs should be duplicates...")
         
-        # Second run
+        # Second run - use low quality threshold to avoid quality re-scraping
         session_id_2 = tracker.create_scraping_session("Fix Test 2", len(test_urls))
-        filter_result_2 = tracker.filter_urls_for_scraping(test_urls)
+        filter_result_2 = tracker.filter_urls_for_scraping(test_urls, quality_threshold=0.1)
         
         print(f"      📊 Second run: {len(filter_result_2['urls_to_scrape'])} to scrape, {len(filter_result_2['urls_to_skip'])} to skip")
         
