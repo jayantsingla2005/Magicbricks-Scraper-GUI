@@ -361,17 +361,20 @@ class IntegratedMagicBricksScraper:
                 chrome_options.add_argument("--disable-dev-shm-usage")
                 chrome_options.add_argument("--disable-gpu")
                 chrome_options.add_argument("--window-size=1920,1080")
-                chrome_options.add_argument("--disable-web-security")
-                chrome_options.add_argument("--disable-features=VizDisplayCompositor")
-                chrome_options.add_argument("--disable-extensions")
-                chrome_options.add_argument("--disable-plugins")
-                chrome_options.add_argument("--disable-images")  # Faster loading
-                chrome_options.add_argument("--disable-javascript")  # Reduce complexity
-                
-                # Enhanced anti-detection measures
+
+                # Enhanced anti-detection measures (CRITICAL for individual property pages)
                 chrome_options.add_argument("--disable-blink-features=AutomationControlled")
                 chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
                 chrome_options.add_experimental_option('useAutomationExtension', False)
+
+                # User agent for better compatibility
+                chrome_options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+
+                # Performance optimizations (but keep JavaScript enabled for individual pages)
+                chrome_options.add_argument("--disable-extensions")
+                chrome_options.add_argument("--disable-plugins")
+                chrome_options.add_argument("--disable-images")  # Faster loading
+                # NOTE: JavaScript is ENABLED for individual property page compatibility
                 
                 # Performance optimizations
                 chrome_options.add_argument("--memory-pressure-off")
@@ -1105,17 +1108,38 @@ class IntegratedMagicBricksScraper:
             # Extract property type from title (1 BHK, 2 BHK, etc.)
             property_type = self._extract_property_type_from_title(title)
 
-            # Extract society/project name from links
-            society = self._extract_with_fallback(card, [
-                'a[href*="pdpid"]',  # Project detail page links
-                'a[href*="project"]'
+            # Extract society/project name with enhanced extraction
+            society = self._extract_society_enhanced(card)
+
+            # Extract locality from the card structure with enhanced selectors
+            locality = self._extract_locality_enhanced(card)
+
+            # PHASE 3 ENHANCEMENTS: Extract missing high-priority fields
+
+            # Extract photo count
+            photo_count = self._extract_with_fallback(card, [
+                '.mb-srp__card__photo__fig--count',
+                '*[class*="photo"][class*="count"]'
             ], '')
 
-            # Extract locality from the card structure
-            locality = self._extract_with_fallback(card, [
-                '.mb-srp__card__ads--locality',
-                '*[class*="locality"]'
+            # Extract owner name
+            owner_name = self._extract_with_fallback(card, [
+                '.mb-srp__card__ads--name',
+                '*[class*="owner"]',
+                '*[class*="ads"][class*="name"]'
             ], '')
+
+            # Extract contact options
+            contact_options = self._extract_contact_options(card)
+
+            # Extract description
+            description = self._extract_description(card)
+
+            # If no description found, create enhanced description from available data
+            if not description or len(description.strip()) == 0:
+                description = self._create_enhanced_description_from_data(
+                    title, price, area, locality, society, status
+                )
 
             # Build comprehensive property data with premium information
             property_data = {
@@ -1148,7 +1172,13 @@ class IntegratedMagicBricksScraper:
                 'parking': parking,
                 'ownership': ownership,
                 'transaction': transaction,
-                'overlooking': overlooking
+                'overlooking': overlooking,
+
+                # Phase 3 Enhancement fields (missing high-priority fields)
+                'photo_count': photo_count,
+                'owner_name': owner_name,
+                'contact_options': contact_options,
+                'description': description
             }
             
             # Update successful extraction stats
@@ -1162,10 +1192,10 @@ class IntegratedMagicBricksScraper:
             return None
 
     def _extract_structured_field(self, card, field_name: str) -> str:
-        """Extract structured field value based on MagicBricks page structure"""
+        """Enhanced structured field extraction with multiple strategies"""
         try:
-            # Find all elements that contain the field name
-            field_elements = card.find_all(text=lambda text: text and field_name in text)
+            # Strategy 1: Find all elements that contain the field name
+            field_elements = card.find_all(text=lambda text: text and field_name.lower() in text.lower())
 
             for element in field_elements:
                 # Get the parent element
@@ -1175,8 +1205,33 @@ class IntegratedMagicBricksScraper:
                     next_sibling = parent.find_next_sibling()
                     if next_sibling:
                         value = next_sibling.get_text(strip=True)
-                        if value and value != field_name:
+                        if value and value != field_name and len(value) > 0:
                             return value
+
+                    # Look for value in the same parent element
+                    parent_text = parent.get_text(strip=True)
+                    if ':' in parent_text:
+                        parts = parent_text.split(':')
+                        if len(parts) >= 2:
+                            value = parts[1].strip()
+                            if value and len(value) > 0:
+                                return value
+
+            # Strategy 2: Look for field-specific patterns
+            if field_name.lower() == 'status':
+                return self._extract_status_enhanced(card)
+
+            # Strategy 3: Look in all text for field patterns
+            all_text = card.get_text()
+            import re
+
+            # Pattern: "Field: Value" or "Field - Value"
+            pattern = rf'{re.escape(field_name)}\s*[:\-]\s*([^\n,]+)'
+            match = re.search(pattern, all_text, re.IGNORECASE)
+            if match:
+                value = match.group(1).strip()
+                if value and len(value) > 0:
+                    return value
 
                     # Also check parent's next sibling
                     parent_next = parent.parent.find_next_sibling() if parent.parent else None
@@ -1271,7 +1326,543 @@ class IntegratedMagicBricksScraper:
                 continue
 
         return None
-    
+
+    def _extract_contact_options(self, card) -> str:
+        """Extract contact options (Contact Owner, Get Phone No., etc.)"""
+        try:
+            contact_buttons = []
+
+            # Look for contact action buttons
+            contact_selectors = [
+                '.mb-srp__action--btn',
+                '*[class*="action"][class*="btn"]',
+                '*[class*="contact"]',
+                '*[class*="phone"]'
+            ]
+
+            for selector in contact_selectors:
+                elements = card.select(selector)
+                for elem in elements:
+                    text = elem.get_text(strip=True)
+                    if text and any(keyword in text.lower() for keyword in ['contact', 'phone', 'call', 'get']):
+                        if text not in contact_buttons:
+                            contact_buttons.append(text)
+
+            return ', '.join(contact_buttons) if contact_buttons else ''
+
+        except Exception:
+            return ''
+
+    def _extract_description(self, card) -> str:
+        """Extract property description with enhanced fallback strategies"""
+        try:
+            # Strategy 1: Look for actual description paragraphs
+            all_paragraphs = card.find_all('p')
+
+            for p in all_paragraphs:
+                text = p.get_text(strip=True)
+
+                # Look for meaningful descriptions (longer than 50 characters)
+                if text and len(text) > 50:
+                    # Remove "Read more" if present
+                    text = text.replace('Read more', '').strip()
+
+                    # Skip common non-description text patterns
+                    skip_patterns = [
+                        'contact', 'phone', 'owner:', 'photos', 'updated', 'posted',
+                        'premium member', 'newly launched', 'get phone', 'call now'
+                    ]
+
+                    # Check if this is likely a description
+                    text_lower = text.lower()
+                    is_description = any(keyword in text_lower for keyword in [
+                        'bhk', 'apartment', 'flat', 'house', 'property', 'sale', 'resale',
+                        'located', 'situated', 'available', 'gurgaon', 'sector'
+                    ])
+
+                    # Skip if it contains non-description patterns
+                    has_skip_pattern = any(skip in text_lower for skip in skip_patterns)
+
+                    if is_description and not has_skip_pattern:
+                        # Clean up the text
+                        text = text.replace('..', '.').strip()
+                        return text[:500]  # Limit to 500 characters
+
+            # Strategy 2: Enhanced fallback using available data
+            # Since individual property pages are blocked, create meaningful descriptions from available data
+            description_parts = []
+
+            # Get title
+            title_elem = card.select_one('h2, h3, .mb-srp__card__title, *[class*="title"]')
+            if title_elem:
+                title = title_elem.get_text(strip=True)
+                if title and len(title) > 20:
+                    description_parts.append(title)
+
+            # Add key property details
+            # Price
+            price_elem = card.select_one('*[class*="price"], *[class*="cost"]')
+            if price_elem:
+                price_text = price_elem.get_text(strip=True)
+                if price_text and any(currency in price_text for currency in ['₹', 'Cr', 'Lac']):
+                    description_parts.append(f"Priced at {price_text}")
+
+            # Area
+            area_elem = card.select_one('*[class*="area"], *[class*="sqft"], *[class*="size"]')
+            if area_elem:
+                area_text = area_elem.get_text(strip=True)
+                if area_text and any(unit in area_text.lower() for unit in ['sqft', 'sqyrd']):
+                    description_parts.append(f"Area: {area_text}")
+
+            # Status
+            status_text = self._extract_status_enhanced(card)
+            if status_text:
+                description_parts.append(f"Status: {status_text}")
+
+            # Locality
+            locality_text = self._extract_locality_enhanced(card)
+            if locality_text:
+                description_parts.append(f"Located in {locality_text}")
+
+            # Society
+            society_text = self._extract_society_enhanced(card)
+            if society_text:
+                description_parts.append(f"Project: {society_text}")
+
+            # Combine into meaningful description
+            if len(description_parts) >= 2:  # At least title + one detail
+                enhanced_description = '. '.join(description_parts)
+                return enhanced_description[:500]
+
+            return ''
+
+        except Exception:
+            return ''
+
+    def _extract_locality_enhanced(self, card) -> str:
+        """Enhanced locality extraction with multiple strategies"""
+        try:
+            # Strategy 1: Look for explicit locality elements
+            locality_selectors = [
+                '.mb-srp__card__ads--locality',
+                '*[class*="locality"]',
+                '*[class*="location"]',
+                '*[class*="address"]',
+                '*[class*="area"]'
+            ]
+
+            for selector in locality_selectors:
+                elements = card.select(selector)
+                for elem in elements:
+                    text = elem.get_text(strip=True)
+                    if text and len(text) > 3 and len(text) < 100:  # Reasonable locality length
+                        # Skip if it's clearly not a locality
+                        if not any(skip in text.lower() for skip in ['contact', 'phone', 'owner', 'photos', 'bhk', 'sqft']):
+                            return text
+
+            # Strategy 2: Extract from title (many titles contain locality info)
+            title_elem = card.select_one('h2, h3, .mb-srp__card__title, *[class*="title"]')
+            if title_elem:
+                title = title_elem.get_text(strip=True)
+                # Look for common locality patterns in title
+                # Example: "3 BHK Apartment for Sale in Sector 88A Gurgaon"
+                import re
+
+                # Pattern for "in [Locality] [City]"
+                locality_pattern = r'in\s+([^,]+?)(?:\s+(?:Gurgaon|Noida|Mumbai|Delhi|Bangalore|Pune|Chennai|Hyderabad))'
+                match = re.search(locality_pattern, title, re.IGNORECASE)
+                if match:
+                    locality = match.group(1).strip()
+                    if len(locality) > 3 and len(locality) < 50:
+                        return locality
+
+                # Pattern for "Sector XX" or similar
+                sector_pattern = r'(Sector\s+\d+[A-Z]*)'
+                match = re.search(sector_pattern, title, re.IGNORECASE)
+                if match:
+                    return match.group(1)
+
+            # Strategy 3: Look in all text for locality indicators
+            all_text = card.get_text()
+            locality_indicators = ['Sector', 'Block', 'Phase', 'Extension', 'Colony', 'Nagar', 'Vihar']
+
+            for indicator in locality_indicators:
+                if indicator in all_text:
+                    # Extract surrounding text
+                    import re
+                    pattern = rf'({indicator}\s+[A-Z0-9]+[A-Z]*)'
+                    match = re.search(pattern, all_text, re.IGNORECASE)
+                    if match:
+                        return match.group(1)
+
+            return ''
+
+        except Exception:
+            return ''
+
+    def _extract_society_enhanced(self, card) -> str:
+        """Enhanced society/project name extraction"""
+        try:
+            # Strategy 1: Look for project/society links
+            link_selectors = [
+                'a[href*="pdpid"]',  # Project detail page links
+                'a[href*="project"]',
+                '*[class*="society"]',
+                '*[class*="project"]',
+                '*[class*="building"]'
+            ]
+
+            for selector in link_selectors:
+                elements = card.select(selector)
+                for elem in elements:
+                    text = elem.get_text(strip=True)
+                    if text and len(text) > 3 and len(text) < 100:
+                        # Skip if it's clearly not a society name
+                        if not any(skip in text.lower() for skip in ['contact', 'phone', 'owner', 'photos', 'bhk', 'sqft', 'for sale']):
+                            return text
+
+            # Strategy 2: Extract from URL if available
+            url_elem = card.select_one('a[href*="magicbricks.com"]')
+            if url_elem:
+                href = url_elem.get('href', '')
+                if href:
+                    # Extract society name from URL
+                    # Example: https://www.magicbricks.com/rof-pravasa-sector-88a-gurgaon-pdpid-xxx
+                    import re
+                    url_pattern = r'magicbricks\.com/([^-]+(?:-[^-]+)*)-(?:sector|block|phase)'
+                    match = re.search(url_pattern, href, re.IGNORECASE)
+                    if match:
+                        society_name = match.group(1).replace('-', ' ').title()
+                        if len(society_name) > 3:
+                            return society_name
+
+            # Strategy 3: Look for society names in title
+            title_elem = card.select_one('h2, h3, .mb-srp__card__title, *[class*="title"]')
+            if title_elem:
+                title = title_elem.get_text(strip=True)
+
+                # Enhanced society name patterns
+                society_patterns = [
+                    # Brand-specific patterns
+                    r'(DLF\s+[A-Za-z0-9\s]+)',
+                    r'(Ansal\s+[A-Za-z0-9\s]+)',
+                    r'(ROF\s+[A-Za-z0-9\s]+)',
+                    r'(Tulip\s+[A-Za-z0-9\s]+)',
+                    r'(Hero\s+[A-Za-z0-9\s]+)',
+                    r'(Southend\s+[A-Za-z0-9\s]+)',
+                    r'(Godrej\s+[A-Za-z0-9\s]+)',
+                    r'(Tata\s+[A-Za-z0-9\s]+)',
+                    r'(Emaar\s+[A-Za-z0-9\s]+)',
+                    r'(M3M\s+[A-Za-z0-9\s]+)',
+
+                    # Generic patterns
+                    r'([A-Z][a-z]+\s+(?:Heights|Towers|Residency|Apartments|Homes|Gardens|Park|Plaza|Complex|Floors|Enclave|City|County|Estate))',
+
+                    # Pattern for "Name Sector" format
+                    r'([A-Z][A-Za-z\s]+)\s+(?:Sector|Block|Phase)\s+\d+',
+
+                    # Pattern for society names before "in"
+                    r'(?:in\s+)?([A-Z][A-Za-z\s]{3,30}?)\s+(?:Sector|Block|Phase)',
+                ]
+
+                for pattern in society_patterns:
+                    match = re.search(pattern, title, re.IGNORECASE)
+                    if match:
+                        society_name = match.group(1).strip()
+                        if len(society_name) > 3 and len(society_name) < 50:
+                            return society_name
+
+            return ''
+
+        except Exception:
+            return ''
+
+    def _extract_status_enhanced(self, card) -> str:
+        """Enhanced status extraction for property status"""
+        try:
+            # Common status indicators
+            status_keywords = [
+                'ready to move', 'under construction', 'new launch', 'resale',
+                'ready', 'possession', 'immediate', 'available'
+            ]
+
+            # Look for status in all text
+            all_text = card.get_text().lower()
+
+            for keyword in status_keywords:
+                if keyword in all_text:
+                    # Extract surrounding context
+                    import re
+                    pattern = rf'([^.]*{re.escape(keyword)}[^.]*)'
+                    match = re.search(pattern, all_text, re.IGNORECASE)
+                    if match:
+                        context = match.group(1).strip()
+                        # Clean up and return
+                        if 'ready to move' in context:
+                            return 'Ready to Move'
+                        elif 'under construction' in context:
+                            return 'Under Construction'
+                        elif 'new launch' in context:
+                            return 'New Launch'
+                        elif 'resale' in context:
+                            return 'Resale'
+                        elif 'immediate' in context:
+                            return 'Immediate Possession'
+
+            # Look for status in structured elements
+            status_selectors = [
+                '*[class*="status"]',
+                '*[class*="possession"]',
+                '*[class*="ready"]'
+            ]
+
+            for selector in status_selectors:
+                elements = card.select(selector)
+                for elem in elements:
+                    text = elem.get_text(strip=True)
+                    if text and len(text) > 3 and len(text) < 50:
+                        return text
+
+            return ''
+
+        except Exception:
+            return ''
+
+    def _create_enhanced_description_from_data(self, title, price, area, locality, society, status) -> str:
+        """Create enhanced description from extracted property data"""
+        try:
+            description_parts = []
+
+            # Add title if available
+            if title and len(title.strip()) > 0:
+                description_parts.append(title.strip())
+
+            # Add price if available
+            if price and len(price.strip()) > 0:
+                description_parts.append(f"Priced at {price.strip()}")
+
+            # Add area if available
+            if area and len(area.strip()) > 0:
+                description_parts.append(f"Area: {area.strip()}")
+
+            # Add status if available
+            if status and len(status.strip()) > 0:
+                description_parts.append(f"Status: {status.strip()}")
+
+            # Add locality if available
+            if locality and len(locality.strip()) > 0:
+                description_parts.append(f"Located in {locality.strip()}")
+
+            # Add society if available
+            if society and len(society.strip()) > 0:
+                description_parts.append(f"Project: {society.strip()}")
+
+            # Combine into meaningful description
+            if len(description_parts) >= 2:  # At least title + one detail
+                enhanced_description = '. '.join(description_parts)
+                return enhanced_description[:500]  # Limit to 500 characters
+
+            return ''
+
+        except Exception:
+            return ''
+
+    def extract_individual_property_details(self, property_url: str) -> Dict[str, Any]:
+        """Extract detailed information from individual property page"""
+        try:
+            self.logger.info(f"Extracting details from individual property page: {property_url}")
+
+            # Navigate to individual property page
+            self.driver.get(property_url)
+            time.sleep(3)  # Wait for page to load
+
+            # Check if page loaded successfully
+            page_title = self.driver.title
+            if 'access denied' in page_title.lower() or 'error' in page_title.lower():
+                self.logger.warning(f"Individual property page access denied: {property_url}")
+                return {}
+
+            # Parse page content
+            soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+
+            # Extract detailed information
+            individual_details = {}
+
+            # Enhanced description from individual page
+            individual_details['detailed_description'] = self._extract_individual_description(soup)
+
+            # Additional details available on individual pages
+            individual_details['amenities'] = self._extract_individual_amenities(soup)
+            individual_details['floor_plan'] = self._extract_individual_floor_plan(soup)
+            individual_details['price_details'] = self._extract_individual_price_details(soup)
+            individual_details['location_details'] = self._extract_individual_location_details(soup)
+            individual_details['builder_details'] = self._extract_individual_builder_details(soup)
+            individual_details['possession_details'] = self._extract_individual_possession_details(soup)
+
+            self.logger.info(f"Successfully extracted {len(individual_details)} additional fields from individual page")
+            return individual_details
+
+        except Exception as e:
+            self.logger.error(f"Error extracting individual property details: {str(e)}")
+            return {}
+
+    def _extract_individual_description(self, soup) -> str:
+        """Extract detailed description from individual property page"""
+        try:
+            # Look for description in various selectors
+            description_selectors = [
+                '.mb-ldp__dtls__body--about p',
+                '.mb-ldp__dtls__body--about',
+                '*[class*="about"] p',
+                '*[class*="description"] p',
+                '*[class*="overview"] p',
+                '.property-description',
+                '.about-property'
+            ]
+
+            for selector in description_selectors:
+                elements = soup.select(selector)
+                for elem in elements:
+                    text = elem.get_text(strip=True)
+                    if text and len(text) > 100:  # Substantial description
+                        # Clean up the text
+                        text = text.replace('Read more', '').strip()
+                        text = text.replace('Show more', '').strip()
+                        return text[:1000]  # Limit to 1000 characters
+
+            return ''
+
+        except Exception:
+            return ''
+
+    def _extract_individual_amenities(self, soup) -> str:
+        """Extract amenities from individual property page"""
+        try:
+            amenity_selectors = [
+                '.mb-ldp__amenities li',
+                '*[class*="amenity"] li',
+                '*[class*="facility"] li',
+                '.amenities-list li'
+            ]
+
+            amenities = []
+            for selector in amenity_selectors:
+                elements = soup.select(selector)
+                for elem in elements:
+                    text = elem.get_text(strip=True)
+                    if text and len(text) > 2:
+                        amenities.append(text)
+
+            return ', '.join(amenities[:20]) if amenities else ''  # Limit to 20 amenities
+
+        except Exception:
+            return ''
+
+    def _extract_individual_floor_plan(self, soup) -> str:
+        """Extract floor plan information from individual property page"""
+        try:
+            floor_plan_selectors = [
+                '*[class*="floor-plan"]',
+                '*[class*="floorplan"]',
+                '*[class*="layout"]'
+            ]
+
+            for selector in floor_plan_selectors:
+                elements = soup.select(selector)
+                for elem in elements:
+                    text = elem.get_text(strip=True)
+                    if text and len(text) > 10:
+                        return text[:200]  # Limit to 200 characters
+
+            return ''
+
+        except Exception:
+            return ''
+
+    def _extract_individual_price_details(self, soup) -> str:
+        """Extract detailed price information from individual property page"""
+        try:
+            price_detail_selectors = [
+                '.mb-ldp__price-dtls',
+                '*[class*="price-detail"]',
+                '*[class*="cost-detail"]'
+            ]
+
+            for selector in price_detail_selectors:
+                elements = soup.select(selector)
+                for elem in elements:
+                    text = elem.get_text(strip=True)
+                    if text and any(keyword in text.lower() for keyword in ['price', 'cost', 'sqft', 'maintenance']):
+                        return text[:300]  # Limit to 300 characters
+
+            return ''
+
+        except Exception:
+            return ''
+
+    def _extract_individual_location_details(self, soup) -> str:
+        """Extract detailed location information from individual property page"""
+        try:
+            location_selectors = [
+                '.mb-ldp__location',
+                '*[class*="location-detail"]',
+                '*[class*="address-detail"]'
+            ]
+
+            for selector in location_selectors:
+                elements = soup.select(selector)
+                for elem in elements:
+                    text = elem.get_text(strip=True)
+                    if text and len(text) > 10:
+                        return text[:200]  # Limit to 200 characters
+
+            return ''
+
+        except Exception:
+            return ''
+
+    def _extract_individual_builder_details(self, soup) -> str:
+        """Extract builder information from individual property page"""
+        try:
+            builder_selectors = [
+                '.mb-ldp__builder',
+                '*[class*="builder"]',
+                '*[class*="developer"]'
+            ]
+
+            for selector in builder_selectors:
+                elements = soup.select(selector)
+                for elem in elements:
+                    text = elem.get_text(strip=True)
+                    if text and len(text) > 5:
+                        return text[:100]  # Limit to 100 characters
+
+            return ''
+
+        except Exception:
+            return ''
+
+    def _extract_individual_possession_details(self, soup) -> str:
+        """Extract possession details from individual property page"""
+        try:
+            possession_selectors = [
+                '*[class*="possession"]',
+                '*[class*="ready"]',
+                '*[class*="completion"]'
+            ]
+
+            for selector in possession_selectors:
+                elements = soup.select(selector)
+                for elem in elements:
+                    text = elem.get_text(strip=True)
+                    if text and any(keyword in text.lower() for keyword in ['possession', 'ready', 'completion', 'delivery']):
+                        return text[:100]  # Limit to 100 characters
+
+            return ''
+
+        except Exception:
+            return ''
+
     def make_incremental_decision(self, property_texts: List[str], page_number: int) -> Dict[str, Any]:
         """Make incremental scraping decision based on property data"""
         

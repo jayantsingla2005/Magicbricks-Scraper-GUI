@@ -1,0 +1,3 @@
+property_type,sample_size,title_completeness,title_filled,price_completeness,price_filled,area_completeness,area_filled,property_type_completeness,property_type_filled,locality_completeness,locality_filled,society_completeness,society_filled,status_completeness,status_filled,description_completeness,description_filled,photo_count_completeness,photo_count_filled,owner_name_completeness,owner_name_filled,contact_options_completeness,contact_options_filled
+apartment,0,0.0,0,0.0,0,0.0,0,0.0,0,0.0,0,0.0,0,0.0,0,0.0,0,0.0,0,0.0,0,0.0,0
+plot,8,100.0,8,100.0,8,100.0,8,100.0,8,100.0,8,12.5,1,100.0,8,100.0,8,100.0,8,100.0,8,100.0,8

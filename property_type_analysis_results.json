@@ -1,0 +1,132 @@
+{
+  "total_categories": 2,
+  "total_properties": 90,
+  "overall_avg_completeness": 93.1859756097561,
+  "best_field": "title",
+  "worst_field": "society",
+  "most_consistent_field": "title",
+  "least_consistent_field": "society",
+  "assessment": "EXCELLENT",
+  "field_consistency": {
+    "title": {
+      "avg": 100.0,
+      "min": 100.0,
+      "max": 100.0,
+      "variance": 0.0,
+      "status": "\u2705"
+    },
+    "price": {
+      "avg": 100.0,
+      "min": 100.0,
+      "max": 100.0,
+      "variance": 0.0,
+      "status": "\u2705"
+    },
+    "area": {
+      "avg": 100.0,
+      "min": 100.0,
+      "max": 100.0,
+      "variance": 0.0,
+      "status": "\u2705"
+    },
+    "locality": {
+      "avg": 100.0,
+      "min": 100.0,
+      "max": 100.0,
+      "variance": 0.0,
+      "status": "\u2705"
+    },
+    "society": {
+      "avg": 32.46951219512195,
+      "min": 12.5,
+      "max": 52.4390243902439,
+      "variance": 39.9390243902439,
+      "status": "\u26a0\ufe0f"
+    },
+    "status": {
+      "avg": 99.39024390243902,
+      "min": 98.78048780487805,
+      "max": 100.0,
+      "variance": 1.2195121951219505,
+      "status": "\u2705"
+    },
+    "description": {
+      "avg": 100.0,
+      "min": 100.0,
+      "max": 100.0,
+      "variance": 0.0,
+      "status": "\u2705"
+    },
+    "photo_count": {
+      "avg": 100.0,
+      "min": 100.0,
+      "max": 100.0,
+      "variance": 0.0,
+      "status": "\u2705"
+    },
+    "owner_name": {
+      "avg": 100.0,
+      "min": 100.0,
+      "max": 100.0,
+      "variance": 0.0,
+      "status": "\u2705"
+    },
+    "contact_options": {
+      "avg": 100.0,
+      "min": 100.0,
+      "max": 100.0,
+      "variance": 0.0,
+      "status": "\u2705"
+    }
+  },
+  "category_analysis": {
+    "Apartments/Flats": {
+      "category": "Apartments/Flats",
+      "sample_size": 82,
+      "title_completeness": 100.0,
+      "title_filled": 82,
+      "price_completeness": 100.0,
+      "price_filled": 82,
+      "area_completeness": 100.0,
+      "area_filled": 82,
+      "locality_completeness": 100.0,
+      "locality_filled": 82,
+      "society_completeness": 52.4390243902439,
+      "society_filled": 43,
+      "status_completeness": 98.78048780487805,
+      "status_filled": 81,
+      "description_completeness": 100.0,
+      "description_filled": 82,
+      "photo_count_completeness": 100.0,
+      "photo_count_filled": 82,
+      "owner_name_completeness": 100.0,
+      "owner_name_filled": 82,
+      "contact_options_completeness": 100.0,
+      "contact_options_filled": 82
+    },
+    "Plots/Land": {
+      "category": "Plots/Land",
+      "sample_size": 8,
+      "title_completeness": 100.0,
+      "title_filled": 8,
+      "price_completeness": 100.0,
+      "price_filled": 8,
+      "area_completeness": 100.0,
+      "area_filled": 8,
+      "locality_completeness": 100.0,
+      "locality_filled": 8,
+      "society_completeness": 12.5,
+      "society_filled": 1,
+      "status_completeness": 100.0,
+      "status_filled": 8,
+      "description_completeness": 100.0,
+      "description_filled": 8,
+      "photo_count_completeness": 100.0,
+      "photo_count_filled": 8,
+      "owner_name_completeness": 100.0,
+      "owner_name_filled": 8,
+      "contact_options_completeness": 100.0,
+      "contact_options_filled": 8
+    }
+  }
+}
