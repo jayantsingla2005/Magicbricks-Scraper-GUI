@@ -32,6 +32,15 @@ from smart_stopping_logic import SmartStoppingLogic
 from url_tracking_system import URLTrackingSystem
 from individual_property_tracking_system import IndividualPropertyTracker
 
+# Import refactored scraper modules
+from scraper import (
+    PropertyExtractor,
+    BotDetectionHandler,
+    ExportManager,
+    DataValidator,
+    IndividualPropertyScraper
+)
+
 
 class IntegratedMagicBricksScraper:
     """
@@ -50,6 +59,9 @@ class IntegratedMagicBricksScraper:
         self.config = self._setup_default_config()
         if custom_config:
             self.config.update(custom_config)
+            # If user provides custom delay settings, remove city-specific overrides
+            if any(key in custom_config for key in ['individual_delay_min', 'individual_delay_max', 'page_delay_min', 'page_delay_max']):
+                self.config['city_delays'] = {}  # Clear city-specific delays to respect user configuration
 
         # Incremental scraping system
         self.incremental_enabled = incremental_enabled
@@ -104,8 +116,27 @@ class IntegratedMagicBricksScraper:
 
         # Setup premium selectors for enhanced extraction
         self.premium_selectors = self._setup_premium_selectors()
-        
-        # Setup extraction tracking
+
+        # Initialize refactored modules
+        self.property_extractor = PropertyExtractor(
+            premium_selectors=self.premium_selectors,
+            date_parser=self.date_parser,
+            logger=self.logger
+        )
+
+        self.bot_handler = BotDetectionHandler(logger=self.logger)
+
+        self.export_manager = ExportManager(logger=self.logger)
+
+        self.data_validator = DataValidator(
+            config=self.config,
+            logger=self.logger
+        )
+
+        # Individual scraper will be initialized after driver setup
+        self.individual_scraper = None
+
+        # Setup extraction tracking (kept for backward compatibility)
         self.extraction_stats = {
             'total_extracted': 0,
             'successful_extractions': 0,
@@ -393,7 +424,16 @@ class IntegratedMagicBricksScraper:
                 
                 # Test connection
                 self.driver.get("https://www.google.com")
-                
+
+                # Initialize individual scraper now that driver is ready
+                self.individual_scraper = IndividualPropertyScraper(
+                    driver=self.driver,
+                    property_extractor=self.property_extractor,
+                    bot_handler=self.bot_handler,
+                    individual_tracker=self.individual_tracker if self.incremental_enabled else None,
+                    logger=self.logger
+                )
+
                 self.logger.info(f"Chrome WebDriver initialized successfully (attempt {attempt + 1})")
                 return
                 
@@ -490,7 +530,7 @@ class IntegratedMagicBricksScraper:
             consecutive_old_pages = 0
             self.session_start_time = time.time()
             page_retry_count = 0  # Track retries for current page
-            max_retries_per_page = 3  # Maximum retries per page
+            max_retries_per_page = self.config.get('max_retries', 3)  # Use configured retries
             consecutive_skipped_pages = 0  # Track consecutive skipped pages
             max_consecutive_skips = 5  # Stop if too many consecutive pages fail
 
@@ -628,6 +668,13 @@ class IntegratedMagicBricksScraper:
                 if property_urls:
                     self.logger.info(f"   [LIST] Found {len(property_urls)} property URLs for detailed scraping")
 
+                    # Apply max_individual_properties limit if configured
+                    max_individual = self.config.get('max_individual_properties', 0)
+                    if max_individual > 0 and len(property_urls) > max_individual:
+                        original_count = len(property_urls)
+                        property_urls = property_urls[:max_individual]
+                        self.logger.info(f"   [LIMIT] Applied max individual properties limit: {original_count} → {len(property_urls)}")
+
                     # Update progress for Phase 2
                     progress_data.update({
                         'phase': 'individual_property_extraction',
@@ -700,7 +747,7 @@ class IntegratedMagicBricksScraper:
             page_source = self.driver.page_source
             current_url = self.driver.current_url
 
-            if self._detect_bot_detection(page_source, current_url):
+            if self.bot_handler.detect_bot_detection(page_source, current_url):
                 return {'success': False, 'error': 'Bot detection triggered'}
 
             # Wait for content to load using proven selectors
@@ -723,27 +770,19 @@ class IntegratedMagicBricksScraper:
             
             for i, card in enumerate(property_cards):
                 try:
-                    property_data = self.extract_property_data(card, page_number, i + 1)
+                    property_data = self.property_extractor.extract_property_data(card, page_number, i + 1)
                     if property_data:
                         # Validate and clean property data
-                        cleaned_property_data = self._validate_and_clean_property_data(property_data)
+                        cleaned_property_data = self.data_validator.validate_and_clean_property_data(property_data)
 
                         # Apply filtering if enabled
-                        if self._apply_property_filters(cleaned_property_data):
+                        if self.data_validator.apply_property_filters(cleaned_property_data):
                             page_properties.append(cleaned_property_data)
                             property_texts.append(card.get_text())
-
-                            # Track filtering stats
-                            if not hasattr(self, '_filter_stats'):
-                                self._filter_stats = {'total': 0, 'filtered': 0, 'excluded': 0}
-                            self._filter_stats['total'] += 1
-                            self._filter_stats['filtered'] += 1
+                            self.data_validator.update_filter_stats(filtered=True)
                         else:
                             # Property was excluded by filters
-                            if not hasattr(self, '_filter_stats'):
-                                self._filter_stats = {'total': 0, 'filtered': 0, 'excluded': 0}
-                            self._filter_stats['total'] += 1
-                            self._filter_stats['excluded'] += 1
+                            self.data_validator.update_filter_stats(filtered=False)
                             self.logger.debug(f"Property {i+1} on page {page_number} excluded by filters")
                         
                 except Exception as e:
@@ -1923,128 +1962,28 @@ class IntegratedMagicBricksScraper:
             print(f"[STOP] Stopped by incremental logic: {self.session_stats['stop_reason']}")
     
     def save_to_csv(self, filename: str = None) -> tuple:
-        """Save scraped properties to CSV
+        """Save scraped properties to CSV - delegates to ExportManager
 
         Returns:
             tuple: (DataFrame, filename) or (None, None) if failed
         """
-
-        if not self.properties:
-            print("[WARNING] No properties to save")
-            return None, None
-
-        if filename is None:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            mode = self.session_stats.get('mode', 'unknown')
-            filename = f"magicbricks_{mode}_scrape_{timestamp}.csv"
-
-        try:
-            df = pd.DataFrame(self.properties)
-            df.to_csv(filename, index=False)
-
-            print(f"[SAVE] Saved {len(self.properties)} properties to {filename}")
-            return df, filename
-
-        except Exception as e:
-            self.logger.error(f"Error saving to CSV: {str(e)}")
-            return None, None
+        return self.export_manager.save_to_csv(self.properties, self.session_stats, filename)
 
     def save_to_json(self, filename: str = None) -> tuple:
-        """Save scraped properties to JSON
+        """Save scraped properties to JSON - delegates to ExportManager
 
         Returns:
             tuple: (data, filename) or (None, None) if failed
         """
-
-        if not self.properties:
-            print("⚠️ No properties to save")
-            return None, None
-
-        if filename is None:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            mode = self.session_stats.get('mode', 'unknown')
-            filename = f"magicbricks_{mode}_scrape_{timestamp}.json"
-
-        try:
-            # Create comprehensive JSON structure
-            json_data = {
-                'metadata': {
-                    'scrape_timestamp': datetime.now().isoformat(),
-                    'total_properties': len(self.properties),
-                    'session_stats': self.session_stats,
-                    'scraper_version': '2.0',
-                    'export_format': 'json'
-                },
-                'properties': self.properties
-            }
-
-            with open(filename, 'w', encoding='utf-8') as f:
-                json.dump(json_data, f, indent=2, ensure_ascii=False, default=str)
-
-            print(f"[SAVE] Saved {len(self.properties)} properties to {filename}")
-            return json_data, filename
-
-        except Exception as e:
-            self.logger.error(f"Error saving to JSON: {str(e)}")
-            return None, None
+        return self.export_manager.save_to_json(self.properties, self.session_stats, filename)
 
     def save_to_excel(self, filename: str = None) -> tuple:
-        """Save scraped properties to Excel with multiple sheets
+        """Save scraped properties to Excel - delegates to ExportManager
 
         Returns:
             tuple: (DataFrame, filename) or (None, None) if failed
         """
-
-        if not self.properties:
-            print("⚠️ No properties to save")
-            return None, None
-
-        if filename is None:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            mode = self.session_stats.get('mode', 'unknown')
-            filename = f"magicbricks_{mode}_scrape_{timestamp}.xlsx"
-
-        try:
-            df = pd.DataFrame(self.properties)
-
-            # Create Excel writer with multiple sheets
-            with pd.ExcelWriter(filename, engine='openpyxl') as writer:
-                # Main properties sheet
-                df.to_excel(writer, sheet_name='Properties', index=False)
-
-                # Summary sheet
-                summary_data = {
-                    'Metric': [
-                        'Total Properties',
-                        'Scrape Date',
-                        'Mode',
-                        'Pages Scraped',
-                        'Duration',
-                        'Success Rate'
-                    ],
-                    'Value': [
-                        len(self.properties),
-                        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                        self.session_stats.get('mode', 'unknown'),
-                        self.session_stats.get('pages_scraped', 0),
-                        self.session_stats.get('duration_formatted', 'N/A'),
-                        f"{self.session_stats.get('success_rate', 0):.1f}%"
-                    ]
-                }
-                summary_df = pd.DataFrame(summary_data)
-                summary_df.to_excel(writer, sheet_name='Summary', index=False)
-
-                # City breakdown if available
-                if 'city_stats' in self.session_stats:
-                    city_df = pd.DataFrame(self.session_stats['city_stats'])
-                    city_df.to_excel(writer, sheet_name='City_Stats', index=False)
-
-            print(f"[SAVE] Saved {len(self.properties)} properties to {filename}")
-            return df, filename
-
-        except Exception as e:
-            self.logger.error(f"Error saving to Excel: {str(e)}")
-            return None, None
+        return self.export_manager.save_to_excel(self.properties, self.session_stats, filename)
 
     def export_data(self, formats: List[str] = ['csv'], base_filename: str = None) -> Dict[str, str]:
         """Export data in multiple formats
@@ -2203,7 +2142,7 @@ class IntegratedMagicBricksScraper:
                                         progress_callback=None, progress_data=None,
                                         force_rescrape: bool = False) -> List[Dict[str, Any]]:
         """
-        Enhanced individual property page scraping with duplicate detection and concurrent processing
+        Enhanced individual property page scraping - delegates to IndividualPropertyScraper
 
         Args:
             property_urls: List of property URLs to scrape
@@ -2215,67 +2154,23 @@ class IntegratedMagicBricksScraper:
         Returns:
             List of scraped property data dictionaries
         """
-        detailed_properties = []
-        total_urls = len(property_urls)
-
-        self.logger.info(f"🏠 Starting individual property page scraping for {total_urls} properties")
-
-        # PHASE 1: Smart URL Filtering with Duplicate Detection
+        # Determine session_id if incremental is enabled
+        session_id = None
         if self.incremental_enabled and hasattr(self, 'individual_tracker'):
-            self.logger.info("🔍 Phase 1: Filtering URLs with duplicate detection...")
-
-            # Create scraping session
             session_name = f"Individual Scraping - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-            session_id = self.individual_tracker.create_scraping_session(session_name, total_urls)
+            session_id = self.individual_tracker.create_scraping_session(session_name, len(property_urls))
 
-            # Filter URLs to avoid duplicates
-            filter_result = self.individual_tracker.filter_urls_for_scraping(
-                property_urls,
-                force_rescrape=force_rescrape
-            )
-
-            if filter_result['success']:
-                filtered_urls = filter_result['urls_to_scrape']
-                skipped_urls = filter_result['urls_to_skip']
-
-                self.logger.info(f"   📊 Filtering Results:")
-                self.logger.info(f"   🆕 New URLs to scrape: {len(filtered_urls)}")
-                self.logger.info(f"   ⏭️ Already scraped (skipped): {len(skipped_urls)}")
-                self.logger.info(f"   🎯 Efficiency gain: {len(skipped_urls)}/{total_urls} duplicates avoided")
-
-                # Update URLs to scrape
-                property_urls = filtered_urls
-                total_urls = len(property_urls)
-
-                if total_urls == 0:
-                    self.logger.info("✅ All properties already scraped with good quality. No scraping needed.")
-                    return []
-            else:
-                self.logger.warning(f"⚠️ URL filtering failed: {filter_result.get('error', 'Unknown error')}")
-                session_id = None
-        else:
-            session_id = None
-
-        # PHASE 2: Enhanced Scraping with Tracking
-        if total_urls > 0:
-            # Check if concurrent scraping is enabled
-            concurrent_enabled = self.config.get('concurrent_enabled', True)
-            concurrent_pages = min(self.config.get('concurrent_pages', 4), self.config.get('max_concurrent_pages', 8))
-
-            self.logger.info(f"🚀 Phase 2: Enhanced scraping for {total_urls} properties")
-            self.logger.info(f"   📦 Batch size: {batch_size}")
-            self.logger.info(f"   🛡️ Enhanced anti-scraping: Enabled")
-            self.logger.info(f"   🔄 Concurrent processing: {'Enabled' if concurrent_enabled else 'Disabled'}")
-            if concurrent_enabled:
-                self.logger.info(f"   ⚡ Concurrent workers: {concurrent_pages}")
-
-            # TEMPORARY FIX: Use sequential processing to avoid driver issues
-            # TODO: Fix concurrent processing driver management
-            detailed_properties = self._scrape_individual_pages_sequential_enhanced(
-                property_urls, batch_size, progress_callback, progress_data, session_id
-            )
-
-        return detailed_properties
+        # Delegate to individual_scraper module
+        use_concurrent = self.config.get('concurrent_enabled', True)
+        return self.individual_scraper.scrape_individual_property_pages(
+            property_urls=property_urls,
+            batch_size=batch_size,
+            progress_callback=progress_callback,
+            progress_data=progress_data,
+            force_rescrape=force_rescrape,
+            use_concurrent=use_concurrent,
+            session_id=session_id
+        )
 
     def _scrape_individual_pages_concurrent_enhanced(self, property_urls: List[str], batch_size: int,
                                                    progress_callback=None, progress_data=None,
@@ -2442,11 +2337,8 @@ class IntegratedMagicBricksScraper:
                 
                 for url, original_index in batch_urls_with_indices:
                     try:
-                        # Apply reduced delay for concurrent processing
-                        delay = random.uniform(
-                            self.config.get('individual_delay_min', 0.1),
-                            self.config.get('individual_delay_max', 3.0)
-                        )
+                        # Apply configured delay for individual property scraping
+                        delay = self._calculate_individual_page_delay(original_index, len(batch_urls_with_indices))
                         time.sleep(delay)
                         
                         # Scrape property using thread-specific driver
@@ -2594,7 +2486,7 @@ class IntegratedMagicBricksScraper:
             time.sleep(random.uniform(1, 3))  # Brief wait for page load
             
             # Check for bot detection
-            if self._detect_bot_detection(driver.page_source, driver.current_url):
+            if self.bot_handler.detect_bot_detection(driver.page_source, driver.current_url):
                 self.logger.warning(f"Bot detection on property {property_index}, applying recovery")
                 time.sleep(random.uniform(5, 10))
                 return None
@@ -2698,11 +2590,14 @@ class IntegratedMagicBricksScraper:
             min_delay = self.config.get('page_delay_min', 3)
             max_delay = self.config.get('page_delay_max', 8)
 
-        # Base delay using configured range
-        base_delay = random.uniform(float(min_delay), float(max_delay))
+        # Base delay using configured range (or exact value if min == max)
+        if min_delay == max_delay:
+            base_delay = float(min_delay)  # Use exact value when user sets specific delay
+        else:
+            base_delay = random.uniform(float(min_delay), float(max_delay))
 
-        # Add progressive delay for later pages
-        if page_number > 5:
+        # Add progressive delay for later pages (only if using range-based delays)
+        if page_number > 5 and min_delay != max_delay:
             base_delay += random.uniform(0.5, 2.0)
 
         # Increase delay based on recent bot detection
@@ -2979,8 +2874,11 @@ class IntegratedMagicBricksScraper:
             }
         }
 
-    def _scrape_single_property_page(self, url: str, property_index: int, max_retries: int = 3) -> Optional[Dict[str, Any]]:
+    def _scrape_single_property_page(self, url: str, property_index: int, max_retries: int = None) -> Optional[Dict[str, Any]]:
         """Scrape a single property page with enhanced error handling and retry logic"""
+
+        if max_retries is None:
+            max_retries = self.config.get('max_retries', 3)
 
         for attempt in range(max_retries):
             try:
@@ -3002,10 +2900,10 @@ class IntegratedMagicBricksScraper:
                 page_source = self.driver.page_source
                 current_url = self.driver.current_url
 
-                if self._detect_bot_detection(page_source, current_url):
+                if self.bot_handler.detect_bot_detection(page_source, current_url):
                     self.logger.warning(f"   🚨 Bot detection on property {property_index} (attempt {attempt + 1})")
                     if attempt < max_retries - 1:
-                        self._handle_bot_detection()
+                        self.bot_handler.handle_bot_detection(self._restart_browser_session)
                         continue
                     else:
                         return None
