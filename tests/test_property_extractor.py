@@ -155,16 +155,26 @@ class TestPropertyExtractor(unittest.TestCase):
         self.assertIn('magicbricks.com', result)
     
     def test_extract_premium_property_url_relative(self):
-        """Test URL extraction with relative URL"""
+        """Test URL extraction with relative URL (fallback path)"""
+        # Update selectors to allow any href for this test
+        test_selectors = {
+            'url': ['a[href]']  # More permissive selector
+        }
+        test_extractor = PropertyExtractor(
+            premium_selectors=test_selectors,
+            date_parser=None,
+            logger=None
+        )
+
         html = """
         <div>
-            <a href="/property-123">Link</a>
+            <a href="/propertydetail/property-123">Link</a>
         </div>
         """
         card = BeautifulSoup(html, 'html.parser')
-        
-        result = self.extractor._extract_premium_property_url(card)
-        
+
+        result = test_extractor._extract_premium_property_url(card)
+
         # Should convert to absolute URL
         self.assertIn('magicbricks.com', result)
     

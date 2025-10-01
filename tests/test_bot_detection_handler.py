@@ -179,12 +179,12 @@ class TestBotDetectionHandler(unittest.TestCase):
         """Test bot detection statistics retrieval"""
         self.handler.bot_detection_count = 3
         self.handler.consecutive_failures = 2
-        
+
         stats = self.handler.get_bot_detection_stats()
-        
-        self.assertIn('bot_detection_count', stats)
+
+        self.assertIn('total_detections', stats)
         self.assertIn('consecutive_failures', stats)
-        self.assertEqual(stats['bot_detection_count'], 3)
+        self.assertEqual(stats['total_detections'], 3)
         self.assertEqual(stats['consecutive_failures'], 2)
     
     def test_reset_bot_detection_stats(self):

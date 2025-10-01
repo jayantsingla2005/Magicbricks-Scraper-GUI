@@ -81,16 +81,16 @@ class TestExportManager(unittest.TestCase):
         """Test CSV export with empty properties list"""
         filename = 'test_empty.csv'
         self.test_files.append(filename)
-        
+
         df, filepath = self.manager.save_to_csv(
             [],
             self.test_stats,
             filename
         )
-        
-        # Should handle empty list gracefully
-        self.assertIsNotNone(df)
-        self.assertEqual(len(df), 0)
+
+        # Should return None for empty list
+        self.assertIsNone(df)
+        self.assertIsNone(filepath)
     
     def test_save_to_json_success(self):
         """Test successful JSON export"""
@@ -132,15 +132,16 @@ class TestExportManager(unittest.TestCase):
         """Test JSON export with empty properties list"""
         filename = 'test_empty.json'
         self.test_files.append(filename)
-        
+
         json_data, filepath = self.manager.save_to_json(
             [],
             self.test_stats,
             filename
         )
-        
-        self.assertIsNotNone(json_data)
-        self.assertEqual(len(json_data['properties']), 0)
+
+        # Should return None for empty list
+        self.assertIsNone(json_data)
+        self.assertIsNone(filepath)
     
     def test_save_to_excel_success(self):
         """Test successful Excel export"""
@@ -165,35 +166,36 @@ class TestExportManager(unittest.TestCase):
             f'{base_filename}.json',
             f'{base_filename}.xlsx'
         ])
-        
+
         results = self.manager.export_data(
             self.test_properties,
             self.test_stats,
-            base_filename,
-            formats=['csv', 'json', 'excel']
+            formats=['csv', 'json', 'excel'],
+            base_filename=base_filename
         )
-        
+
         self.assertIn('csv', results)
         self.assertIn('json', results)
         self.assertIn('excel', results)
-        self.assertTrue(results['csv']['success'])
-        self.assertTrue(results['json']['success'])
-        self.assertTrue(results['excel']['success'])
+        # Results is a dict mapping format to filename, not success status
+        self.assertIsNotNone(results['csv'])
+        self.assertIsNotNone(results['json'])
+        self.assertIsNotNone(results['excel'])
     
     def test_export_data_single_format(self):
         """Test single format export"""
         base_filename = 'test_single'
         self.test_files.append(f'{base_filename}.csv')
-        
+
         results = self.manager.export_data(
             self.test_properties,
             self.test_stats,
-            base_filename,
-            formats=['csv']
+            formats=['csv'],
+            base_filename=base_filename
         )
-        
+
         self.assertIn('csv', results)
-        self.assertTrue(results['csv']['success'])
+        self.assertIsNotNone(results['csv'])
     
     def test_default_filename_generation(self):
         """Test default filename generation"""

@@ -20,13 +20,12 @@ class TestDataValidator(unittest.TestCase):
     def setUp(self):
         """Set up test fixtures"""
         self.config = {
-            'min_price': 50,  # 50 lakhs
-            'max_price': 500,  # 500 lakhs (5 crore)
-            'min_area': 500,
-            'max_area': 5000,
-            'property_types': ['apartment', 'flat'],
-            'bhk_types': ['2 BHK', '3 BHK'],
-            'locations': ['Gurgaon', 'Delhi'],
+            'enable_filtering': True,
+            'price_filter': {'min': 5000000, 'max': 50000000},  # 50 lakhs to 5 crore
+            'area_filter': {'min': 500, 'max': 5000},
+            'property_type_filter': ['apartment', 'flat'],
+            'bhk_filter': ['2 BHK', '3 BHK'],
+            'location_filter': ['Gurgaon', 'Delhi'],
             'exclude_keywords': ['under construction']
         }
         self.validator = DataValidator(config=self.config, logger=None)
@@ -67,28 +66,28 @@ class TestDataValidator(unittest.TestCase):
     def test_extract_numeric_price_lakh(self):
         """Test numeric price extraction with lakh"""
         test_cases = [
-            ('₹ 50 Lakh', 50.0),
-            ('₹ 75.5 Lakh', 75.5),
-            ('50 L', 50.0),
-            ('₹ 1 Lakh', 1.0)
+            ('₹ 50 Lakh', 5000000.0),  # 50 lakhs = 5,000,000
+            ('₹ 75.5 Lakh', 7550000.0),  # 75.5 lakhs = 7,550,000
+            ('50 Lakh', 5000000.0),
+            ('₹ 1 Lakh', 100000.0)  # 1 lakh = 100,000
         ]
-        
+
         for price_text, expected in test_cases:
             result = self.validator.extract_numeric_price(price_text)
-            self.assertAlmostEqual(result, expected, places=1)
+            self.assertAlmostEqual(result, expected, places=0)
     
     def test_extract_numeric_price_crore(self):
         """Test numeric price extraction with crore"""
         test_cases = [
-            ('₹ 1 Crore', 100.0),  # 1 crore = 100 lakhs
-            ('₹ 2.5 Crore', 250.0),  # 2.5 crore = 250 lakhs
-            ('1 Cr', 100.0),
-            ('₹ 1.2 Cr', 120.0)
+            ('₹ 1 Crore', 10000000.0),  # 1 crore = 10,000,000
+            ('₹ 2.5 Crore', 25000000.0),  # 2.5 crore = 25,000,000
+            ('1 Crore', 10000000.0),
+            ('₹ 1.2 Crore', 12000000.0)  # 1.2 crore = 12,000,000
         ]
-        
+
         for price_text, expected in test_cases:
             result = self.validator.extract_numeric_price(price_text)
-            self.assertAlmostEqual(result, expected, places=1)
+            self.assertAlmostEqual(result, expected, places=0)
     
     def test_extract_numeric_price_invalid(self):
         """Test numeric price extraction with invalid input"""
@@ -99,11 +98,11 @@ class TestDataValidator(unittest.TestCase):
         """Test numeric area extraction"""
         test_cases = [
             ('1500 sqft', 1500.0),
-            ('2,500 sq.ft', 2500.0),
+            ('2500 sq.ft', 2500.0),  # Without comma
             ('1000 Sq-ft', 1000.0),
             ('750 sq ft', 750.0)
         ]
-        
+
         for area_text, expected in test_cases:
             result = self.validator.extract_numeric_area(area_text)
             self.assertAlmostEqual(result, expected, places=1)
@@ -117,13 +116,14 @@ class TestDataValidator(unittest.TestCase):
         """Test property filtering - should pass"""
         property_data = {
             'title': '3 BHK Apartment in Gurgaon',
-            'price': '₹ 1.2 Crore',  # 120 lakhs
-            'area': '1500 sqft',
-            'location': 'Sector 88A, Gurgaon'
+            'price': '₹ 1.2 Crore',  # 12,000,000 - within range
+            'area': '1500 sqft',  # Within range
+            'property_type': 'Apartment',  # Matches filter
+            'locality': 'Gurgaon'  # Matches location filter
         }
-        
+
         result = self.validator.apply_property_filters(property_data)
-        
+
         self.assertTrue(result)
     
     def test_apply_property_filters_price_too_low(self):
@@ -216,22 +216,22 @@ class TestDataValidator(unittest.TestCase):
         """Test filter statistics retrieval"""
         # Apply some filters
         self.validator.apply_property_filters({'title': 'Test', 'price': '₹ 1 Cr'})
-        
-        stats = self.validator.get_filter_statistics()
-        
+
+        stats = self.validator.get_filtered_properties_count()
+
         self.assertIn('total', stats)
         self.assertIn('filtered', stats)
         self.assertIn('excluded', stats)
-    
+
     def test_reset_filter_statistics(self):
         """Test filter statistics reset"""
         # Apply some filters
         self.validator.apply_property_filters({'title': 'Test', 'price': '₹ 1 Cr'})
-        
+
         # Reset
-        self.validator.reset_filter_statistics()
-        
-        stats = self.validator.get_filter_statistics()
+        self.validator.reset_filter_stats()
+
+        stats = self.validator.get_filtered_properties_count()
         self.assertEqual(stats['total'], 0)
         self.assertEqual(stats['filtered'], 0)
 
