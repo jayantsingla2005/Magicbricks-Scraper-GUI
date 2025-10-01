@@ -696,54 +696,140 @@ class PropertyExtractor:
             return ''
 
     def _extract_status_enhanced(self, card) -> str:
-        """Enhanced status extraction for property status"""
+        """
+        Enhanced multi-level status extraction with comprehensive fallback strategy
+        Target: Improve status extraction from 76% to 92%+
+
+        Strategy:
+        1. Direct selector-based extraction
+        2. Text pattern matching with regex
+        3. Keyword-based inference from description
+        4. Contextual inference from other fields
+        """
         try:
-            # Common status indicators
-            status_keywords = [
-                'ready to move', 'under construction', 'new launch', 'resale',
-                'ready', 'possession', 'immediate', 'available'
-            ]
-
-            # Look for status in all text
-            all_text = card.get_text().lower()
-
-            for keyword in status_keywords:
-                if keyword in all_text:
-                    # Extract surrounding context
-                    pattern = rf'([^.]*{re.escape(keyword)}[^.]*)'
-                    match = re.search(pattern, all_text, re.IGNORECASE)
-                    if match:
-                        context = match.group(1).strip()
-                        # Clean up and return
-                        if 'ready to move' in context:
-                            return 'Ready to Move'
-                        elif 'under construction' in context:
-                            return 'Under Construction'
-                        elif 'new launch' in context:
-                            return 'New Launch'
-                        elif 'resale' in context:
-                            return 'Resale'
-                        elif 'immediate' in context:
-                            return 'Immediate Possession'
-
-            # Look for status in structured elements
+            # LEVEL 1: Direct selector-based extraction
+            # Try multiple selector patterns for status field
             status_selectors = [
-                '*[class*="status"]',
-                '*[class*="possession"]',
-                '*[class*="ready"]'
+                '.mb-srp__card__summary__list--value',  # Primary selector
+                'span[class*="status"]',
+                'div[class*="status"]',
+                'span[class*="possession"]',
+                'div[class*="possession"]',
+                '*[class*="ready"]',
+                '*[class*="construction"]',
+                '*[data-label*="status" i]',
+                '*[data-label*="possession" i]'
             ]
 
             for selector in status_selectors:
                 elements = card.select(selector)
                 for elem in elements:
-                    text = elem.get_text(strip=True)
-                    if text and len(text) > 3 and len(text) < 50:
-                        return text
+                    # Check if this element or its parent contains "status" or "possession"
+                    elem_text = elem.get_text(strip=True).lower()
+                    parent_text = elem.parent.get_text(strip=True).lower() if elem.parent else ''
 
+                    # Look for status-related labels
+                    if any(keyword in parent_text for keyword in ['status', 'possession', 'ready']):
+                        text = elem.get_text(strip=True)
+                        if text and 3 < len(text) < 50:
+                            # Validate it's a status value, not a label
+                            if not any(label in text.lower() for label in ['status:', 'possession:', 'label']):
+                                return self._normalize_status(text)
+
+            # LEVEL 2: Text pattern matching with comprehensive regex patterns
+            all_text = card.get_text()
+
+            # Pattern 1: "Status: Ready to Move" or "Possession: Dec 2024"
+            status_patterns = [
+                r'Status[:\s]+([A-Za-z\s]+(?:to\s+Move|Construction|Launch|Resale))',
+                r'Possession[:\s]+([A-Za-z]+\s+\d{4})',
+                r'Possession[:\s]+(Immediate|Ready|Available)',
+                r'Ready\s+to\s+Move',
+                r'Under\s+Construction',
+                r'New\s+Launch',
+                r'Resale',
+                r'Immediate\s+Possession',
+                r'Possession\s+by\s+([A-Za-z]+\s+\d{4})',
+                r'Available\s+from\s+([A-Za-z]+\s+\d{4})'
+            ]
+
+            for pattern in status_patterns:
+                match = re.search(pattern, all_text, re.IGNORECASE)
+                if match:
+                    status_text = match.group(1) if match.lastindex else match.group(0)
+                    return self._normalize_status(status_text)
+
+            # LEVEL 3: Keyword-based inference from description
+            # Look for status keywords in the full card text
+            all_text_lower = all_text.lower()
+
+            # Define status keywords with priority (most specific first)
+            status_keywords = [
+                ('ready to move', 'Ready to Move'),
+                ('ready for possession', 'Ready to Move'),
+                ('immediate possession', 'Immediate Possession'),
+                ('under construction', 'Under Construction'),
+                ('new launch', 'New Launch'),
+                ('new project', 'New Launch'),
+                ('resale', 'Resale'),
+                ('pre-launch', 'Pre-Launch'),
+                ('nearing completion', 'Under Construction'),
+            ]
+
+            for keyword, normalized_status in status_keywords:
+                if keyword in all_text_lower:
+                    return normalized_status
+
+            # LEVEL 4: Contextual inference from other fields
+            # Check for possession date patterns
+            possession_date_pattern = r'(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{4}'
+            if re.search(possession_date_pattern, all_text, re.IGNORECASE):
+                match = re.search(possession_date_pattern, all_text, re.IGNORECASE)
+                if match:
+                    return f"Possession: {match.group(0)}"
+
+            # Check for "new" indicators
+            if any(indicator in all_text_lower for indicator in ['newly built', 'brand new', 'new property']):
+                return 'New Launch'
+
+            # Check for "resale" indicators
+            if any(indicator in all_text_lower for indicator in ['resale property', 'second sale', 'pre-owned']):
+                return 'Resale'
+
+            # LEVEL 5: Default fallback
+            # If no status found, return empty string (will be marked as N/A in final data)
             return ''
 
-        except Exception:
+        except Exception as e:
+            # Log error but don't fail the extraction
             return ''
+
+    def _normalize_status(self, status_text: str) -> str:
+        """Normalize status text to standard format"""
+        if not status_text:
+            return ''
+
+        status_lower = status_text.lower().strip()
+
+        # Normalize to standard status values
+        if 'ready' in status_lower and 'move' in status_lower:
+            return 'Ready to Move'
+        elif 'ready' in status_lower or 'immediate' in status_lower:
+            return 'Ready to Move'
+        elif 'under construction' in status_lower or 'construction' in status_lower:
+            return 'Under Construction'
+        elif 'new launch' in status_lower or 'new project' in status_lower:
+            return 'New Launch'
+        elif 'resale' in status_lower:
+            return 'Resale'
+        elif 'pre-launch' in status_lower or 'pre launch' in status_lower:
+            return 'Pre-Launch'
+        elif 'possession' in status_lower:
+            # Keep possession dates as-is
+            return status_text.strip()
+        else:
+            # Return as-is if it's a valid status
+            return status_text.strip()
 
     def _create_enhanced_description_from_data(self, title, price, area, locality, society, status) -> str:
         """Create enhanced description from extracted property data"""
