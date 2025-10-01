@@ -34,11 +34,11 @@
   - ✅ Deep review complete (DEEP_SCRAPER_REVIEW.md)
   - ✅ Unit tests created (63 tests, 73% passing)
 
-- [/] 1.2 Refactor GUI (10-12 hours) 🔄 IN PROGRESS - 16% Complete
+- [/] 1.2 Refactor GUI (10-12 hours) 🔄 IN PROGRESS - 50% Complete
   - ✅ gui_styles.py (280 lines) - COMPLETE
-  - [ ] gui_threading.py (300-400 lines) - NEXT
-  - [ ] gui_controls.py (600-800 lines) - Pending
-  - [ ] gui_monitoring.py (400-500 lines) - Pending
+  - ✅ gui_threading.py (300 lines) - COMPLETE
+  - ✅ gui_controls.py (320 lines) - COMPLETE
+  - [ ] gui_monitoring.py (400-500 lines) - NEXT
   - [ ] gui_results.py (500-600 lines) - Pending
   - [ ] gui_main.py (200-300 lines) - Pending
 
