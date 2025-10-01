@@ -1,0 +1,92 @@
+{
+  "start_time": "2025-08-13T16:24:37.721148",
+  "tests": {
+    "gui_timing_controls": {
+      "success": true,
+      "results": {
+        "delay_var": {
+          "exists": true,
+          "value": "3",
+          "description": "Page Delay"
+        },
+        "individual_delay_min_var": {
+          "exists": true,
+          "value": "3",
+          "description": "Individual Min Delay"
+        },
+        "individual_delay_max_var": {
+          "exists": true,
+          "value": "8",
+          "description": "Individual Max Delay"
+        },
+        "batch_break_var": {
+          "exists": true,
+          "value": "15",
+          "description": "Batch Break Delay"
+        },
+        "batch_size_var": {
+          "exists": true,
+          "value": "10",
+          "description": "Batch Size"
+        },
+        "retry_var": {
+          "exists": true,
+          "value": "3",
+          "description": "Max Retries"
+        },
+        "config_generation": {
+          "success": false,
+          "error": "'MagicBricksGUI' object has no attribute 'get_scraping_config'"
+        }
+      }
+    },
+    "timing_integration": {
+      "success": true,
+      "all_configs_applied": true,
+      "config_details": {
+        "individual_delay_min": {
+          "expected": 2,
+          "actual": 2,
+          "matches": true
+        },
+        "individual_delay_max": {
+          "expected": 5,
+          "actual": 5,
+          "matches": true
+        },
+        "batch_break_delay": {
+          "expected": 10,
+          "actual": 10,
+          "matches": true
+        },
+        "batch_size": {
+          "expected": 5,
+          "actual": 5,
+          "matches": true
+        },
+        "page_delay_min": {
+          "expected": 1,
+          "actual": 1,
+          "matches": true
+        },
+        "page_delay_max": {
+          "expected": 3,
+          "actual": 3,
+          "matches": true
+        },
+        "max_retries": {
+          "expected": 2,
+          "actual": 2,
+          "matches": true
+        }
+      }
+    },
+    "large_scale_scraping": {
+      "success": false,
+      "error": "'IntegratedMagicBricksScraper' object has no attribute 'scrape_city_properties'"
+    }
+  },
+  "end_time": "2025-08-13T16:24:38.731731",
+  "total_time_seconds": 1.010583,
+  "overall_success": false
+}

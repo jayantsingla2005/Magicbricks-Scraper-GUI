@@ -9,6 +9,7 @@ from tkinter import ttk, messagebox, filedialog, scrolledtext
 import threading
 import queue
 import json
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Any, Optional
@@ -85,7 +86,7 @@ class MagicBricksGUI:
             'output_directory': str(Path.cwd()),
             'incremental_enabled': True,
             'page_delay': 3,
-            'max_retries': 3,
+            'max_retries': 2,
             'export_json': False,
             'export_excel': False,
             'individual_pages': False
@@ -384,53 +385,117 @@ class MagicBricksGUI:
         stats_text.pack(anchor=tk.E, pady=(2, 0))
     
     def create_scrollable_control_panel(self, parent):
-        """Create scrollable control panel with all scraping options"""
+        """Create enhanced scrollable control panel with reliable scrolling"""
 
         # Control panel container with modern styling
-        control_container = ttk.LabelFrame(parent, text="📋 Scraping Configuration", 
+        control_container = ttk.LabelFrame(parent, text="📋 Scraping Configuration",
                                          padding="15", style='Modern.TLabelframe')
         control_container.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), padx=(0, 15))
         control_container.columnconfigure(0, weight=1)
         control_container.rowconfigure(0, weight=1)
 
-        # Create canvas and scrollbar for scrolling
-        canvas = tk.Canvas(control_container, bg=self.colors['bg_primary'], highlightthickness=0)
-        scrollbar = ttk.Scrollbar(control_container, orient="vertical", command=canvas.yview)
-        scrollable_frame = ttk.Frame(canvas)
+        # Create enhanced scrollable frame using reliable implementation
+        self.scrollable_panel = self.create_enhanced_scrollable_frame(control_container)
+        self.scrollable_panel.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
 
-        # Configure scrolling
-        scrollable_frame.bind(
-            "<Configure>",
-            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-        )
-
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-
-        # Pack canvas and scrollbar
-        canvas.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
-        scrollbar.grid(row=0, column=1, sticky=(tk.N, tk.S))
-
-        # Configure canvas grid weights
-        control_container.columnconfigure(0, weight=1)
-        control_container.rowconfigure(0, weight=1)
-
-        # Add mouse wheel scrolling
-        def _on_mousewheel(event):
-            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
-        canvas.bind_all("<MouseWheel>", _on_mousewheel)
+        # Get the frame to add controls to
+        scrollable_frame = self.scrollable_panel.get_frame()
+        scrollable_frame.columnconfigure(0, weight=1)
 
         # Now create all the controls in the scrollable frame
         self.create_control_sections(scrollable_frame)
 
+    def create_enhanced_scrollable_frame(self, container):
+        """Create a reliable scrollable frame implementation"""
+
+        class EnhancedScrollableFrame(ttk.Frame):
+            def __init__(self, parent, *args, **kwargs):
+                super().__init__(parent, *args, **kwargs)
+
+                # Create canvas and scrollbar
+                try:
+                    bg_color = self.master.master.colors['bg_primary']
+                except (AttributeError, KeyError):
+                    bg_color = '#f8fafc'  # Default background color
+                self.canvas = tk.Canvas(self, highlightthickness=0, bg=bg_color)
+                self.scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
+                self.scrollable_frame = ttk.Frame(self.canvas)
+
+                # Configure scrolling with improved handling
+                self.scrollable_frame.bind(
+                    "<Configure>",
+                    lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+                )
+
+                # Create window in canvas
+                self.canvas_window = self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
+
+                # Configure canvas scrolling
+                self.canvas.configure(yscrollcommand=self.scrollbar.set)
+
+                # Pack canvas and scrollbar
+                self.canvas.pack(side="left", fill="both", expand=True)
+                self.scrollbar.pack(side="right", fill="y")
+
+                # Bind enhanced mouse wheel events
+                self.bind_enhanced_mousewheel()
+
+                # Bind canvas resize for responsive width
+                self.canvas.bind('<Configure>', self.on_canvas_configure)
+
+                # Force initial update
+                self.after(100, self.update_scroll_region)
+
+            def bind_enhanced_mousewheel(self):
+                """Enhanced mouse wheel binding that works reliably"""
+
+                def _on_mousewheel(event):
+                    # Improved scrolling with better sensitivity
+                    self.canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+
+                def _bind_to_mousewheel(event):
+                    self.canvas.bind_all("<MouseWheel>", _on_mousewheel)
+
+                def _unbind_from_mousewheel(event):
+                    self.canvas.unbind_all("<MouseWheel>")
+
+                # Bind when mouse enters the frame
+                self.bind('<Enter>', _bind_to_mousewheel)
+                self.bind('<Leave>', _unbind_from_mousewheel)
+
+                # Also bind to canvas and scrollable frame
+                self.canvas.bind('<Enter>', _bind_to_mousewheel)
+                self.canvas.bind('<Leave>', _unbind_from_mousewheel)
+                self.scrollable_frame.bind('<Enter>', _bind_to_mousewheel)
+                self.scrollable_frame.bind('<Leave>', _unbind_from_mousewheel)
+
+            def on_canvas_configure(self, event):
+                """Handle canvas resize to adjust scrollable frame width"""
+                canvas_width = event.width
+                self.canvas.itemconfig(self.canvas_window, width=canvas_width)
+
+            def update_scroll_region(self):
+                """Force update of scroll region"""
+                self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+
+            def get_frame(self):
+                """Get the scrollable frame to add widgets to"""
+                return self.scrollable_frame
+
+        return EnhancedScrollableFrame(container)
+
     def create_control_sections(self, parent):
-        """Create all control sections in the scrollable frame"""
+        """Create all control sections in the scrollable frame with enhanced visibility"""
 
         parent.columnconfigure(0, weight=1)
         current_row = 0
 
+        # Add top padding for better spacing
+        ttk.Frame(parent, height=10).grid(row=current_row, column=0)
+        current_row += 1
+
         # === CITY SELECTION SECTION ===
-        city_section = ttk.LabelFrame(parent, text="🏙️ City Selection", 
+        city_section = ttk.LabelFrame(parent, text="🏙️ City Selection",
                                     padding="20", style='Modern.TLabelframe')
         city_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 20))
         city_section.columnconfigure(1, weight=1)
@@ -439,7 +504,8 @@ class MagicBricksGUI:
         ttk.Label(city_section, text="Selected Cities:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
 
         # Selected cities display with better styling
-        self.selected_cities_var = tk.StringVar(value="Gurgaon")
+        if not hasattr(self, 'selected_cities_var'):
+            self.selected_cities_var = tk.StringVar(value="Gurgaon")
         cities_frame = ttk.Frame(city_section)
         cities_frame.grid(row=0, column=1, sticky=(tk.W, tk.E), padx=(10, 0))
         cities_frame.columnconfigure(0, weight=1)
@@ -542,6 +608,64 @@ class MagicBricksGUI:
                                         style='Warning.TLabel', wraplength=400)
         individual_info_label.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
 
+        # === INDIVIDUAL PROPERTY MANAGEMENT SECTION ===
+        individual_mgmt_section = ttk.LabelFrame(parent, text="🏠 Individual Property Management",
+                                               padding="20", style='Modern.TLabelframe')
+        individual_mgmt_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 20))
+        individual_mgmt_section.columnconfigure(1, weight=1)
+        current_row += 1
+
+        # Scraping mode selection for individual properties
+        ttk.Label(individual_mgmt_section, text="Individual Scraping Mode:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
+
+        self.individual_mode_var = tk.StringVar(value="with_listing")
+        individual_mode_combo = ttk.Combobox(individual_mgmt_section, textvariable=self.individual_mode_var,
+                                           state='readonly', style='Modern.TCombobox')
+        individual_mode_combo['values'] = ('with_listing', 'individual_only', 'skip_individual')
+        individual_mode_combo.grid(row=0, column=1, sticky=(tk.W, tk.E), pady=(0, 10), padx=(15, 0))
+        individual_mode_combo.bind('<<ComboboxSelected>>', self.on_individual_mode_changed)
+
+        # Mode description
+        self.individual_mode_desc_var = tk.StringVar()
+        self.update_individual_mode_description()
+        individual_mode_desc_label = ttk.Label(individual_mgmt_section, textvariable=self.individual_mode_desc_var,
+                                             style='Info.TLabel', wraplength=400)
+        individual_mode_desc_label.grid(row=1, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 15))
+
+        # Individual property count control
+        ttk.Label(individual_mgmt_section, text="Max Individual Properties:", style='Heading.TLabel').grid(row=2, column=0, sticky=tk.W, pady=(0, 5))
+
+        individual_count_frame = ttk.Frame(individual_mgmt_section)
+        individual_count_frame.grid(row=2, column=1, sticky=(tk.W, tk.E), pady=(0, 10), padx=(15, 0))
+        individual_count_frame.columnconfigure(0, weight=1)
+
+        self.individual_count_var = tk.StringVar(value="100")
+        individual_count_entry = ttk.Entry(individual_count_frame, textvariable=self.individual_count_var, width=10)
+        individual_count_entry.grid(row=0, column=0, sticky=tk.W)
+
+        ttk.Label(individual_count_frame, text="(0 = all properties)", style='Muted.TLabel').grid(row=0, column=1, sticky=tk.W, padx=(10, 0))
+
+        # Already scraped properties display
+        self.scraped_count_var = tk.StringVar(value="Checking...")
+        scraped_info_frame = ttk.Frame(individual_mgmt_section)
+        scraped_info_frame.grid(row=3, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(10, 0))
+        scraped_info_frame.columnconfigure(1, weight=1)
+
+        ttk.Label(scraped_info_frame, text="Already Scraped:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W)
+        scraped_count_label = ttk.Label(scraped_info_frame, textvariable=self.scraped_count_var, style='Success.TLabel')
+        scraped_count_label.grid(row=0, column=1, sticky=tk.W, padx=(10, 0))
+
+        refresh_count_btn = ttk.Button(scraped_info_frame, text="🔄 Refresh",
+                                     command=self.refresh_scraped_count, style='Secondary.TButton')
+        refresh_count_btn.grid(row=0, column=2, padx=(10, 0))
+
+        # Force re-scrape option
+        self.force_rescrape_var = tk.BooleanVar(value=False)
+        force_rescrape_check = ttk.Checkbutton(individual_mgmt_section,
+                                             text="🔄 Force re-scrape already scraped properties",
+                                             variable=self.force_rescrape_var)
+        force_rescrape_check.grid(row=4, column=0, columnspan=2, sticky=tk.W, pady=(10, 0))
+
         # === EXPORT OPTIONS SECTION ===
         export_section = ttk.LabelFrame(parent, text="[SAVE] Export Options", 
                                       padding="20", style='Modern.TLabelframe')
@@ -579,11 +703,22 @@ class MagicBricksGUI:
         timing_section.columnconfigure(1, weight=1)
         current_row += 1
 
-        # Page delay
-        ttk.Label(timing_section, text="Page Delay (seconds):", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
-        self.delay_var = tk.StringVar(value=str(self.config['page_delay']))
-        delay_spin = ttk.Spinbox(timing_section, from_=1, to=10, textvariable=self.delay_var, width=10)
-        delay_spin.grid(row=0, column=1, sticky=tk.W, pady=(0, 10), padx=(10, 0))
+        # Page delay with min/max controls
+        ttk.Label(timing_section, text="Page Delay (min-max):", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
+
+        page_delay_range_frame = ttk.Frame(timing_section)
+        page_delay_range_frame.grid(row=0, column=1, sticky=tk.W, pady=(0, 10), padx=(10, 0))
+
+        # Initialize page delay variables (only once)
+        if not hasattr(self, 'page_delay_min_var'):
+            self.page_delay_min_var = tk.StringVar(value="2")
+        if not hasattr(self, 'page_delay_max_var'):
+            self.page_delay_max_var = tk.StringVar(value="2")
+
+        ttk.Spinbox(page_delay_range_frame, from_=1, to=30, textvariable=self.page_delay_min_var, width=5).grid(row=0, column=0)
+        ttk.Label(page_delay_range_frame, text=" - ").grid(row=0, column=1)
+        ttk.Spinbox(page_delay_range_frame, from_=1, to=30, textvariable=self.page_delay_max_var, width=5).grid(row=0, column=2)
+        ttk.Label(page_delay_range_frame, text=" seconds").grid(row=0, column=3)
 
         # Max retries
         ttk.Label(timing_section, text="Max Retries:", style='Heading.TLabel').grid(row=1, column=0, sticky=tk.W, pady=(0, 5))
@@ -591,19 +726,17 @@ class MagicBricksGUI:
         retry_spin = ttk.Spinbox(timing_section, from_=1, to=10, textvariable=self.retry_var, width=10)
         retry_spin.grid(row=1, column=1, sticky=tk.W, pady=(0, 10), padx=(10, 0))
 
-        # Individual page delay range (only shown when individual pages enabled)
-        self.individual_delay_frame = ttk.Frame(timing_section)
-        self.individual_delay_frame.grid(row=2, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(5, 0))
-        self.individual_delay_frame.columnconfigure(1, weight=1)
+        # Individual page delay range (ALWAYS VISIBLE - not conditional)
+        ttk.Label(timing_section, text="Individual Page Delay (min-max):", style='Heading.TLabel').grid(row=2, column=0, sticky=tk.W, pady=(10, 5))
 
-        ttk.Label(self.individual_delay_frame, text="Individual Page Delay (min-max):",
-                 style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
+        delay_range_frame = ttk.Frame(timing_section)
+        delay_range_frame.grid(row=2, column=1, sticky=tk.W, padx=(10, 0))
 
-        delay_range_frame = ttk.Frame(self.individual_delay_frame)
-        delay_range_frame.grid(row=0, column=1, sticky=tk.W, padx=(10, 0))
-
-        self.individual_delay_min_var = tk.StringVar(value="3")
-        self.individual_delay_max_var = tk.StringVar(value="8")
+        # Initialize individual delay variables (only once)
+        if not hasattr(self, 'individual_delay_min_var'):
+            self.individual_delay_min_var = tk.StringVar(value="1")
+        if not hasattr(self, 'individual_delay_max_var'):
+            self.individual_delay_max_var = tk.StringVar(value="5")
 
         ttk.Spinbox(delay_range_frame, from_=1, to=30, textvariable=self.individual_delay_min_var, width=5).grid(row=0, column=0)
         ttk.Label(delay_range_frame, text=" - ").grid(row=0, column=1)
@@ -612,11 +745,19 @@ class MagicBricksGUI:
 
         # Additional timing settings
         ttk.Label(timing_section, text="Batch Break Delay (seconds):", style='Heading.TLabel').grid(row=3, column=0, sticky=tk.W, pady=(10, 5))
-        self.batch_break_var = tk.StringVar(value="15")
+        if not hasattr(self, 'batch_break_var'):
+            self.batch_break_var = tk.StringVar(value="15")
         ttk.Spinbox(timing_section, from_=5, to=60, textvariable=self.batch_break_var, width=10).grid(row=3, column=1, sticky=tk.W, padx=(10, 0))
 
+        # Bot Detection Recovery Delay
+        ttk.Label(timing_section, text="Bot Detection Delay (seconds):", style='Heading.TLabel').grid(row=4, column=0, sticky=tk.W, pady=(10, 5))
+        if not hasattr(self, 'bot_delay_var'):
+            self.bot_delay_var = tk.StringVar(value="30")
+        ttk.Spinbox(timing_section, from_=10, to=120, textvariable=self.bot_delay_var, width=10).grid(row=4, column=1, sticky=tk.W, padx=(10, 0))
+
         ttk.Label(timing_section, text="Batch Size:", style='Heading.TLabel').grid(row=4, column=0, sticky=tk.W, pady=(5, 5))
-        self.batch_size_var = tk.StringVar(value="10")
+        if not hasattr(self, 'batch_size_var'):
+            self.batch_size_var = tk.StringVar(value="10")
         ttk.Spinbox(timing_section, from_=1, to=50, textvariable=self.batch_size_var, width=10).grid(row=4, column=1, sticky=tk.W, padx=(10, 0))
 
         # Memory optimization
@@ -646,17 +787,24 @@ class MagicBricksGUI:
         batch_spinbox.grid(row=0, column=1, sticky=tk.W, padx=(10, 0), pady=(0, 10))
         self.create_tooltip(batch_spinbox, "How many properties to process at once. Higher = faster but uses more memory.")
 
-        # Max Workers (Parallel Processing)
-        ttk.Label(performance_section, text="Parallel Workers:", style='Heading.TLabel').grid(row=1, column=0, sticky=tk.W, pady=(0, 5))
+        # Individual Property Parallel Workers
+        ttk.Label(performance_section, text="Individual Property Workers:", style='Heading.TLabel').grid(row=1, column=0, sticky=tk.W, pady=(0, 5))
         self.max_workers_var = tk.IntVar(value=3)
         workers_spinbox = ttk.Spinbox(performance_section, from_=1, to=8, textvariable=self.max_workers_var, width=10)
         workers_spinbox.grid(row=1, column=1, sticky=tk.W, padx=(10, 0), pady=(0, 10))
-        self.create_tooltip(workers_spinbox, "Number of browser windows working simultaneously. More workers = faster scraping but uses more computer resources.")
+        self.create_tooltip(workers_spinbox, "Number of browser windows working simultaneously for individual property scraping.")
+
+        # Page Scraping Concurrent Control
+        ttk.Label(performance_section, text="Page Scraping Mode:", style='Heading.TLabel').grid(row=2, column=0, sticky=tk.W, pady=(0, 5))
+        self.page_concurrent_var = tk.BooleanVar(value=False)
+        page_concurrent_check = ttk.Checkbutton(performance_section, text="Enable Concurrent Page Scraping", variable=self.page_concurrent_var)
+        page_concurrent_check.grid(row=2, column=1, sticky=tk.W, padx=(10, 0), pady=(0, 10))
+        self.create_tooltip(page_concurrent_check, "Enable parallel processing for listing pages (experimental - may trigger bot detection)")
 
         # Memory optimization
         self.memory_optimization_var = tk.BooleanVar(value=True)
         memory_check = ttk.Checkbutton(performance_section, text="Memory Optimization", variable=self.memory_optimization_var)
-        memory_check.grid(row=2, column=0, columnspan=2, sticky=tk.W, pady=(5, 0))
+        memory_check.grid(row=3, column=0, columnspan=2, sticky=tk.W, pady=(5, 0))
         self.create_tooltip(memory_check, "Reduces memory usage during scraping. Recommended for long scraping sessions.")
 
         # === BROWSER SPEED SETTINGS SECTION ===
@@ -787,22 +935,42 @@ class MagicBricksGUI:
         button_frame.columnconfigure(0, weight=1)
         button_frame.columnconfigure(1, weight=1)
         button_frame.columnconfigure(2, weight=1)
+        button_frame.columnconfigure(3, weight=1)
 
         ttk.Button(button_frame, text="📁 Open Output Folder",
                   command=self.open_output_folder, style='Secondary.TButton').grid(row=0, column=0, padx=(0, 8), sticky=(tk.W, tk.E), ipady=4)
 
+        ttk.Button(button_frame, text="📊 Advanced Dashboard",
+                  command=self.open_advanced_dashboard, style='Secondary.TButton').grid(row=0, column=1, padx=8, sticky=(tk.W, tk.E), ipady=4)
+
         ttk.Button(button_frame, text="🔄 Reset Settings",
-                  command=self.reset_settings, style='Secondary.TButton').grid(row=0, column=1, padx=8, sticky=(tk.W, tk.E), ipady=4)
+                  command=self.reset_settings, style='Secondary.TButton').grid(row=0, column=2, padx=8, sticky=(tk.W, tk.E), ipady=4)
 
         ttk.Button(button_frame, text="[SAVE] Save Config",
                   command=self.save_config, style='Success.TButton').grid(row=0, column=2, padx=(8, 0), sticky=(tk.W, tk.E), ipady=4)
 
+        # Add bottom padding to ensure all content is scrollable
+        ttk.Frame(parent, height=30).grid(row=current_row, column=0)
+        current_row += 1
+
+        # Force scroll region update after all widgets are created
+        self.root.after(200, self.update_scroll_region)
+
+        # Initialize scraped count
+        self.root.after(500, self.refresh_scraped_count)
+
+    def update_scroll_region(self):
+        """Force update of scroll region to ensure all content is accessible"""
+        try:
+            if hasattr(self, 'scrollable_panel'):
+                self.scrollable_panel.update_scroll_region()
+        except Exception as e:
+            print(f"Warning: Could not update scroll region: {e}")
+
     def toggle_individual_delay_settings(self):
-        """Show/hide individual delay settings based on individual pages checkbox"""
-        if self.individual_pages_var.get():
-            self.individual_delay_frame.grid()
-        else:
-            self.individual_delay_frame.grid_remove()
+        """Individual delay settings are now always visible - this function is deprecated"""
+        # Individual delay settings are now always visible in the timing section
+        pass
 
     def on_individual_pages_changed(self):
         """Handle individual pages checkbox change"""
@@ -815,6 +983,93 @@ class MagicBricksGUI:
             self.individual_info_var.set("⚠️ Individual page scraping will significantly increase scraping time but provides detailed amenities, floor plans, and neighborhood data.")
         else:
             self.individual_info_var.set("ℹ️ Using listing page data only (recommended for faster scraping)")
+
+    def on_individual_mode_changed(self, event=None):
+        """Handle individual scraping mode change"""
+        self.update_individual_mode_description()
+
+    def update_individual_mode_description(self):
+        """Update individual mode description"""
+        mode = self.individual_mode_var.get()
+        descriptions = {
+            'with_listing': "🔄 Standard Mode: First scrape listing pages, then individual property details",
+            'individual_only': "🏠 Individual Only: Skip listing scraping, only scrape individual property pages from existing URLs",
+            'skip_individual': "⚡ Listing Only: Skip individual property scraping, only get listing page data"
+        }
+        self.individual_mode_desc_var.set(descriptions.get(mode, "Unknown mode"))
+
+    def refresh_scraped_count(self):
+        """Refresh the count of already scraped individual properties"""
+        try:
+            # Check for existing CSV files with individual property data
+            import glob
+            import pandas as pd
+
+            csv_files = glob.glob("magicbricks_*.csv")
+            total_individual = 0
+
+            for csv_file in csv_files:
+                try:
+                    df = pd.read_csv(csv_file)
+                    # Count rows that have individual property data (non-empty description or amenities)
+                    individual_rows = df[
+                        (df['description'].notna() & (df['description'] != '')) |
+                        (df['amenities'].notna() & (df['amenities'] != ''))
+                    ]
+                    total_individual += len(individual_rows)
+                except Exception:
+                    continue
+
+            self.scraped_count_var.set(f"{total_individual} properties with individual details")
+
+        except Exception as e:
+            self.scraped_count_var.set(f"Error checking: {str(e)}")
+
+    def get_individual_scraping_config(self):
+        """Get configuration for individual property scraping"""
+        config = {
+            'mode': self.individual_mode_var.get(),
+            'max_count': int(self.individual_count_var.get()) if self.individual_count_var.get().isdigit() else 0,
+            'force_rescrape': self.force_rescrape_var.get(),
+            'enabled': self.individual_pages_var.get()
+        }
+        return config
+
+    def get_scraping_config(self):
+        """Get complete scraping configuration from GUI"""
+        try:
+            config = {
+                'city': self.selected_cities[0] if self.selected_cities else 'gurgaon',
+                'selected_cities': self.selected_cities,
+                'mode': self.mode_var.get(),
+                'max_pages': int(self.max_pages_var.get()) if self.max_pages_var.get().isdigit() else 100,
+                'incremental_enabled': self.incremental_var.get(),
+                'page_delay': int(self.delay_var.get()),
+                'individual_delay_min': int(self.individual_delay_min_var.get()),
+                'individual_delay_max': int(self.individual_delay_max_var.get()),
+                'batch_break_delay': int(self.batch_break_var.get()),
+                'batch_size': int(self.batch_size_var.get()),
+                'max_retries': int(self.retry_var.get()),
+                'export_csv': self.export_csv_var.get(),
+                'export_json': self.export_json_var.get(),
+                'export_excel': self.export_excel_var.get(),
+                'individual_pages': self.individual_pages_var.get(),
+                'output_directory': self.config.get('output_directory', 'output')
+            }
+            return config
+        except Exception as e:
+            # Return default config if there's an error
+            return {
+                'city': 'gurgaon',
+                'mode': 'full',
+                'max_pages': 100,
+                'page_delay': 3,
+                'individual_delay_min': 3,
+                'individual_delay_max': 8,
+                'batch_break_delay': 15,
+                'batch_size': 10,
+                'max_retries': 2
+            }
 
     def open_output_folder(self):
         """Open the output folder in file explorer"""
@@ -837,6 +1092,29 @@ class MagicBricksGUI:
         except Exception as e:
             messagebox.showerror("Error", f"Could not open output folder: {str(e)}")
 
+    def open_advanced_dashboard(self):
+        """Open the advanced dashboard window"""
+        try:
+            from advanced_dashboard import AdvancedDashboard
+
+            # Check if dashboard is already open
+            if hasattr(self, 'dashboard_window') and self.dashboard_window and self.dashboard_window.winfo_exists():
+                self.dashboard_window.lift()
+                self.dashboard_window.focus()
+                return
+
+            # Create new dashboard
+            dashboard = AdvancedDashboard(parent=self.root)
+            self.dashboard_window = dashboard.root
+
+            self.log_message("Advanced Dashboard opened", 'INFO')
+
+        except ImportError:
+            messagebox.showerror("Error", "Advanced Dashboard module not found. Please ensure advanced_dashboard.py is available.")
+        except Exception as e:
+            messagebox.showerror("Error", f"Could not open Advanced Dashboard: {str(e)}")
+            self.log_message(f"Dashboard error: {str(e)}", 'ERROR')
+
     def reset_settings(self):
         """Reset all settings to defaults"""
         if messagebox.askyesno("Reset Settings", "Are you sure you want to reset all settings to defaults?"):
@@ -849,7 +1127,7 @@ class MagicBricksGUI:
                 'output_directory': str(Path.cwd()),
                 'incremental_enabled': True,
                 'page_delay': 3,
-                'max_retries': 3,
+                'max_retries': 2,
                 'export_json': False,
                 'export_excel': False,
                 'individual_pages': False
@@ -956,8 +1234,9 @@ class MagicBricksGUI:
         incremental_check = ttk.Checkbutton(advanced_frame, text="Enable Incremental Scraping (60-75% time savings)", variable=self.incremental_var)
         incremental_check.grid(row=1, column=0, columnspan=2, sticky=tk.W, pady=(0, 5))
 
-        # Individual property pages scraping
-        self.individual_pages_var = tk.BooleanVar(value=False)
+        # Individual property pages scraping (use existing variable, don't recreate)
+        if not hasattr(self, 'individual_pages_var'):
+            self.individual_pages_var = tk.BooleanVar(value=False)
         individual_check = ttk.Checkbutton(advanced_frame, text="Include Individual Property Details (⚠️ 10x slower)",
                                          variable=self.individual_pages_var, command=self.on_individual_pages_changed)
         individual_check.grid(row=2, column=0, columnspan=2, sticky=tk.W, pady=(0, 5))
@@ -1015,22 +1294,26 @@ class MagicBricksGUI:
         delay_config_frame.grid(row=7, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(10, 5))
         delay_config_frame.columnconfigure(1, weight=1)
 
-        # Individual page delay range
+        # Individual page delay range (use existing variables from main timing section)
         ttk.Label(delay_config_frame, text="Individual Page Delay (min-max):").grid(row=0, column=0, sticky=tk.W)
         individual_delay_frame = ttk.Frame(delay_config_frame)
         individual_delay_frame.grid(row=0, column=1, sticky=tk.W, padx=(10, 0))
 
-        self.individual_delay_min_var = tk.StringVar(value="3")
-        self.individual_delay_max_var = tk.StringVar(value="8")
+        # Use existing variables instead of creating new ones
+        if not hasattr(self, 'individual_delay_min_var'):
+            self.individual_delay_min_var = tk.StringVar(value="3")
+        if not hasattr(self, 'individual_delay_max_var'):
+            self.individual_delay_max_var = tk.StringVar(value="8")
 
         ttk.Spinbox(individual_delay_frame, from_=1, to=30, textvariable=self.individual_delay_min_var, width=5).grid(row=0, column=0)
         ttk.Label(individual_delay_frame, text=" - ").grid(row=0, column=1)
         ttk.Spinbox(individual_delay_frame, from_=1, to=30, textvariable=self.individual_delay_max_var, width=5).grid(row=0, column=2)
         ttk.Label(individual_delay_frame, text=" seconds").grid(row=0, column=3)
 
-        # Batch break delay
+        # Batch break delay (use existing variable)
         ttk.Label(delay_config_frame, text="Batch Break Delay:").grid(row=1, column=0, sticky=tk.W, pady=(5, 0))
-        self.batch_break_var = tk.StringVar(value="15")
+        if not hasattr(self, 'batch_break_var'):
+            self.batch_break_var = tk.StringVar(value="15")
         ttk.Spinbox(delay_config_frame, from_=5, to=60, textvariable=self.batch_break_var, width=10).grid(row=1, column=1, sticky=tk.W, padx=(10, 0), pady=(5, 0))
 
 
@@ -1098,12 +1381,16 @@ class MagicBricksGUI:
         stats_info = [
             ('session_id', '🆔 Session ID:', 'N/A'),
             ('mode', '⚙️ Mode:', 'Not Started'),
+            ('current_phase', '🔄 Current Phase:', 'Ready'),
             ('pages_scraped', '📄 Pages Scraped:', '0'),
             ('properties_found', '🏠 Properties Found:', '0'),
             ('properties_saved', '[SAVE] Properties Saved:', '0'),
             ('duration', '⏱️ Duration:', '0m 0s'),
             ('estimated_remaining', '⏳ Est. Remaining:', 'N/A'),
             ('scraping_speed', '⚡ Speed:', 'N/A props/min'),
+            ('avg_time_per_page', '📊 Avg Time/Page:', 'N/A'),
+            ('min_time_per_page', '⚡ Min Time/Page:', 'N/A'),
+            ('max_time_per_page', '🐌 Max Time/Page:', 'N/A'),
             ('status', '📊 Status:', 'Ready')
         ]
 
@@ -1371,16 +1658,36 @@ class MagicBricksGUI:
                         estimated_remaining_seconds = remaining_pages * avg_time_per_page
                         enhanced_stats['estimated_remaining'] = f"{estimated_remaining_seconds//60:.0f}m {estimated_remaining_seconds%60:.0f}s"
 
-        # Store progress history
+        # Store progress history with timing data
+        current_time = datetime.now()
         self.progress_history.append({
-            'timestamp': datetime.now(),
+            'timestamp': current_time,
             'pages_scraped': stats.get('pages_scraped', 0),
             'properties_saved': stats.get('properties_saved', 0)
         })
 
-        # Keep only last 10 entries
-        if len(self.progress_history) > 10:
-            self.progress_history = self.progress_history[-10:]
+        # Calculate timing statistics
+        if len(self.progress_history) > 1:
+            page_times = []
+            for i in range(1, len(self.progress_history)):
+                prev_entry = self.progress_history[i-1]
+                curr_entry = self.progress_history[i]
+
+                if curr_entry['pages_scraped'] > prev_entry['pages_scraped']:
+                    time_diff = (curr_entry['timestamp'] - prev_entry['timestamp']).total_seconds()
+                    pages_diff = curr_entry['pages_scraped'] - prev_entry['pages_scraped']
+                    if pages_diff > 0:
+                        time_per_page = time_diff / pages_diff
+                        page_times.append(time_per_page)
+
+            if page_times:
+                enhanced_stats['avg_time_per_page'] = f"{sum(page_times)/len(page_times):.1f}s"
+                enhanced_stats['min_time_per_page'] = f"{min(page_times):.1f}s"
+                enhanced_stats['max_time_per_page'] = f"{max(page_times):.1f}s"
+
+        # Keep only last 20 entries for better timing analysis
+        if len(self.progress_history) > 20:
+            self.progress_history = self.progress_history[-20:]
 
         self.message_queue.put(('stats', enhanced_stats))
     
@@ -2915,8 +3222,14 @@ For production deployment, schedules integrate with:
                 'batch_size': int(self.batch_size_var.get()),
                 'memory_optimization': self.memory_optimization_var.get(),
                 'max_retries': int(self.retry_var.get()),
-                'page_delay_min': int(self.delay_var.get()),
-                'page_delay_max': int(self.delay_var.get()) + 2,  # Add some variance
+                'bot_recovery_delay': int(self.bot_delay_var.get()),
+                'page_delay_min': int(self.page_delay_min_var.get()),
+                'page_delay_max': int(self.page_delay_max_var.get()),
+
+                # Parallel processing configuration
+                'concurrent_pages': int(self.max_workers_var.get()),
+                'max_concurrent_pages': int(self.max_workers_var.get()),
+                'concurrent_enabled': True,
 
                 # Filtering configuration
                 'enable_filtering': self.enable_filtering_var.get()
@@ -2959,20 +3272,28 @@ For production deployment, schedules integrate with:
                     total_pages = progress_data.get('total_pages', 1)
                     progress_percentage = min((current_page / total_pages) * 100, 100)
                     
-                    # Update statistics
+                    # Update statistics with proper calculations
+                    phase = progress_data.get('phase', 'listing_extraction')
+                    phase_display = {
+                        'listing_extraction': 'Extracting Listings',
+                        'individual_scraping': 'Scraping Properties',
+                        'processing': 'Processing Data'
+                    }.get(phase, 'Processing')
+
                     stats = {
                         'session_id': progress_data.get('session_id', 'N/A'),
                         'mode': self.config['mode'].value,
+                        'current_phase': phase_display,
                         'pages_scraped': current_page,
                         'properties_found': progress_data.get('properties_found', 0),
                         'properties_saved': progress_data.get('properties_found', 0),
-                        'duration': self._format_duration(time.time() - self.scraping_start_time),
                         'status': f"Scraping page {current_page}/{total_pages}"
                     }
-                    
+
+                    # Use the proper update_statistics method for enhanced calculations
                     self.update_statistics(stats)
-                    self.update_progress(progress_percentage)
-                    
+                    self.message_queue.put(('progress', progress_percentage))
+
                     # Update status with phase information
                     phase = progress_data.get('phase', 'listing_extraction')
                     if phase == 'listing_extraction':
@@ -2981,23 +3302,33 @@ For production deployment, schedules integrate with:
                         status_msg = f"Scraping individual properties - {current_page}/{total_pages}"
                     else:
                         status_msg = f"Processing - {current_page}/{total_pages}"
-                    
-                    self.update_status(status_msg)
+
+                    self.message_queue.put(('status', status_msg))
                     
                 except Exception as e:
                     self.log_message(f"Progress callback error: {str(e)}", 'ERROR')
             
-            # Store scraping start time for duration calculation
-            self.scraping_start_time = time.time()
+            # Note: scraping_start_time already set as datetime.now() in start_scraping()
             
-            # Start scraping with individual pages option, export formats, and progress callback
+            # Get individual property scraping configuration
+            individual_config = self.get_individual_scraping_config()
+
+            # Add individual property configuration to custom config
+            custom_config.update({
+                'individual_scraping_mode': individual_config['mode'],
+                'max_individual_properties': individual_config['max_count'],
+                'force_rescrape_individual': individual_config['force_rescrape']
+            })
+
+            # Start scraping with enhanced individual property management
             result = self.scraper.scrape_properties_with_incremental(
                 city=self.config['city'],
                 mode=self.config['mode'],
                 max_pages=self.config['max_pages'],
-                include_individual_pages=self.individual_pages_var.get(),
+                include_individual_pages=individual_config['enabled'],
                 export_formats=export_formats,
-                progress_callback=progress_callback
+                progress_callback=progress_callback,
+                force_rescrape_individual=individual_config['force_rescrape']
             )
 
             # Get session ID for error tracking
