@@ -22,6 +22,14 @@ Update 20:00 IST
 - Mumbai Full Run IN PROGRESS 🚀
   - Re-launched with MB_GUI_AUTOTEST_CITY="mumbai"
   - Current: page 17/50; extracting 30 properties/page reliably
+- [!] Task B: Git Remote Setup and Push
+  - BLOCKED: Creating GitHub repo requires authentication credentials (PAT or GitHub CLI login). No remote configured locally.
+  - Needed from user: Provide the GitHub repository URL or authorize GitHub CLI login, or share a PAT with repo:create + repo scopes.
+  - Planned steps once provided:
+    1) git remote add origin <URL>
+    2) git branch -M master
+    3) git push -u origin master
+
 
 
 
