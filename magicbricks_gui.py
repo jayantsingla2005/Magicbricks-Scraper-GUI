@@ -105,8 +105,12 @@ class MagicBricksGUI:
         try:
             import os
             if os.getenv("MB_GUI_AUTOTEST") == "1":
-                # Configure requested test parameters
-                self.selected_cities = ['gurgaon', 'mumbai']
+                # Optional single-city override for autonomous multi-run orchestration
+                city_override = os.getenv("MB_GUI_AUTOTEST_CITY")
+                if city_override:
+                    self.selected_cities = [city_override]
+                else:
+                    self.selected_cities = ['gurgaon', 'mumbai']
                 self.update_selected_cities_display()
                 if hasattr(self, 'max_pages_var'):
                     self.max_pages_var.set("50")
