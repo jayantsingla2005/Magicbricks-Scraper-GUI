@@ -396,3 +396,26 @@ All advanced controls are now accessible with reliable scrolling. The GUI provid
 - **Additional Property Types**: Commercial, villa coverage expansion
 
 **The core scraper functionality is now COMPLETE and PRODUCTION-READY with exceptional performance across all critical metrics.**
+
+
+---
+
+Update 22:40 IST — Task A and GUI Auto-Test Deep Dive
+- Task 1 (Git Remote & Push): COMPLETE ✅
+  - Repo created: https://github.com/jayantsingla2005/Magicbricks-Scraper-GUI
+  - Branch: master; HEAD: 7b3247d0
+  - Verification: git ls-remote origin shows master at 7b3247d0; remote URLs set clean (no token)
+  - Note: Output artifacts (CSV/JSON/DB) left untracked by design
+
+- Task 2 (GUI Validation): IN PROGRESS
+  - Gurgaon (Complete):
+    - Listing: 50/50 pages; 1500 found/saved; ~4m32s
+    - Individual: 959 URLs identified; 500 appended to CSV
+    - Root cause for 500/959: Duplicate detection skipped ≈458 URLs (log count of "Skipping already scraped URL" ≈ 458), leaving ~500 new URLs to scrape and append. No batch cap triggered.
+    - Bot detection events: 26 during 19:00–19:59 hour; all handled by recovery; no aborts
+  - Mumbai (Running):
+    - Listing: 50/50 pages; 1500 found/saved; 5m16s
+    - Individual: 1201 URLs identified; progress ≈ 500/1201 (Batch 50/121)
+    - Bot detection events so far: ~296 (20:xx=98, 21:xx=144, 22:xx=54); frequent Strategy-3 extended breaks (300s)
+    - Status: Continuing; no aborts; occasional "Driver restart requested but not implemented" warnings (non-fatal)
+  - Next: Continue monitoring until Mumbai completes; publish final GUI Test Report with per-phase metrics, throughput, and bot-detection comparison.
