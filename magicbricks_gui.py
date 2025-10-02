@@ -116,6 +116,15 @@ class MagicBricksGUI:
                     self.incremental_var.set(False)
                 if hasattr(self, 'individual_pages_var'):
                     self.individual_pages_var.set(True)
+                if hasattr(self, 'mode_var'):
+                    self.mode_var.set('full')
+                    # propagate mode to config immediately
+                    try:
+                        self.on_mode_changed()
+                    except Exception:
+                        pass
+                if hasattr(self, 'individual_mode_var'):
+                    self.individual_mode_var.set('with_listing')
                 # Defer start until UI fully initialized
                 self.root.after(1500, self.start_scraping)
         except Exception as e:
