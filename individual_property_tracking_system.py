@@ -55,7 +55,7 @@ class IndividualPropertyTracker:
     def connect_db(self) -> bool:
         """Establish database connection (delegates to db_manager)"""
         return self.db_manager.connect_db()
-    
+
     def setup_database_schema(self):
         """Create necessary tables for individual property tracking (delegates to db_manager)"""
         return self.db_manager.setup_database_schema()
@@ -77,6 +77,71 @@ class IndividualPropertyTracker:
                                 quality_threshold: float = None) -> Dict[str, Any]:
         """Filter URLs and determine which need scraping (delegates to operations)"""
         return self.operations.filter_urls_for_scraping(property_urls, force_rescrape, quality_threshold)
+
+    def is_property_scraped(self, property_url: str, session_id: int | None = None) -> bool:
+        """Backward-compatible check: has this property URL already been scraped?"""
+        if not self.db_manager.connect_db():
+            return False
+        try:
+            cursor = self.db_manager.connection.cursor()
+            normalized_url = self.normalize_url(property_url)
+            url_hash = self.generate_url_hash(normalized_url)
+            cursor.execute(
+                '''
+                SELECT extraction_success FROM individual_properties_scraped
+                WHERE url_hash = ? OR property_url = ?
+                ''',
+                (url_hash, normalized_url)
+            )
+            row = cursor.fetchone()
+            return bool(row and (row[0] == 1 or row[0] is True))
+        except Exception:
+            return False
+        finally:
+            self.db_manager.close_connection()
+
+    def mark_property_scraped(self, property_url: str, session_id: int | None = None) -> bool:
+        """Backward-compatible mark: record that this URL has been scraped (minimal upsert)."""
+        if not self.db_manager.connect_db():
+            return False
+        try:
+            cursor = self.db_manager.connection.cursor()
+            from datetime import datetime
+            normalized_url = self.normalize_url(property_url)
+            url_hash = self.generate_url_hash(normalized_url)
+            now = datetime.now()
+            # Check existing
+            cursor.execute(
+                '''SELECT 1 FROM individual_properties_scraped WHERE url_hash = ? OR property_url = ?''',
+                (url_hash, normalized_url)
+            )
+            exists = cursor.fetchone() is not None
+            if exists:
+                cursor.execute(
+                    '''
+                    UPDATE individual_properties_scraped
+                    SET scraped_at = ?, scraping_session_id = COALESCE(?, scraping_session_id),
+                        extraction_success = 1, updated_at = ?
+                    WHERE url_hash = ? OR property_url = ?
+                    ''',
+                    (now, session_id, now, url_hash, normalized_url)
+                )
+            else:
+                cursor.execute(
+                    '''
+                    INSERT INTO individual_properties_scraped
+                    (property_url, property_id, url_hash, scraped_at, scraping_session_id,
+                     data_quality_score, extraction_success, retry_count, updated_at)
+                    VALUES (?, NULL, ?, ?, ?, 0.0, 1, 0, ?)
+                    ''',
+                    (normalized_url, url_hash, now, session_id, now)
+                )
+            self.db_manager.connection.commit()
+            return True
+        except Exception:
+            return False
+        finally:
+            self.db_manager.close_connection()
 
     def track_scraped_property(self, property_url: str, property_data: Dict[str, Any],
                               session_id: int, quality_score: float = None) -> bool:
