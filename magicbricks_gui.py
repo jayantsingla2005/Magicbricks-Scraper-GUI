@@ -34,10 +34,10 @@ class MagicBricksGUI:
         self.root.title("🏠 MagicBricks Property Scraper - Professional Edition v2.0")
         self.root.geometry("1450x950")
         self.root.minsize(1250, 850)
-        
+
         # Enhanced window styling and effects
         self.root.configure(bg='#f8fafc')
-        
+
         # Add modern window effects (platform-specific)
         try:
             # Subtle transparency for modern look
@@ -46,7 +46,7 @@ class MagicBricksGUI:
             # self.root.overrideredirect(False)
         except:
             pass  # Not supported on all platforms
-        
+
         # Try to set window icon (if available)
         try:
             # You can add an icon file here if you have one
@@ -101,10 +101,30 @@ class MagicBricksGUI:
         # Start message processing
         self.process_messages()
 
+        # Auto-test hook for automated GUI testing (non-invasive)
+        try:
+            import os
+            if os.getenv("MB_GUI_AUTOTEST") == "1":
+                # Configure requested test parameters
+                self.selected_cities = ['gurgaon', 'mumbai']
+                self.update_selected_cities_display()
+                if hasattr(self, 'max_pages_var'):
+                    self.max_pages_var.set("50")
+                if hasattr(self, 'headless_var'):
+                    self.headless_var.set(False)
+                if hasattr(self, 'incremental_var'):
+                    self.incremental_var.set(False)
+                if hasattr(self, 'individual_pages_var'):
+                    self.individual_pages_var.set(True)
+                # Defer start until UI fully initialized
+                self.root.after(1500, self.start_scraping)
+        except Exception as e:
+            print(f"[AUTO-TEST] Setup failed: {e}")
+
         print("🎮 MagicBricks GUI v2.0 Initialized")
         print(f"   🏙️ Multi-city system: {len(self.city_system.cities)} cities available")
         print(f"   🎨 Modern interface with scrollable panels")
-    
+
     def setup_modern_styles(self):
         """Setup modern, professional styling for the GUI with enhanced visual appeal"""
 
@@ -193,7 +213,7 @@ class MagicBricksGUI:
                            font=('Segoe UI', 11, 'bold'),
                            padding=(25, 12),
                            relief='flat')
-        
+
         self.style.map('Primary.TButton',
                       background=[('active', self.colors['primary_dark']),
                                 ('!active', self.colors['primary'])],
@@ -204,7 +224,7 @@ class MagicBricksGUI:
                            font=('Segoe UI', 10, 'bold'),
                            padding=(20, 10),
                            relief='flat')
-        
+
         self.style.map('Success.TButton',
                       background=[('active', '#059669'),
                                 ('!active', self.colors['success'])],
@@ -215,7 +235,7 @@ class MagicBricksGUI:
                            font=('Segoe UI', 10),
                            padding=(15, 8),
                            relief='flat')
-        
+
         self.style.map('Secondary.TButton',
                       background=[('active', self.colors['bg_accent']),
                                 ('!active', self.colors['bg_secondary'])],
@@ -226,7 +246,7 @@ class MagicBricksGUI:
                            font=('Segoe UI', 10, 'bold'),
                            padding=(15, 8),
                            relief='flat')
-        
+
         self.style.map('Danger.TButton',
                       background=[('active', '#dc2626'),
                                 ('!active', self.colors['danger'])],
@@ -242,14 +262,14 @@ class MagicBricksGUI:
         self.style.configure('Sidebar.TFrame',
                            background=self.colors['bg_secondary'],
                            relief='flat')
-        
+
         self.style.configure('Modern.TLabelframe',
                            background=self.colors['bg_card'],
                            relief='flat',
                            borderwidth=1,
                            lightcolor=self.colors['border'],
                            darkcolor=self.colors['border'])
-        
+
         self.style.configure('Modern.TLabelframe.Label',
                            background=self.colors['bg_card'],
                            foreground=self.colors['text_primary'],
@@ -261,7 +281,7 @@ class MagicBricksGUI:
                            borderwidth=2,
                            relief='flat',
                            insertcolor=self.colors['primary'])
-        
+
         self.style.map('Modern.TEntry',
                       focuscolor=[('focus', self.colors['primary'])],
                       bordercolor=[('focus', self.colors['primary']),
@@ -271,7 +291,7 @@ class MagicBricksGUI:
                            fieldbackground=self.colors['bg_primary'],
                            borderwidth=2,
                            relief='flat')
-        
+
         self.style.map('Modern.TCombobox',
                       focuscolor=[('focus', self.colors['primary'])],
                       bordercolor=[('focus', self.colors['primary']),
@@ -284,7 +304,7 @@ class MagicBricksGUI:
                            borderwidth=0,
                            lightcolor=self.colors['primary'],
                            darkcolor=self.colors['primary'])
-    
+
     def create_modern_interface(self):
         """Create modern, professional interface with proper scrolling"""
 
@@ -336,7 +356,7 @@ class MagicBricksGUI:
         # Enhanced icon with background
         icon_frame = ttk.Frame(title_frame)
         icon_frame.pack(side=tk.LEFT)
-        
+
         icon_label = ttk.Label(icon_frame, text="🏠", font=('Segoe UI', 28))
         icon_label.pack()
 
@@ -348,15 +368,15 @@ class MagicBricksGUI:
         main_title = ttk.Label(title_text_frame, text="MagicBricks Property Scraper",
                               style='Title.TLabel')
         main_title.pack(anchor=tk.W)
-        
+
         # Subtitle with better description
-        subtitle = ttk.Label(title_text_frame, 
+        subtitle = ttk.Label(title_text_frame,
                             text="Professional Edition v2.0 • Advanced Property Data Extraction",
                             style='Subtitle.TLabel')
         subtitle.pack(anchor=tk.W, pady=(2, 0))
-        
+
         # Feature highlights
-        features = ttk.Label(title_text_frame, 
+        features = ttk.Label(title_text_frame,
                             text="⚡ Incremental Scraping • 🏙️ Multi-City Support • 📊 Advanced Analytics",
                             style='Muted.TLabel')
         features.pack(anchor=tk.W, pady=(5, 0))
@@ -368,22 +388,22 @@ class MagicBricksGUI:
         # Status indicators
         status_frame = ttk.Frame(stats_frame)
         status_frame.pack(anchor=tk.E)
-        
+
         # System status
-        system_status = ttk.Label(status_frame, text="🟢 System Ready", 
+        system_status = ttk.Label(status_frame, text="🟢 System Ready",
                                  style='Success.TLabel', font=('Segoe UI', 10, 'bold'))
         system_status.pack(anchor=tk.E)
-        
+
         # Version badge
         version_badge = ttk.Label(status_frame, text="v2.0.0 • Build 2024",
                                  style='Info.TLabel')
         version_badge.pack(anchor=tk.E, pady=(3, 0))
-        
+
         # Quick stats
         stats_text = ttk.Label(status_frame, text="Ready for Multi-City Scraping",
                               style='Muted.TLabel')
         stats_text.pack(anchor=tk.E, pady=(2, 0))
-    
+
     def create_scrollable_control_panel(self, parent):
         """Create enhanced scrollable control panel with reliable scrolling"""
 
@@ -519,7 +539,7 @@ class MagicBricksGUI:
         select_cities_btn.grid(row=0, column=1)
 
         # === SCRAPING MODE SECTION ===
-        mode_section = ttk.LabelFrame(parent, text="⚙️ Scraping Mode", 
+        mode_section = ttk.LabelFrame(parent, text="⚙️ Scraping Mode",
                                     padding="20", style='Modern.TLabelframe')
         mode_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 20))
         mode_section.columnconfigure(1, weight=1)
@@ -528,7 +548,7 @@ class MagicBricksGUI:
         ttk.Label(mode_section, text="Mode:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
 
         self.mode_var = tk.StringVar(value=self.config['mode'].value)
-        mode_combo = ttk.Combobox(mode_section, textvariable=self.mode_var, width=25, 
+        mode_combo = ttk.Combobox(mode_section, textvariable=self.mode_var, width=25,
                                 state='readonly', style='Modern.TCombobox')
         mode_combo['values'] = ('incremental', 'full', 'conservative', 'date_range', 'custom')
         mode_combo.grid(row=0, column=1, sticky=(tk.W, tk.E), pady=(0, 15), padx=(15, 0))
@@ -542,7 +562,7 @@ class MagicBricksGUI:
         mode_desc_label.grid(row=1, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 10))
 
         # === BASIC SETTINGS SECTION ===
-        basic_section = ttk.LabelFrame(parent, text="📊 Basic Settings", 
+        basic_section = ttk.LabelFrame(parent, text="📊 Basic Settings",
                                      padding="20", style='Modern.TLabelframe')
         basic_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 20))
         basic_section.columnconfigure(1, weight=1)
@@ -551,7 +571,7 @@ class MagicBricksGUI:
         # Max pages with icon
         ttk.Label(basic_section, text="📄 Max Pages:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 8))
         self.max_pages_var = tk.StringVar(value=str(self.config['max_pages']))
-        max_pages_entry = ttk.Entry(basic_section, textvariable=self.max_pages_var, 
+        max_pages_entry = ttk.Entry(basic_section, textvariable=self.max_pages_var,
                                   width=15, style='Modern.TEntry')
         max_pages_entry.grid(row=0, column=1, sticky=tk.W, pady=(0, 15), padx=(15, 0))
 
@@ -570,7 +590,7 @@ class MagicBricksGUI:
         browse_btn.grid(row=0, column=1)
 
         # === ADVANCED OPTIONS SECTION ===
-        advanced_section = ttk.LabelFrame(parent, text="[SETUP] Advanced Options", 
+        advanced_section = ttk.LabelFrame(parent, text="[SETUP] Advanced Options",
                                         padding="20", style='Modern.TLabelframe')
         advanced_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 20))
         advanced_section.columnconfigure(0, weight=1)
@@ -667,7 +687,7 @@ class MagicBricksGUI:
         force_rescrape_check.grid(row=4, column=0, columnspan=2, sticky=tk.W, pady=(10, 0))
 
         # === EXPORT OPTIONS SECTION ===
-        export_section = ttk.LabelFrame(parent, text="[SAVE] Export Options", 
+        export_section = ttk.LabelFrame(parent, text="[SAVE] Export Options",
                                       padding="20", style='Modern.TLabelframe')
         export_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 20))
         export_section.columnconfigure(0, weight=1)
@@ -816,7 +836,7 @@ class MagicBricksGUI:
         # Page Load Strategy
         ttk.Label(browser_section, text="Page Loading Speed:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
         self.page_load_strategy_var = tk.StringVar(value="normal")
-        strategy_combo = ttk.Combobox(browser_section, textvariable=self.page_load_strategy_var, 
+        strategy_combo = ttk.Combobox(browser_section, textvariable=self.page_load_strategy_var,
                                     values=["normal", "eager", "none"], state="readonly", width=12)
         strategy_combo.grid(row=0, column=1, sticky=tk.W, padx=(10, 0), pady=(0, 10))
         self.create_tooltip(strategy_combo, "How long to wait for pages to load. 'Normal' = wait for everything (slower but safer), 'Eager' = faster loading, 'None' = fastest but may miss some content.")
@@ -909,7 +929,7 @@ class MagicBricksGUI:
         ] + [child for child in bhk_options_frame.winfo_children() if isinstance(child, ttk.Checkbutton)]
 
         # === ACTION SECTION ===
-        action_section = ttk.LabelFrame(parent, text="[TARGET] Actions", 
+        action_section = ttk.LabelFrame(parent, text="[TARGET] Actions",
                                       padding="25", style='Modern.TLabelframe')
         action_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(25, 15))
         action_section.columnconfigure(0, weight=1)
@@ -1180,7 +1200,7 @@ class MagicBricksGUI:
 
         except Exception as e:
             messagebox.showerror("Error", f"Could not save configuration: {str(e)}")
-        
+
         # Scraping mode
         ttk.Label(control_frame, text="Scraping Mode:", style='Heading.TLabel').grid(row=current_row, column=0, sticky=tk.W, pady=(0, 5))
         self.mode_var = tk.StringVar(value=self.config['mode'].value)
@@ -1189,35 +1209,35 @@ class MagicBricksGUI:
         mode_combo.grid(row=current_row, column=1, sticky=(tk.W, tk.E), pady=(0, 15))
         mode_combo.bind('<<ComboboxSelected>>', self.on_mode_changed)
         current_row += 1
-        
+
         # Mode description
         self.mode_desc_var = tk.StringVar()
         self.update_mode_description()
         mode_desc_label = ttk.Label(control_frame, textvariable=self.mode_desc_var, style='Info.TLabel', wraplength=300)
         mode_desc_label.grid(row=current_row, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 15))
         current_row += 1
-        
+
         # Max pages
         ttk.Label(control_frame, text="Max Pages:", style='Heading.TLabel').grid(row=current_row, column=0, sticky=tk.W, pady=(0, 5))
         self.max_pages_var = tk.StringVar(value=str(self.config['max_pages']))
         max_pages_entry = ttk.Entry(control_frame, textvariable=self.max_pages_var, width=10)
         max_pages_entry.grid(row=current_row, column=1, sticky=tk.W, pady=(0, 15))
         current_row += 1
-        
+
         # Output directory
         ttk.Label(control_frame, text="Output Directory:", style='Heading.TLabel').grid(row=current_row, column=0, sticky=tk.W, pady=(0, 5))
         output_frame = ttk.Frame(control_frame)
         output_frame.grid(row=current_row, column=1, sticky=(tk.W, tk.E), pady=(0, 15))
         output_frame.columnconfigure(0, weight=1)
-        
+
         self.output_dir_var = tk.StringVar(value=self.config['output_directory'])
         output_entry = ttk.Entry(output_frame, textvariable=self.output_dir_var)
         output_entry.grid(row=0, column=0, sticky=(tk.W, tk.E), padx=(0, 5))
-        
+
         browse_btn = ttk.Button(output_frame, text="Browse", command=self.browse_output_directory)
         browse_btn.grid(row=0, column=1)
         current_row += 1
-        
+
         # Advanced options
         advanced_frame = ttk.LabelFrame(control_frame, text="Advanced Options", padding="10")
         advanced_frame.grid(row=current_row, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(15, 0))
@@ -1319,17 +1339,17 @@ class MagicBricksGUI:
 
 
 
-        
+
         # Action buttons
         button_frame = ttk.Frame(control_frame)
         button_frame.grid(row=current_row, column=0, columnspan=2, pady=(20, 0))
-        
+
         self.start_btn = ttk.Button(button_frame, text="[ROCKET] Start Scraping", command=self.start_scraping, style='Action.TButton')
         self.start_btn.pack(side=tk.LEFT, padx=(0, 10))
-        
+
         self.stop_btn = ttk.Button(button_frame, text="⏹️ Stop Scraping", command=self.stop_scraping, state='disabled', style='Warning.TButton')
         self.stop_btn.pack(side=tk.LEFT, padx=(0, 10))
-        
+
         self.save_config_btn = ttk.Button(button_frame, text="[SAVE] Save Config", command=self.save_configuration)
         self.save_config_btn.pack(side=tk.LEFT, padx=(0, 10))
 
@@ -1338,38 +1358,38 @@ class MagicBricksGUI:
 
         self.schedule_btn = ttk.Button(button_frame, text="⏰ Schedule", command=self.open_scheduler)
         self.schedule_btn.pack(side=tk.LEFT)
-    
+
     def create_monitoring_panel(self, parent):
         """Create modern monitoring panel with progress and logs"""
 
         # Monitoring panel container with modern styling
-        monitor_container = ttk.LabelFrame(parent, text="📊 Scraping Progress & Monitoring", 
+        monitor_container = ttk.LabelFrame(parent, text="📊 Scraping Progress & Monitoring",
                                          padding="20", style='Modern.TLabelframe')
         monitor_container.grid(row=0, column=1, sticky=(tk.W, tk.E, tk.N, tk.S))
         monitor_container.columnconfigure(0, weight=1)
         monitor_container.rowconfigure(2, weight=1)
 
         # === PROGRESS SECTION ===
-        progress_section = ttk.LabelFrame(monitor_container, text="📈 Progress", 
+        progress_section = ttk.LabelFrame(monitor_container, text="📈 Progress",
                                         padding="20", style='Modern.TLabelframe')
         progress_section.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
         progress_section.columnconfigure(1, weight=1)
-        
+
         # Progress information with modern cards
         ttk.Label(progress_section, text="⚡ Progress:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 8))
         self.progress_var = tk.DoubleVar()
-        self.progress_bar = ttk.Progressbar(progress_section, variable=self.progress_var, 
+        self.progress_bar = ttk.Progressbar(progress_section, variable=self.progress_var,
                                           maximum=100, length=350, style='Modern.Horizontal.TProgressbar')
         self.progress_bar.grid(row=0, column=1, sticky=(tk.W, tk.E), padx=(15, 0), pady=(0, 8))
 
         # Progress percentage with enhanced styling
         self.progress_text_var = tk.StringVar(value="0%")
-        progress_label = ttk.Label(progress_section, textvariable=self.progress_text_var, 
+        progress_label = ttk.Label(progress_section, textvariable=self.progress_text_var,
                                  style='Success.TLabel', font=('Segoe UI', 10, 'bold'))
         progress_label.grid(row=0, column=2, padx=(15, 0))
 
         # === STATISTICS SECTION ===
-        stats_section = ttk.LabelFrame(monitor_container, text="📊 Statistics", 
+        stats_section = ttk.LabelFrame(monitor_container, text="📊 Statistics",
                                      padding="20", style='Modern.TLabelframe')
         stats_section.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
         stats_section.columnconfigure(0, weight=1)
@@ -1414,7 +1434,7 @@ class MagicBricksGUI:
             self.stats_labels[key] = value_label
 
         # === LOG SECTION ===
-        log_section = ttk.LabelFrame(monitor_container, text="📝 Scraping Log", 
+        log_section = ttk.LabelFrame(monitor_container, text="📝 Scraping Log",
                                    padding="15", style='Modern.TLabelframe')
         log_section.grid(row=2, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
         log_section.columnconfigure(0, weight=1)
@@ -1450,7 +1470,7 @@ class MagicBricksGUI:
 
         ttk.Button(right_buttons, text="🛡️ Error Log", command=self.open_error_log_viewer,
                   style='Secondary.TButton').pack(side=tk.LEFT)
-    
+
     def create_modern_status_bar(self, parent):
         """Create modern status bar with enhanced information"""
 
@@ -1496,7 +1516,7 @@ class MagicBricksGUI:
         current_time = datetime.now().strftime("%H:%M:%S")
         self.time_var.set(f"🕐 {current_time}")
         self.root.after(1000, self.update_time)  # Update every second
-    
+
     def _format_duration(self, seconds):
         """Format duration in seconds to human-readable format"""
         if seconds < 60:
@@ -1509,10 +1529,10 @@ class MagicBricksGUI:
             hours = int(seconds // 3600)
             minutes = int((seconds % 3600) // 60)
             return f"{hours}h {minutes}m"
-    
+
     def update_mode_description(self):
         """Update the mode description based on selected mode"""
-        
+
         descriptions = {
             'incremental': '⚡ Smart incremental scraping (60-75% time savings)',
             'full': '🔄 Complete scraping of all properties (100% coverage)',
@@ -1520,16 +1540,16 @@ class MagicBricksGUI:
             'date_range': '📅 Scrape properties within specific date range',
             'custom': '⚙️ User-defined parameters for specific needs'
         }
-        
+
         mode = self.mode_var.get()
         description = descriptions.get(mode, 'Select a scraping mode')
         self.mode_desc_var.set(description)
-    
+
     def on_city_changed(self, event=None):
         """Handle city selection change (legacy method for compatibility)"""
         # This method is kept for compatibility but city selection is now handled by the multi-city system
         pass
-    
+
     def on_mode_changed(self, event=None):
         """Handle mode selection change"""
         mode_str = self.mode_var.get()
@@ -1572,29 +1592,29 @@ class MagicBricksGUI:
             self.config['output_directory'] = directory
             self.output_dir_var.set(directory)
             self.log_message(f"Output directory changed to: {directory}")
-    
+
     def save_configuration(self):
         """Save current configuration to file"""
         try:
             config_file = Path('gui_config.json')
-            
+
             # Update config from GUI
             self.update_config_from_gui()
-            
+
             # Convert ScrapingMode to string for JSON serialization
             config_to_save = self.config.copy()
             config_to_save['mode'] = self.config['mode'].value
-            
+
             with open(config_file, 'w') as f:
                 json.dump(config_to_save, f, indent=2)
-            
+
             self.log_message(f"Configuration saved to {config_file}")
             messagebox.showinfo("Success", "Configuration saved successfully!")
-            
+
         except Exception as e:
             self.log_message(f"Error saving configuration: {str(e)}")
             messagebox.showerror("Error", f"Failed to save configuration: {str(e)}")
-    
+
     def update_config_from_gui(self):
         """Update configuration from GUI values"""
         self.config['selected_cities'] = self.selected_cities
@@ -1604,26 +1624,26 @@ class MagicBricksGUI:
         self.config['output_directory'] = self.output_dir_var.get()
         self.config['headless'] = self.headless_var.get()
         self.config['incremental_enabled'] = self.incremental_var.get()
-        
+
         # Performance settings
         self.config['batch_size'] = int(self.batch_size_var.get()) if hasattr(self, 'batch_size_var') else 10
         self.config['max_workers'] = int(self.max_workers_var.get()) if hasattr(self, 'max_workers_var') else 3
         self.config['memory_optimization'] = self.memory_optimization_var.get() if hasattr(self, 'memory_optimization_var') else True
-        
+
         # Browser optimization settings
         self.config['page_load_strategy'] = self.page_load_strategy_var.get() if hasattr(self, 'page_load_strategy_var') else 'normal'
         self.config['disable_images'] = self.disable_images_var.get() if hasattr(self, 'disable_images_var') else True
         self.config['disable_css'] = self.disable_css_var.get() if hasattr(self, 'disable_css_var') else False
         self.config['disable_javascript'] = self.disable_js_var.get() if hasattr(self, 'disable_js_var') else False
-    
+
     def log_message(self, message: str, level: str = 'INFO'):
         """Add message to log with timestamp"""
         timestamp = datetime.now().strftime("%H:%M:%S")
         formatted_message = f"[{timestamp}] {level}: {message}\n"
-        
+
         # Add to queue for thread-safe GUI updates
         self.message_queue.put(('log', formatted_message))
-    
+
     def update_statistics(self, stats: Dict[str, Any]):
         """Update statistics display with real-time calculations"""
 
@@ -1690,33 +1710,33 @@ class MagicBricksGUI:
             self.progress_history = self.progress_history[-20:]
 
         self.message_queue.put(('stats', enhanced_stats))
-    
+
     def update_progress(self, progress: float):
         """Update progress bar"""
         self.message_queue.put(('progress', progress))
-    
+
     def update_status(self, status: str):
         """Update status bar"""
         self.message_queue.put(('status', status))
-    
+
     def process_messages(self):
         """Process messages from the queue (thread-safe GUI updates)"""
         try:
             while True:
                 message_type, data = self.message_queue.get_nowait()
-                
+
                 if message_type == 'log':
                     self.log_text.insert(tk.END, data)
                     self.log_text.see(tk.END)
-                
+
                 elif message_type == 'stats':
                     for key, value in data.items():
                         if key in self.stats_labels:
                             self.stats_labels[key].config(text=f"{key.replace('_', ' ').title()}: {value}")
-                
+
                 elif message_type == 'progress':
                     self.progress_var.set(data)
-                
+
                 elif message_type == 'status':
                     self.status_var.set(data)
 
@@ -1728,17 +1748,17 @@ class MagicBricksGUI:
                     # Show error dialog for critical errors
                     if error_info.severity in [ErrorSeverity.ERROR, ErrorSeverity.CRITICAL]:
                         self.show_error_dialog(error_info)
-                
+
         except queue.Empty:
             pass
-        
+
         # Schedule next check
         self.root.after(100, self.process_messages)
-    
+
     def clear_log(self):
         """Clear the log text"""
         self.log_text.delete(1.0, tk.END)
-    
+
     def save_log(self):
         """Save log to file"""
         try:
@@ -3105,26 +3125,26 @@ For production deployment, schedules integrate with:
         ttk.Button(button_frame, text="[SAVE] Save Settings", command=save_config, style='Action.TButton').pack(side=tk.LEFT, padx=(0, 10))
         ttk.Button(button_frame, text="📧 Test Email", command=test_email).pack(side=tk.LEFT, padx=(0, 10))
         ttk.Button(button_frame, text="Cancel", command=config_window.destroy).pack(side=tk.RIGHT)
-    
+
     def start_scraping(self):
         """Start the scraping process in a separate thread"""
         if self.is_scraping:
             messagebox.showwarning("Warning", "Scraping is already in progress!")
             return
-        
+
         try:
             # Update configuration
             self.update_config_from_gui()
-            
+
             # Validate configuration
             if not self.validate_configuration():
                 return
-            
+
             # Update UI state
             self.is_scraping = True
             self.start_button.config(state='disabled')
             self.stop_btn.config(state='normal')
-            
+
             # Clear previous results and initialize progress tracking
             self.clear_log()
             self.progress_var.set(0)
@@ -3134,28 +3154,28 @@ For production deployment, schedules integrate with:
             # Start scraping thread
             self.scraping_thread = threading.Thread(target=self.run_scraping, daemon=True)
             self.scraping_thread.start()
-            
+
             self.log_message("Scraping started successfully")
             self.update_status("Scraping in progress...")
-            
+
         except Exception as e:
             self.log_message(f"Error starting scraping: {str(e)}", 'ERROR')
             messagebox.showerror("Error", f"Failed to start scraping: {str(e)}")
             self.reset_ui_state()
-    
+
     def stop_scraping(self):
         """Stop the scraping process"""
         if not self.is_scraping:
             return
-        
+
         self.is_scraping = False
         self.log_message("Stopping scraping...", 'WARNING')
         self.update_status("Stopping scraping...")
-        
+
         # Note: In a real implementation, you'd need to implement proper thread cancellation
         # For now, we'll just update the UI state
         self.reset_ui_state()
-    
+
     def validate_configuration(self) -> bool:
         """Validate the current configuration"""
         try:
@@ -3194,7 +3214,7 @@ For production deployment, schedules integrate with:
                 'selected_cities': self.selected_cities
             }, 'configuration_validation')
             return False
-    
+
     def run_scraping(self):
         """Run the scraping process (called in separate thread)"""
         session_id = None
@@ -3204,9 +3224,9 @@ For production deployment, schedules integrate with:
                 headless=self.config['headless'],
                 incremental_enabled=self.config['incremental_enabled']
             )
-            
+
             self.log_message(f"Starting scraping for {self.config['city']} in {self.config['mode'].value} mode")
-            
+
             # Prepare export formats
             export_formats = ['csv']  # CSV is always included
             if self.export_json_var.get():
@@ -3271,7 +3291,7 @@ For production deployment, schedules integrate with:
                     current_page = progress_data.get('current_page', 0)
                     total_pages = progress_data.get('total_pages', 1)
                     progress_percentage = min((current_page / total_pages) * 100, 100)
-                    
+
                     # Update statistics with proper calculations
                     phase = progress_data.get('phase', 'listing_extraction')
                     phase_display = {
@@ -3304,12 +3324,12 @@ For production deployment, schedules integrate with:
                         status_msg = f"Processing - {current_page}/{total_pages}"
 
                     self.message_queue.put(('status', status_msg))
-                    
+
                 except Exception as e:
                     self.log_message(f"Progress callback error: {str(e)}", 'ERROR')
-            
+
             # Note: scraping_start_time already set as datetime.now() in start_scraping()
-            
+
             # Get individual property scraping configuration
             individual_config = self.get_individual_scraping_config()
 
@@ -3333,10 +3353,10 @@ For production deployment, schedules integrate with:
 
             # Get session ID for error tracking
             session_id = result.get('session_stats', {}).get('session_id')
-            
+
             if result['success']:
                 self.log_message("Scraping completed successfully!", 'SUCCESS')
-                
+
                 # Update final statistics
                 final_stats = {
                     'session_id': result.get('session_stats', {}).get('session_id', 'N/A'),
@@ -3347,22 +3367,22 @@ For production deployment, schedules integrate with:
                     'duration': result.get('session_stats', {}).get('duration_formatted', 'N/A'),
                     'status': 'Completed Successfully'
                 }
-                
+
                 self.update_statistics(final_stats)
                 self.update_progress(100)
                 self.update_status("Scraping completed successfully!")
-                
+
                 # Save results
                 if self.scraper.properties:
                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                     filename = f"magicbricks_{self.config['city']}_{self.config['mode'].value}_{timestamp}.csv"
                     output_path = Path(self.config['output_directory']) / filename
-                    
+
                     df = self.scraper.save_to_csv(str(output_path))
                     if df is not None:
                         self.log_message(f"Results saved to: {output_path}")
                         messagebox.showinfo("Success", f"Scraping completed!\n\nProperties scraped: {len(df)}\nSaved to: {filename}")
-                
+
             else:
                 # Handle scraping failure with error system
                 error = Exception(result['error'])
@@ -3379,42 +3399,42 @@ For production deployment, schedules integrate with:
                 'mode': self.config['mode'].value,
                 'session_id': session_id
             }, 'scraping_execution')
-        
+
         finally:
             # Clean up
             if self.scraper:
                 self.scraper.close()
-            
+
             self.reset_ui_state()
-    
+
     def reset_ui_state(self):
         """Reset UI state after scraping"""
         self.is_scraping = False
         self.start_button.config(state='normal')
         self.stop_btn.config(state='disabled')
         self.update_status("Ready to start scraping")
-    
+
     def create_tooltip(self, widget, text):
         """Create a tooltip for a widget"""
         def on_enter(event):
             tooltip = tk.Toplevel()
             tooltip.wm_overrideredirect(True)
             tooltip.wm_geometry(f"+{event.x_root+10}+{event.y_root+10}")
-            
-            label = tk.Label(tooltip, text=text, background="#ffffe0", 
+
+            label = tk.Label(tooltip, text=text, background="#ffffe0",
                            relief="solid", borderwidth=1, font=("Arial", 9))
             label.pack()
-            
+
             widget.tooltip = tooltip
-        
+
         def on_leave(event):
             if hasattr(widget, 'tooltip'):
                 widget.tooltip.destroy()
                 del widget.tooltip
-        
+
         widget.bind("<Enter>", on_enter)
         widget.bind("<Leave>", on_leave)
-    
+
     def run(self):
         """Run the GUI application"""
         try:
