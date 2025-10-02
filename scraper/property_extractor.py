@@ -71,13 +71,16 @@ class PropertyExtractor:
                 'N/A'
             )
             
-            # Extract area with enhanced fallback
+            # Extract area with enhanced fallback (backward compatible single value)
             area = self._extract_with_enhanced_fallback(
-                card, 
-                self.premium_selectors['area'], 
-                'area', 
+                card,
+                self.premium_selectors['area'],
+                'area',
                 'N/A'
             )
+
+            # Extract comprehensive area types (new enhancement)
+            area_types = self._extract_area_types(card)
             
             # Extract property URL with premium support
             property_url = self._extract_premium_property_url(card)
@@ -165,19 +168,19 @@ class PropertyExtractor:
                 # Basic fields
                 'title': title,
                 'price': price,
-                'area': area,
+                'area': area,  # Backward compatible single area value
                 'property_url': property_url,
                 'page_number': page_number,
                 'property_index': property_index,
                 'scraped_at': datetime.now(),
                 'posting_date_text': posting_date_text,
                 'parsed_posting_date': parsed_posting_date,
-                
+
                 # Premium property information
                 'is_premium': premium_info['is_premium'],
                 'premium_type': premium_info['premium_type'],
                 'premium_indicators': premium_info['indicators'],
-                
+
                 # Comprehensive fields
                 'bathrooms': bathrooms,
                 'balcony': balcony,
@@ -192,12 +195,18 @@ class PropertyExtractor:
                 'ownership': ownership,
                 'transaction': transaction,
                 'overlooking': overlooking,
-                
+
                 # Phase 3 Enhancement fields
                 'photo_count': photo_count,
                 'owner_name': owner_name,
                 'contact_options': contact_options,
-                'description': description
+                'description': description,
+
+                # Phase 4 Priority 1.2: Area Type Differentiation
+                'carpet_area': area_types.get('carpet_area'),
+                'builtup_area': area_types.get('builtup_area'),
+                'super_area': area_types.get('super_area'),
+                'plot_area': area_types.get('plot_area')
             }
             
             # Update successful extraction stats
@@ -830,6 +839,109 @@ class PropertyExtractor:
         else:
             # Return as-is if it's a valid status
             return status_text.strip()
+
+    def _extract_area_types(self, card) -> dict:
+        """
+        Extract multiple area types (Carpet, Built-up, Super, Plot)
+        Priority 1.2: Area Type Differentiation
+
+        Returns dict with:
+        - carpet_area: Carpet area value
+        - builtup_area: Built-up area value
+        - super_area: Super area value
+        - plot_area: Plot area value
+        """
+        area_data = {
+            'carpet_area': None,
+            'builtup_area': None,
+            'super_area': None,
+            'plot_area': None
+        }
+
+        try:
+            # Get all text from card
+            all_text = card.get_text()
+
+            # Strategy 1: Look for labeled area types in structured elements
+            area_selectors = [
+                '*[class*="area"]',
+                '*[class*="sqft"]',
+                '*[class*="size"]',
+                '.mb-srp__card__summary__list--item'
+            ]
+
+            for selector in area_selectors:
+                elements = card.select(selector)
+                for elem in elements:
+                    elem_text = elem.get_text(strip=True).lower()
+
+                    # Extract numeric value and unit
+                    area_value = self._extract_numeric_area_value(elem_text)
+
+                    if area_value:
+                        # Categorize by area type
+                        if 'carpet' in elem_text:
+                            area_data['carpet_area'] = area_value
+                        elif 'built' in elem_text or 'builtup' in elem_text or 'built-up' in elem_text:
+                            area_data['builtup_area'] = area_value
+                        elif 'super' in elem_text:
+                            area_data['super_area'] = area_value
+                        elif 'plot' in elem_text:
+                            area_data['plot_area'] = area_value
+
+            # Strategy 2: Text pattern matching for area types
+            area_patterns = [
+                (r'Carpet\s+Area[:\s]+(\d+[\d,]*\.?\d*)\s*(sq\.?\s*ft|sqft|sq\.?\s*m|sqm)', 'carpet_area'),
+                (r'Built[-\s]?up\s+Area[:\s]+(\d+[\d,]*\.?\d*)\s*(sq\.?\s*ft|sqft|sq\.?\s*m|sqm)', 'builtup_area'),
+                (r'Super\s+Area[:\s]+(\d+[\d,]*\.?\d*)\s*(sq\.?\s*ft|sqft|sq\.?\s*m|sqm)', 'super_area'),
+                (r'Plot\s+Area[:\s]+(\d+[\d,]*\.?\d*)\s*(sq\.?\s*ft|sqft|sq\.?\s*m|sqm)', 'plot_area'),
+            ]
+
+            for pattern, area_type in area_patterns:
+                match = re.search(pattern, all_text, re.IGNORECASE)
+                if match and not area_data[area_type]:
+                    # Extract numeric value and unit
+                    value = match.group(1).replace(',', '')
+                    unit = match.group(2).lower().replace('.', '').replace(' ', '')
+                    area_data[area_type] = f"{value} {unit}"
+
+            # Strategy 3: If no specific area types found, try to infer from property type
+            # For plots, any area is likely plot area
+            if not any(area_data.values()):
+                # Check if this is a plot property
+                title_elem = card.select_one('.mb-srp__card__summary__title')
+                if title_elem:
+                    title_text = title_elem.get_text().lower()
+                    if 'plot' in title_text or 'land' in title_text:
+                        # Extract any area value and assign to plot_area
+                        area_match = re.search(r'(\d+[\d,]*\.?\d*)\s*(sq\.?\s*ft|sqft|sq\.?\s*m|sqm)', all_text, re.IGNORECASE)
+                        if area_match:
+                            value = area_match.group(1).replace(',', '')
+                            unit = area_match.group(2).lower().replace('.', '').replace(' ', '')
+                            area_data['plot_area'] = f"{value} {unit}"
+
+            return area_data
+
+        except Exception as e:
+            # Return empty area data on error
+            return area_data
+
+    def _extract_numeric_area_value(self, text: str) -> str:
+        """Extract numeric area value with unit from text"""
+        try:
+            # Pattern: number + unit (sqft, sq.ft, sq ft, sqm, sq.m, sq m)
+            pattern = r'(\d+[\d,]*\.?\d*)\s*(sq\.?\s*ft|sqft|sq\.?\s*m|sqm)'
+            match = re.search(pattern, text, re.IGNORECASE)
+
+            if match:
+                value = match.group(1).replace(',', '')
+                unit = match.group(2).lower().replace('.', '').replace(' ', '')
+                return f"{value} {unit}"
+
+            return None
+
+        except Exception:
+            return None
 
     def _create_enhanced_description_from_data(self, title, price, area, locality, society, status) -> str:
         """Create enhanced description from extracted property data"""
