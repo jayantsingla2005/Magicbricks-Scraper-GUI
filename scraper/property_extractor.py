@@ -81,7 +81,10 @@ class PropertyExtractor:
 
             # Extract comprehensive area types (new enhancement)
             area_types = self._extract_area_types(card)
-            
+
+            # Extract price range information (Priority 1.3)
+            price_range_info = self._extract_price_range(price, card)
+
             # Extract property URL with premium support
             property_url = self._extract_premium_property_url(card)
             
@@ -206,7 +209,12 @@ class PropertyExtractor:
                 'carpet_area': area_types.get('carpet_area'),
                 'builtup_area': area_types.get('builtup_area'),
                 'super_area': area_types.get('super_area'),
-                'plot_area': area_types.get('plot_area')
+                'plot_area': area_types.get('plot_area'),
+
+                # Phase 4 Priority 1.3: Price Range Extraction
+                'min_price': price_range_info.get('min_price'),
+                'max_price': price_range_info.get('max_price'),
+                'is_price_range': price_range_info.get('is_range', False)
             }
             
             # Update successful extraction stats
@@ -942,6 +950,75 @@ class PropertyExtractor:
 
         except Exception:
             return None
+
+    def _extract_price_range(self, price_text: str, card) -> dict:
+        """
+        Extract price range information from price text
+        Priority 1.3: Detect and extract price ranges (e.g., "₹ 1.2 - 1.5 Crore")
+
+        Args:
+            price_text: Price text from listing
+            card: BeautifulSoup card element for additional context
+
+        Returns:
+            dict with keys: min_price, max_price, is_range
+        """
+        price_range_data = {
+            'min_price': None,
+            'max_price': None,
+            'is_range': False
+        }
+
+        try:
+            if not price_text or price_text == 'N/A':
+                return price_range_data
+
+            # Strategy 1: Direct range pattern matching
+            # Pattern: "₹ 1.2 - 1.5 Crore" or "₹ 50 - 60 Lakh"
+            range_patterns = [
+                r'₹\s*([\d.]+)\s*-\s*([\d.]+)\s*(Crore|Lakh|Cr|L)',
+                r'([\d.]+)\s*-\s*([\d.]+)\s*(Crore|Lakh|Cr|L)',
+                r'₹\s*([\d.]+)\s*to\s*([\d.]+)\s*(Crore|Lakh|Cr|L)',
+                r'([\d.]+)\s*to\s*([\d.]+)\s*(Crore|Lakh|Cr|L)'
+            ]
+
+            for pattern in range_patterns:
+                match = re.search(pattern, price_text, re.IGNORECASE)
+                if match:
+                    min_val = match.group(1)
+                    max_val = match.group(2)
+                    unit = match.group(3)
+
+                    price_range_data['min_price'] = f"₹ {min_val} {unit}"
+                    price_range_data['max_price'] = f"₹ {max_val} {unit}"
+                    price_range_data['is_range'] = True
+                    return price_range_data
+
+            # Strategy 2: Check card text for range patterns
+            try:
+                all_text = card.get_text()
+
+                for pattern in range_patterns:
+                    match = re.search(pattern, all_text, re.IGNORECASE)
+                    if match:
+                        min_val = match.group(1)
+                        max_val = match.group(2)
+                        unit = match.group(3)
+
+                        price_range_data['min_price'] = f"₹ {min_val} {unit}"
+                        price_range_data['max_price'] = f"₹ {max_val} {unit}"
+                        price_range_data['is_range'] = True
+                        return price_range_data
+            except:
+                pass
+
+            # Strategy 3: Single price (not a range)
+            # If no range detected, price_text is a single value
+            # Keep is_range=False and leave min/max as None
+            return price_range_data
+
+        except Exception as e:
+            return price_range_data
 
     def _create_enhanced_description_from_data(self, title, price, area, locality, society, status) -> str:
         """Create enhanced description from extracted property data"""
