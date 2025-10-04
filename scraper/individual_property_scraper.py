@@ -50,6 +50,8 @@ class IndividualPropertyScraper:
         self.segment_cooldowns: Dict[str, float] = {}
         # P1-2: Referer header management
         self.last_listing_page_url: Optional[str] = None
+        # P2-2: Mouse movement simulation configuration
+        self.simulate_mouse_movement: bool = True  # Default enabled
         # Thread-safe driver access for concurrent mode
         self.driver_lock = threading.Lock()
         self.restart_requested = False
@@ -417,6 +419,32 @@ class IndividualPropertyScraper:
                     # If any error, use minimal settle time
                     self.logger.debug(f"   [P0-2] Wait error: {e}, using minimal settle")
                     time.sleep(0.5)
+
+                # P2-2: Simulate mouse movement and scrolling (human-like behavior)
+                if self.simulate_mouse_movement:
+                    try:
+                        # Inject JavaScript to simulate mouse movements
+                        mouse_script = """
+                        // Simulate random mouse movements
+                        var event = new MouseEvent('mousemove', {
+                            'view': window,
+                            'bubbles': true,
+                            'cancelable': true,
+                            'clientX': Math.random() * window.innerWidth,
+                            'clientY': Math.random() * window.innerHeight
+                        });
+                        document.dispatchEvent(event);
+
+                        // Simulate scrolling
+                        window.scrollTo({
+                            top: Math.random() * 500,
+                            behavior: 'smooth'
+                        });
+                        """
+                        driver.execute_script(mouse_script)
+                        self.logger.debug(f"   [P2-2] Simulated mouse movement and scroll")
+                    except Exception as e:
+                        self.logger.debug(f"   [P2-2] Failed to simulate mouse: {e}")
 
                 # Get page source
                 page_source = driver.page_source
