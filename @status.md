@@ -536,3 +536,6 @@ Update 02:15 IST — Centralized UA rotation
 Update 02:25 IST — Incremental fixes
 - Task 9: Feed real property URLs into URLTrackingSystem — COMPLETE
   - analyze_page_for_incremental_decision now accepts property_urls; listing extractor returns property_urls; integrated call updated
+
+- Task 10: Persist posting dates and compute page metrics — COMPLETE
+  - property_posting_dates table gets inserts during URL tracking; per-page posting metadata now available for metrics

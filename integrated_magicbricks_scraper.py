@@ -1934,13 +1934,47 @@ class IntegratedMagicBricksScraper:
                 parsed_posting_dates=page_result.get('parsed_posting_dates', [])
             )
 
+            # Compute simple page metrics
+            total_urls = analysis['url_analysis']['total_urls'] or 0
+            dup_count = analysis['url_analysis']['duplicate_urls']
+            duplicates_ratio = (dup_count / total_urls) if total_urls else 0.0
+            old_ratio = analysis['date_analysis']['old_percentage']
+
+            # Initialize counters
+            self.session_stats.setdefault('consecutive_high_dup', 0)
+            self.session_stats.setdefault('consecutive_high_old', 0)
+
+            # Apply additional stop rule: 2 consecutive high-dup or high-old pages
+            extra_should_stop = False
+            extra_reason = None
+            if duplicates_ratio >= 0.95:
+                self.session_stats['consecutive_high_dup'] += 1
+            else:
+                self.session_stats['consecutive_high_dup'] = 0
+
+            if old_ratio >= 0.95:
+                self.session_stats['consecutive_high_old'] += 1
+            else:
+                self.session_stats['consecutive_high_old'] = 0
+
+            if self.session_stats['consecutive_high_dup'] >= 2:
+                extra_should_stop = True
+                extra_reason = f"Consecutive pages with duplicates_ratio >= 0.95"
+            if self.session_stats['consecutive_high_old'] >= 2:
+                extra_should_stop = True
+                extra_reason = (extra_reason + "; " if extra_reason else "") + "Consecutive pages with old_ratio >= 0.95"
+
+            final_should_stop = analysis['should_stop'] or extra_should_stop
+            final_reason = analysis['stop_reason'] if analysis['should_stop'] else (extra_reason or '')
+
             return {
-                'should_stop': analysis['should_stop'],
-                'reason': analysis['stop_reason'],
+                'should_stop': final_should_stop,
+                'reason': final_reason,
                 'confidence': analysis['confidence'],
-                'old_percentage': analysis['date_analysis']['old_percentage']
+                'old_percentage': old_ratio,
+                'duplicates_ratio': duplicates_ratio
             }
-            
+
         except Exception as e:
             self.logger.error(f"Error in incremental decision: {str(e)}")
             return {'should_stop': False, 'reason': f'Decision error: {str(e)}'}
