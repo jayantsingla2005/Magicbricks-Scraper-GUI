@@ -493,3 +493,22 @@ Update 00:55 IST — Part 1 (30‑URL Playwright Validation) COMPLETE
   - Gaps: Title/floor_details/contact_options/description/photo_count string matches are low; likely due to display variants, pagination or lazy content. We captured full HTML and screenshots for each URL for audit.
   - Price/Area: 80%/73.3% match via normalized string presence; unit/value formatting differences account for misses.
 - Next: Proceed to Priority‑0 fixes; repeat a smaller validation spot-check post‑fixes to measure any improvement.
+
+
+Update 01:25 IST — Priority‑0 Fixes Progress
+- Task 2: Implement WebDriver restart logic — COMPLETE
+  - Change: IndividualPropertyScraper now accepts restart_callback and invokes parent IntegratedMagicBricksScraper._restart_browser_session()
+  - Test: tests/test_individual_restart.py passes (verifies callback is called)
+- Task 3: Harden CSV merge (KeyError 'url') — COMPLETE
+  - Change: Safe mapping using prop.get('url') or prop.get('property_url'); robust amenities handling
+  - Test: tests/test_csv_merge_update.py passes and confirms CSV updated without KeyError
+- Task 4: PDP fallbacks for atypical pages — IN PROGRESS
+  - Change: Added additional fallback selectors ([data-testid*="title"], [data-testid*="price"]) to PropertyExtractor
+  - Next: Add targeted unit tests with captured Dadar East HTML samples; validate reductions in "No meaningful data extracted" warnings
+
+Test run summary
+- Command: pytest -q tests/test_csv_merge_update.py tests/test_individual_restart.py
+- Result: 2 passed, 0 failed (0.53s)
+
+Version control
+- Committed locally: 94b8669 (Priority‑0 fixes + tests). Not pushing to remote per policy unless requested.
