@@ -520,3 +520,15 @@ Update 01:45 IST — Anti-bot Improvements (Phase 3)
 - Task 6: Segment-aware pacing — PENDING (next)
 - Task 7: Concurrency staggering + jitter — PENDING
 - Task 8: Centralized UA rotation — PENDING
+Update 02:05 IST — Segment-aware pacing + jitter
+- Task 6: Segment-aware pacing — COMPLETE
+  - Implemented segment detection from URL and per-segment exponential cooldowns on detection clusters
+  - Tests: tests/test_segment_pacing.py (2 passed)
+- Task 7: Concurrency jitter — COMPLETE
+  - Added 200–900 ms pre-request jitter in _scrape_single_property_enhanced for smoother distribution
+
+Update 02:15 IST — Centralized UA rotation
+- Task 8: Centralized User-Agent rotation — COMPLETE
+  - Added scraper/ua_rotation.py with curated desktop UA pool and cycle()
+  - setup_driver now pulls UA via get_next_user_agent() and applies per session
+

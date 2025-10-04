@@ -40,6 +40,7 @@ from scraper import (
     DataValidator,
     IndividualPropertyScraper
 )
+from scraper.ua_rotation import get_next_user_agent
 
 
 class IntegratedMagicBricksScraper:
@@ -398,8 +399,9 @@ class IntegratedMagicBricksScraper:
                 chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
                 chrome_options.add_experimental_option('useAutomationExtension', False)
 
-                # User agent for better compatibility
-                chrome_options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+                # User agent rotation (centralized policy)
+                ua = get_next_user_agent()
+                chrome_options.add_argument(f'--user-agent={ua}')
 
                 # Performance optimizations (but keep JavaScript enabled for individual pages)
                 chrome_options.add_argument("--disable-extensions")
@@ -621,10 +623,11 @@ class IntegratedMagicBricksScraper:
                 # Incremental decision making
                 if self.incremental_enabled and mode != ScrapingMode.FULL:
                     should_stop = self.make_incremental_decision(
-                        page_result['property_texts'], 
+                        page_result['property_texts'],
+                        page_result.get('property_urls', []),
                         page_number
                     )
-                    
+
                     if should_stop['should_stop']:
                         self.session_stats['incremental_stopped'] = True
                         self.session_stats['stop_reason'] = should_stop['reason']
@@ -768,7 +771,8 @@ class IntegratedMagicBricksScraper:
             # Extract properties
             page_properties = []
             property_texts = []
-            
+            property_urls_page = []
+
             for i, card in enumerate(property_cards):
                 try:
                     property_data = self.property_extractor.extract_property_data(card, page_number, i + 1)
@@ -780,6 +784,8 @@ class IntegratedMagicBricksScraper:
                         if self.data_validator.apply_property_filters(cleaned_property_data):
                             page_properties.append(cleaned_property_data)
                             property_texts.append(card.get_text())
+                            if cleaned_property_data.get('property_url'):
+                                property_urls_page.append(cleaned_property_data['property_url'])
                             self.data_validator.update_filter_stats(filtered=True)
                         else:
                             # Property was excluded by filters
@@ -799,9 +805,10 @@ class IntegratedMagicBricksScraper:
                 'success': True,
                 'properties_found': len(property_cards),
                 'properties_saved': len(page_properties),
-                'property_texts': property_texts
+                'property_texts': property_texts,
+                'property_urls': property_urls_page
             }
-            
+
         except Exception as e:
             return {'success': False, 'error': str(e)}
 
@@ -1903,7 +1910,7 @@ class IntegratedMagicBricksScraper:
         except Exception:
             return ''
 
-    def make_incremental_decision(self, property_texts: List[str], page_number: int) -> Dict[str, Any]:
+    def make_incremental_decision(self, property_texts: List[str], property_urls: List[str], page_number: int) -> Dict[str, Any]:
         """Make incremental scraping decision based on property data"""
         
         if not self.incremental_enabled or not self.session_stats.get('last_scrape_date'):
@@ -1915,9 +1922,10 @@ class IntegratedMagicBricksScraper:
                 property_texts,
                 self.session_stats['session_id'],
                 page_number,
-                self.session_stats['last_scrape_date']
+                self.session_stats['last_scrape_date'],
+                property_urls=property_urls
             )
-            
+
             return {
                 'should_stop': analysis['should_stop'],
                 'reason': analysis['stop_reason'],

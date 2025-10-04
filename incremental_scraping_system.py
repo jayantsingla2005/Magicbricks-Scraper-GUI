@@ -105,22 +105,31 @@ class IncrementalScrapingSystem:
         except Exception as e:
             return {'success': False, 'error': str(e)}
     
-    def analyze_page_for_incremental_decision(self, property_texts: List[str], 
+    def analyze_page_for_incremental_decision(self, property_texts: List[str],
                                             session_id: int, page_number: int,
-                                            last_scrape_date: datetime) -> Dict[str, Any]:
+                                            last_scrape_date: datetime,
+                                            property_urls: List[str] | None = None) -> Dict[str, Any]:
         """Analyze a page to determine if incremental scraping should continue"""
-        
+
         # Use smart stopping logic to analyze the page
         page_analysis = self.stopping_logic.analyze_page_for_stopping(
             property_texts, last_scrape_date, page_number
         )
-        
-        # Track URLs for validation
-        url_data = [{'url': f'test_url_{i}', 'title': text[:50], 'city': 'test'} 
-                   for i, text in enumerate(property_texts)]
-        
+
+        # Track URLs for validation using real URLs when available
+        if property_urls:
+            url_data = [
+                {'url': u, 'title': (property_texts[i][:50] if i < len(property_texts) else ''), 'city': 'test'}
+                for i, u in enumerate(property_urls)
+            ]
+        else:
+            url_data = [
+                {'url': f'test_url_{i}', 'title': text[:50], 'city': 'test'}
+                for i, text in enumerate(property_texts)
+            ]
+
         url_tracking_result = self.url_tracker.batch_track_urls(url_data, session_id)
-        
+
         # Combine analysis
         combined_analysis = {
             'page_number': page_number,
