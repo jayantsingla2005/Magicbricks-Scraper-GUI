@@ -18,7 +18,7 @@ from scraper.property_extractor import PropertyExtractor
 
 class TestPropertyExtractor(unittest.TestCase):
     """Test suite for PropertyExtractor class"""
-    
+
     def setUp(self):
         """Set up test fixtures"""
         self.premium_selectors = {
@@ -27,19 +27,19 @@ class TestPropertyExtractor(unittest.TestCase):
             'area': ['.mb-srp__card__summary__list', '*[class*="area"]'],
             'url': ['a[href*="magicbricks.com"]']
         }
-        
+
         self.extractor = PropertyExtractor(
             premium_selectors=self.premium_selectors,
             date_parser=None,
             logger=None
         )
-    
+
     def test_initialization(self):
         """Test PropertyExtractor initialization"""
         self.assertIsNotNone(self.extractor)
         self.assertEqual(self.extractor.premium_selectors, self.premium_selectors)
         self.assertEqual(self.extractor.extraction_stats['total_extracted'], 0)
-    
+
     def test_extract_property_data_valid_card(self):
         """Test extraction with valid property card"""
         html = """
@@ -51,16 +51,16 @@ class TestPropertyExtractor(unittest.TestCase):
         </div>
         """
         card = BeautifulSoup(html, 'html.parser')
-        
+
         result = self.extractor.extract_property_data(card, 1, 1)
-        
+
         self.assertIsNotNone(result)
         self.assertIn('title', result)
         self.assertIn('price', result)
         self.assertIn('area', result)
         self.assertEqual(result['page_number'], 1)
         self.assertEqual(result['property_index'], 1)
-    
+
     def test_extract_property_data_missing_fields(self):
         """Test extraction with missing fields"""
         html = """
@@ -69,23 +69,23 @@ class TestPropertyExtractor(unittest.TestCase):
         </div>
         """
         card = BeautifulSoup(html, 'html.parser')
-        
+
         result = self.extractor.extract_property_data(card, 1, 1)
-        
+
         # Should still extract with lenient validation
         self.assertIsNotNone(result)
         self.assertIn('title', result)
-    
+
     def test_extract_property_data_empty_card(self):
         """Test extraction with empty card"""
         html = "<div class='mb-srp__card'></div>"
         card = BeautifulSoup(html, 'html.parser')
-        
+
         result = self.extractor.extract_property_data(card, 1, 1)
-        
+
         # Should return None for completely empty card
         self.assertIsNone(result)
-    
+
     def test_detect_premium_property_type_standard(self):
         """Test premium detection for standard property"""
         html = """
@@ -94,12 +94,12 @@ class TestPropertyExtractor(unittest.TestCase):
         </div>
         """
         card = BeautifulSoup(html, 'html.parser')
-        
+
         result = self.extractor.detect_premium_property_type(card)
-        
+
         self.assertFalse(result['is_premium'])
         self.assertEqual(result['premium_type'], 'standard')
-    
+
     def test_detect_premium_property_type_premium(self):
         """Test premium detection for premium property"""
         html = """
@@ -109,12 +109,12 @@ class TestPropertyExtractor(unittest.TestCase):
         </div>
         """
         card = BeautifulSoup(html, 'html.parser')
-        
+
         result = self.extractor.detect_premium_property_type(card)
-        
+
         self.assertTrue(result['is_premium'])
         self.assertIn('premium', result['premium_type'].lower())
-    
+
     def test_extract_with_enhanced_fallback_success(self):
         """Test enhanced fallback extraction - success case"""
         html = """
@@ -123,24 +123,24 @@ class TestPropertyExtractor(unittest.TestCase):
         </div>
         """
         card = BeautifulSoup(html, 'html.parser')
-        
+
         result = self.extractor._extract_with_enhanced_fallback(
             card, ['h2'], 'title', 'N/A'
         )
-        
+
         self.assertEqual(result, 'Test Title')
-    
+
     def test_extract_with_enhanced_fallback_default(self):
         """Test enhanced fallback extraction - default case"""
         html = "<div></div>"
         card = BeautifulSoup(html, 'html.parser')
-        
+
         result = self.extractor._extract_with_enhanced_fallback(
             card, ['h2'], 'title', 'N/A'
         )
-        
+
         self.assertEqual(result, 'N/A')
-    
+
     def test_extract_premium_property_url_valid(self):
         """Test URL extraction with valid URL"""
         html = """
@@ -149,11 +149,11 @@ class TestPropertyExtractor(unittest.TestCase):
         </div>
         """
         card = BeautifulSoup(html, 'html.parser')
-        
+
         result = self.extractor._extract_premium_property_url(card)
-        
+
         self.assertIn('magicbricks.com', result)
-    
+
     def test_extract_premium_property_url_relative(self):
         """Test URL extraction with relative URL (fallback path)"""
         # Update selectors to allow any href for this test
@@ -177,7 +177,7 @@ class TestPropertyExtractor(unittest.TestCase):
 
         # Should convert to absolute URL
         self.assertIn('magicbricks.com', result)
-    
+
     def test_extraction_statistics_tracking(self):
         """Test that statistics are properly tracked"""
         html = """
@@ -188,26 +188,26 @@ class TestPropertyExtractor(unittest.TestCase):
         </div>
         """
         card = BeautifulSoup(html, 'html.parser')
-        
+
         initial_total = self.extractor.extraction_stats['total_extracted']
-        
+
         self.extractor.extract_property_data(card, 1, 1)
-        
+
         self.assertEqual(
             self.extractor.extraction_stats['total_extracted'],
             initial_total + 1
         )
-    
+
     def test_get_extraction_statistics(self):
         """Test statistics retrieval"""
         stats = self.extractor.get_extraction_statistics()
-        
+
         self.assertIn('total_extracted', stats)
         self.assertIn('successful_extractions', stats)
         self.assertIn('failed_extractions', stats)
         self.assertIn('premium_properties', stats)
         self.assertIn('standard_properties', stats)
-    
+
     def test_reset_extraction_statistics(self):
         """Test statistics reset"""
         # Extract something first
@@ -219,15 +219,15 @@ class TestPropertyExtractor(unittest.TestCase):
         """
         card = BeautifulSoup(html, 'html.parser')
         self.extractor.extract_property_data(card, 1, 1)
-        
+
         # Reset
         self.extractor.reset_extraction_statistics()
-        
+
         # Verify reset
         stats = self.extractor.get_extraction_statistics()
         self.assertEqual(stats['total_extracted'], 0)
         self.assertEqual(stats['successful_extractions'], 0)
-    
+
     def test_extract_property_type_from_title(self):
         """Test property type extraction from title"""
         test_cases = [
@@ -237,11 +237,11 @@ class TestPropertyExtractor(unittest.TestCase):
             ("Independent House", "House"),
             ("Plot for Sale", "Plot"),
         ]
-        
+
         for title, expected_type in test_cases:
             result = self.extractor._extract_property_type_from_title(title)
             self.assertIn(expected_type.lower(), result.lower())
-    
+
     def test_special_characters_handling(self):
         """Test handling of special characters in data"""
         html = """
@@ -251,11 +251,34 @@ class TestPropertyExtractor(unittest.TestCase):
         </div>
         """
         card = BeautifulSoup(html, 'html.parser')
-        
+
         result = self.extractor.extract_property_data(card, 1, 1)
-        
+
         self.assertIsNotNone(result)
         self.assertIn('title', result)
+
+    def test_pdp_fallback_title_data_testid(self):
+        """Title should be found via [data-testid*="title" i] fallback"""
+        html = """
+        <div>
+            <div data-testid="mb-ldp-title">Elegant 2 BHK in Dadar East</div>
+        </div>
+        """
+        soup = BeautifulSoup(html, 'html.parser')
+        title = self.extractor._safe_extract_property_title(soup)
+        self.assertIn('Dadar East', title)
+
+    def test_pdp_fallback_price_data_testid(self):
+        """Price should be found via [data-testid*="price" i] fallback"""
+        html = """
+        <div>
+            <div data-testid="mb-ldp-price">₹ 1.35 Cr</div>
+        </div>
+        """
+        soup = BeautifulSoup(html, 'html.parser')
+        price = self.extractor._safe_extract_property_price(soup)
+        self.assertTrue(any(ch.isdigit() for ch in price))
+
 
 
 if __name__ == '__main__':

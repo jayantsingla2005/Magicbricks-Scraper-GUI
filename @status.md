@@ -1,6 +1,29 @@
 # MagicBricks Scraper Project Status
 
 ## Orchestrator Tasklist (2025-10-02)
+
+## 2025-10-04 — Task List Audit and Cleanup (Part 1)
+- Scope: Reviewed all tasks in the orchestrator list; updated statuses, added evidence, and aligned with current codebase.
+- Results:
+  - Completed now: 31 tasks updated to COMPLETE in this pass (IDs include: rKcq3NNZ…, vcrhs71h…, gMR1Sns5…, uvszX9kN…, mktkQ73v…, GUI module extractions, unit/integration tests, prior validation phases, etc.).
+  - Deleted: 0 (no items found truly obsolete; all were either completed historically or still applicable; retained for traceability).
+  - Remaining pending/in-progress (key items):
+    - Refactor Main Scraper into modules (63pNr9s9…): IN PROGRESS (large-scope, not part of current sprint).
+    - Code Cleanup & Optimization (rns3nS887…): PENDING (cross-cutting post-refactor activity).
+    - Dependency & Configuration Review (bmcjiJre…): PENDING (will do after stability window).
+    - Update All Imports (1VuQ7Uf7…): PENDING (tied to main scraper refactor).
+- Evidence mapping stored below and in commit history; individual task evidence notes attached via Tasklist update descriptions.
+
+### Part 2 progress — Completing applicable pending tasks
+- Extraction fallbacks for atypical PDP structures (5uu2uc58…): COMPLETE
+  - Implemented new fallbacks in scraper/property_extractor.py ([data-testid*="title" i], [data-testid*="price" i])
+  - Added unit tests:
+    - tests/test_property_extractor.py::test_pdp_fallback_title_data_testid — PASS
+    - tests/test_property_extractor.py::test_pdp_fallback_price_data_testid — PASS
+  - Test run: 22 passed, 0 failed (pytest -q tests/...)
+
+Next: Begin Part 3 (200-page end-to-end validation) once audit notes are captured.
+
 - [/] Task 1: Push local commits to remote (origin master)
   - Status: BLOCKED — no remote configured (git remote -v is empty). Awaiting remote URL or permission to create a new GitHub repo and add as origin.
 - [/] Task 2: Desktop GUI Validation (Tkinter)
@@ -548,3 +571,45 @@ Update 02:25 IST — Incremental fixes
 
 - Task 13: UTF-8 safe logging across modules — COMPLETE
   - Integrated logger uses UTF-8 FileHandler + SafeFormatter; modules attach to this logger via getLogger(__name__)
+
+
+## 2025-10-04 — Live Monitoring: Mumbai Validation Run (Part 3 / Phase: In Progress)
+- Session: tools/e2e_validation_run.py → Mumbai (headful, incremental, include_individual_pages=True)
+- Current state: Listing pages progressing (observed ≥10 pages); individual-page batches running with high volume; intermittent driver connectivity errors observed later in the run.
+
+### Errors/Warnings Observed (categorized)
+- Driver/WebDriver errors:
+  - Repeated HTTPConnectionPool connection refused to localhost:<port> (WinError 10061) during individual property scraping; messages like "Failed to establish a new connection"; after 3 attempts → "Failed to scrape property after 3 attempts". Likely browser/driver session crash or port closure; restart signaling not clearly logged.
+- Network/timeout errors:
+  - Same HTTPConnectionPool/connection-refused errors manifest as network-level failures to WebDriver endpoint.
+- CSV update errors:
+  - None observed in current Mumbai console excerpts; Gurgaon showed successful CSV updates.
+- Data extraction failures:
+  - No explicit "No meaningful data extracted" in shown Mumbai excerpt; however, Gurgaon batch showed titles like "About Magicbricks" indicating wrong-page content returned by site—flagged as anomaly for extractor validation.
+- Bot detection events:
+  - No explicit detection counters in Mumbai console excerpt so far; cooldown/backoff evidence not yet logged in this slice (will confirm from integrated logs on completion).
+- Other anomalies:
+  - High batch numbering (e.g., Batch 78/79) indicates large individual URL workload; multiple per-URL retry cycles were triggered for several URLs.
+
+### Live Metrics (from console excerpts)
+- Pages scraped: observed 10 pages completed (continuing). Old ratio on pages 1–9: 0.0% (no stop); per-page URL tracking shows mix of new/duplicate.
+- URL tracking batches (samples):
+  - Page 1: 15 new / 14 duplicates
+  - Page 2: 17 new / 9 duplicates
+  - Page 3: 19 new / 10 duplicates
+  - Page 4: 16 new / 13 duplicates
+  - Page 5: 18 new / 9 duplicates
+  - Page 6: 12 new / 18 duplicates
+  - Page 7: 16 new / 11 duplicates
+  - Page 8: 17 new / 13 duplicates
+  - Page 9: 20 new / 9 duplicates
+- Individual property scraping:
+  - Inter-batch delays present (e.g., 5.7s, 3.1s). Numerous per-URL failures due to WebDriver connection refused; each retried up to 3 times.
+- Batch quality metrics:
+  - Observed in Gurgaon (e.g., n=5 overall=55.0% with field breakdown). Mumbai batch-quality lines not yet present in the captured slice.
+
+### Immediate Follow-ups (monitoring)
+- Continue monitoring Terminal 211 until Mumbai completes; capture:
+  - Total pages, properties found/saved, URL counts (new/duplicate), stop rules, and any restart events.
+  - Aggregate counts of connection-refused errors and success/failure rates per batch.
+- Post-run, compile the two-city report per spec (Executive Summary, Per-City Breakdown, Task Validation Evidence, Error Analysis, Performance Metrics, Production Readiness).

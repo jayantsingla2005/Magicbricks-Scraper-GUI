@@ -625,7 +625,9 @@ class IntegratedMagicBricksScraper:
                     should_stop = self.make_incremental_decision(
                         page_result['property_texts'],
                         page_result.get('property_urls', []),
-                        page_number
+                        page_number,
+                        posting_date_texts=page_result.get('posting_date_texts', []),
+                        parsed_posting_dates=page_result.get('parsed_posting_dates', [])
                     )
 
                     if should_stop['should_stop']:
@@ -1916,7 +1918,7 @@ class IntegratedMagicBricksScraper:
         except Exception:
             return ''
 
-    def make_incremental_decision(self, property_texts: List[str], property_urls: List[str], page_number: int) -> Dict[str, Any]:
+    def make_incremental_decision(self, property_texts: List[str], property_urls: List[str], page_number: int, posting_date_texts: List[str] | None = None, parsed_posting_dates: List[datetime] | None = None) -> Dict[str, Any]:
         """Make incremental scraping decision based on property data"""
         
         if not self.incremental_enabled or not self.session_stats.get('last_scrape_date'):
@@ -1930,8 +1932,8 @@ class IntegratedMagicBricksScraper:
                 page_number,
                 self.session_stats['last_scrape_date'],
                 property_urls=property_urls,
-                posting_date_texts=page_result.get('posting_date_texts', []),
-                parsed_posting_dates=page_result.get('parsed_posting_dates', [])
+                posting_date_texts=(posting_date_texts or []),
+                parsed_posting_dates=(parsed_posting_dates or [])
             )
 
             # Compute simple page metrics
@@ -2153,12 +2155,23 @@ class IntegratedMagicBricksScraper:
     def _restart_browser_session(self):
         """Restart browser session with new configuration"""
         try:
+            old_session = getattr(self.driver, 'session_id', 'unknown') if self.driver else 'none'
+            self.logger.info(f"   [DRIVER-RESTART] Closing old session: {old_session[:16]}...")
+
             if self.driver:
                 self.driver.quit()
                 time.sleep(2)
 
             # Create new session with rotated user agent
             self.setup_driver()
+            new_session = getattr(self.driver, 'session_id', 'unknown') if self.driver else 'none'
+            self.logger.info(f"   [DRIVER-RESTART] New session created: {new_session[:16]}...")
+
+            # Update driver reference in IndividualPropertyScraper if it exists
+            if hasattr(self, 'individual_scraper') and self.individual_scraper:
+                self.individual_scraper.update_driver(self.driver)
+                self.logger.info("   [DRIVER-UPDATE] IndividualPropertyScraper driver reference updated")
+
             self.logger.info("   [SUCCESS] Browser session restarted successfully")
 
         except Exception as e:

@@ -8,6 +8,7 @@ Extracted from integrated_magicbricks_scraper.py for better maintainability.
 import time
 import random
 import logging
+import threading
 from typing import List, Dict, Any, Optional, Callable
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from bs4 import BeautifulSoup
@@ -43,6 +44,9 @@ class IndividualPropertyScraper:
         # Segment-aware pacing data
         self.segment_failures: Dict[str, int] = {}
         self.segment_cooldowns: Dict[str, float] = {}
+        # Thread-safe driver access for concurrent mode
+        self.driver_lock = threading.Lock()
+        self.restart_requested = False
 
     def scrape_individual_property_pages(self, property_urls: List[str], batch_size: int = 10,
                                         progress_callback: Optional[Callable] = None,
@@ -139,6 +143,12 @@ class IndividualPropertyScraper:
                 }
 
                 for future in as_completed(future_to_url):
+                    # Check if restart was requested - abort batch if so
+                    if self.restart_requested:
+                        self.logger.warning(f"[BATCH-ABORT] Restart requested, aborting current batch")
+                        executor.shutdown(wait=False, cancel_futures=True)
+                        return detailed_properties  # Return what we have so far
+
                     url = future_to_url[future]
                     try:
                         property_details = future.result()
@@ -247,13 +257,21 @@ class IndividualPropertyScraper:
                     extra = max(0, self.segment_cooldowns[seg] - now)
                     self.logger.info(f"   [SEGMENT-PAUSE] {seg} cooling for {extra:.0f}s")
                     time.sleep(min(extra, 15))  # cap per-attempt extra wait
+
+                # Thread-safe driver access (critical for concurrent mode)
+                with self.driver_lock:
+                    if self.restart_requested:
+                        self.logger.info(f"   [ABORT] Restart in progress, aborting {property_url}")
+                        return None
+                    driver = self.driver
+
                 # Navigate to property page
-                self.driver.get(property_url)
+                driver.get(property_url)
                 time.sleep(random.uniform(2.0, 4.0))
 
                 # Get page source
-                page_source = self.driver.page_source
-                current_url = self.driver.current_url
+                page_source = driver.page_source
+                current_url = driver.current_url
 
                 # Check for bot detection
                 if self.bot_handler.detect_bot_detection(page_source, current_url):
@@ -305,12 +323,27 @@ class IndividualPropertyScraper:
 
         return None
 
+    def update_driver(self, new_driver):
+        """
+        Update the driver reference (called by parent after restart)
+        Thread-safe update for concurrent mode
+        """
+        with self.driver_lock:
+            old_session = getattr(self.driver, 'session_id', 'unknown') if self.driver else 'none'
+            self.driver = new_driver
+            new_session = getattr(new_driver, 'session_id', 'unknown') if new_driver else 'none'
+            self.logger.info(f"[DRIVER-UPDATE] Session changed: {old_session[:16]}... → {new_session[:16]}...")
+            self.restart_requested = False
+
     def _restart_driver(self):
         """Restart driver using callback provided by parent class"""
         try:
             if callable(getattr(self, 'restart_callback', None)):
-                self.logger.info("[RESTART] Restarting driver via parent callback...")
+                old_session = getattr(self.driver, 'session_id', 'unknown') if self.driver else 'none'
+                self.logger.info(f"[DRIVER-RESTART] Triggering restart (old session: {old_session[:16]}...)")
+                self.restart_requested = True  # Signal concurrent workers to abort
                 self.restart_callback()
+                # Note: Parent must call update_driver() after creating new driver
             else:
                 self.logger.warning("Driver restart requested but no restart_callback provided")
         except Exception as e:
