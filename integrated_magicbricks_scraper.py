@@ -392,7 +392,16 @@ class IntegratedMagicBricksScraper:
                 chrome_options.add_argument("--no-sandbox")
                 chrome_options.add_argument("--disable-dev-shm-usage")
                 chrome_options.add_argument("--disable-gpu")
-                chrome_options.add_argument("--window-size=1920,1080")
+
+                # P2-1: Viewport randomization (anti-fingerprinting)
+                if self.config.get('randomize_viewport', True):
+                    import random
+                    width = random.randint(1870, 1970)  # 1920 ± 50
+                    height = random.randint(1030, 1130)  # 1080 ± 50
+                    chrome_options.add_argument(f"--window-size={width},{height}")
+                    self.logger.info(f"[P2-1] Randomized viewport: {width}x{height}")
+                else:
+                    chrome_options.add_argument("--window-size=1920,1080")
 
                 # P0-2: Eager page load strategy (30-40% speed improvement)
                 page_load_strategy = self.config.get('page_load_strategy', 'eager')
