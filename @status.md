@@ -542,3 +542,9 @@ Update 02:25 IST — Incremental fixes
 
 - Task 11: Stop rule (consecutive-page threshold) — COMPLETE
   - make_incremental_decision now calculates duplicates_ratio and old_ratio; stops after 2 consecutive high pages
+
+- Task 12: Batch-level data quality metrics — COMPLETE
+  - Added _log_batch_quality_metrics; logs per-batch field completeness and overall quality
+
+- Task 13: UTF-8 safe logging across modules — COMPLETE
+  - Integrated logger uses UTF-8 FileHandler + SafeFormatter; modules attach to this logger via getLogger(__name__)
