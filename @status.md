@@ -539,3 +539,6 @@ Update 02:25 IST — Incremental fixes
 
 - Task 10: Persist posting dates and compute page metrics — COMPLETE
   - property_posting_dates table gets inserts during URL tracking; per-page posting metadata now available for metrics
+
+- Task 11: Stop rule (consecutive-page threshold) — COMPLETE
+  - make_incremental_decision now calculates duplicates_ratio and old_ratio; stops after 2 consecutive high pages

@@ -116,6 +116,7 @@ class IndividualPropertyScraper:
 
         # Process in batches
         for batch_start in range(0, total_urls, batch_size):
+            batch_details: List[Dict[str, Any]] = []
             batch_end = min(batch_start + batch_size, total_urls)
             batch_urls = property_urls[batch_start:batch_end]
 
@@ -143,6 +144,7 @@ class IndividualPropertyScraper:
                         property_details = future.result()
                         if property_details:
                             detailed_properties.append(property_details)
+                            batch_details.append(property_details)
 
                             # Mark as scraped in tracker
                             if self.individual_tracker:
@@ -154,6 +156,10 @@ class IndividualPropertyScraper:
 
                     except Exception as e:
                         self.logger.error(f"Error scraping {url}: {str(e)}")
+
+            # Batch-level quality metrics
+            if batch_details:
+                self._log_batch_quality_metrics(batch_details)
 
             # Inter-batch delay
             if batch_end < total_urls:
@@ -171,6 +177,7 @@ class IndividualPropertyScraper:
 
         detailed_properties = []
         total_urls = len(property_urls)
+        batch_details: List[Dict[str, Any]] = []
 
         for idx, url in enumerate(property_urls, 1):
             self.logger.info(f"\n🔍 Scraping individual property {idx}/{total_urls}: {url}")
@@ -186,6 +193,7 @@ class IndividualPropertyScraper:
 
                 if property_details:
                     detailed_properties.append(property_details)
+                    batch_details.append(property_details)
 
                     # Mark as scraped in tracker
                     if self.individual_tracker:
@@ -195,6 +203,11 @@ class IndividualPropertyScraper:
                     if progress_callback and progress_data:
                         progress_callback(progress_data)
 
+                # Emit metrics every batch_size in sequential mode
+                if (idx % batch_size) == 0 and batch_details:
+                    self._log_batch_quality_metrics(batch_details)
+                    batch_details = []
+
                 # Delay between requests
                 delay = self.bot_handler.calculate_enhanced_delay(idx, 4.0, 8.0)
                 self.logger.info(f"⏱️ Waiting {delay:.1f} seconds before next property...")
@@ -203,6 +216,10 @@ class IndividualPropertyScraper:
             except Exception as e:
                 self.logger.error(f"❌ Error scraping {url}: {str(e)}")
                 continue
+
+        # Flush remaining batch in sequential mode
+        if batch_details:
+            self._log_batch_quality_metrics(batch_details)
 
         return detailed_properties
 
@@ -311,6 +328,23 @@ class IndividualPropertyScraper:
             self.url_cooldowns[url] = time.time() + backoff
             self.logger.info(f"   [COOLDOWN] {url} for {backoff:.0f}s (failures={count})")
         except Exception:
+            pass
+
+    def _log_batch_quality_metrics(self, batch_details: List[Dict[str, Any]]) -> None:
+        try:
+            total = len(batch_details)
+            if total == 0:
+                return
+            fields = ['title', 'price', 'area', 'description', 'amenities', 'builder_info', 'location_details', 'specifications']
+            completeness = {}
+            for f in fields:
+                count = sum(1 for d in batch_details if d.get(f))
+                completeness[f] = round(100.0 * count / total, 1)
+            overall = round(sum(completeness.values()) / len(fields), 1)
+            self.logger.info(f"[BATCH-QUALITY] n={total} overall={overall}% fields={completeness}")
+        except Exception as e:
+            self.logger.warning(f"[BATCH-QUALITY] metric calc failed: {e}")
+
             pass
 
     def _segment_key_from_url(self, url: str) -> str:
