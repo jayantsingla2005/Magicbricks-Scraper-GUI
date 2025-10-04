@@ -53,7 +53,10 @@ class IndividualPropertyScraper:
                                         progress_data: Optional[Dict] = None,
                                         force_rescrape: bool = False,
                                         use_concurrent: bool = True,
-                                        session_id: Optional[int] = None) -> List[Dict[str, Any]]:
+                                        session_id: Optional[int] = None,
+                                        smart_filtering: bool = True,
+                                        quality_threshold: float = 60.0,
+                                        ttl_days: int = 30) -> List[Dict[str, Any]]:
         """
         Enhanced individual property page scraping with duplicate detection and concurrent processing
 
@@ -65,6 +68,9 @@ class IndividualPropertyScraper:
             force_rescrape: Force re-scraping of already scraped properties
             use_concurrent: Use concurrent processing (True) or sequential (False)
             session_id: Session ID for tracking
+            smart_filtering: Enable smart filtering (only new/changed/missing fields)
+            quality_threshold: Minimum quality score to skip re-scraping (default 60%)
+            ttl_days: Time-to-live in days before re-scraping (default 30)
 
         Returns:
             List of detailed property dictionaries
@@ -80,18 +86,23 @@ class IndividualPropertyScraper:
         self.logger.info(f"Total URLs: {len(property_urls)}")
         self.logger.info(f"Batch Size: {batch_size}")
         self.logger.info(f"Mode: {'Concurrent' if use_concurrent else 'Sequential'}")
+        self.logger.info(f"Smart Filtering: {'Enabled' if smart_filtering else 'Disabled'}")
 
-        # Filter out already scraped URLs if tracker is available and not forcing rescrape
+        # Apply smart filtering if enabled
         urls_to_scrape = property_urls
         if self.individual_tracker and not force_rescrape:
-            urls_to_scrape = []
-            for url in property_urls:
-                if not self.individual_tracker.is_property_scraped(url, session_id):
-                    urls_to_scrape.append(url)
-                else:
-                    self.logger.debug(f"Skipping already scraped URL: {url}")
+            if smart_filtering:
+                urls_to_scrape = self._smart_filter_urls(property_urls, quality_threshold, ttl_days, session_id)
+            else:
+                # Simple duplicate filtering (original behavior)
+                urls_to_scrape = []
+                for url in property_urls:
+                    if not self.individual_tracker.is_property_scraped(url, session_id):
+                        urls_to_scrape.append(url)
+                    else:
+                        self.logger.debug(f"Skipping already scraped URL: {url}")
 
-            self.logger.info(f"After duplicate filtering: {len(urls_to_scrape)} URLs to scrape")
+            self.logger.info(f"After filtering: {len(urls_to_scrape)} URLs to scrape (saved {len(property_urls) - len(urls_to_scrape)} URLs)")
 
         if not urls_to_scrape:
             self.logger.info("All properties already scraped. Use force_rescrape=True to re-scrape.")
@@ -108,6 +119,109 @@ class IndividualPropertyScraper:
             )
 
         return detailed_properties
+
+    def _smart_filter_urls(self, property_urls: List[str], quality_threshold: float,
+                          ttl_days: int, session_id: Optional[int] = None) -> List[str]:
+        """
+        Smart filtering: Only scrape URLs that are:
+        1. Never scraped before (new)
+        2. Have low quality score (missing critical fields)
+        3. Older than TTL (stale data)
+
+        This is the BIGGEST optimization - can reduce volume by 50-80%
+
+        Args:
+            property_urls: List of URLs to filter
+            quality_threshold: Minimum quality score to skip (default 60%)
+            ttl_days: Time-to-live in days (default 30)
+            session_id: Session ID for tracking
+
+        Returns:
+            Filtered list of URLs that need scraping
+        """
+        from datetime import datetime, timedelta
+
+        urls_to_scrape = []
+        stats = {
+            'new': 0,
+            'low_quality': 0,
+            'stale': 0,
+            'skipped_good': 0
+        }
+
+        if not self.individual_tracker or not self.individual_tracker.db_manager.connect_db():
+            self.logger.warning("[SMART-FILTER] Database not available, falling back to simple filtering")
+            return [url for url in property_urls if not self.individual_tracker.is_property_scraped(url, session_id)]
+
+        try:
+            cursor = self.individual_tracker.db_manager.connection.cursor()
+            ttl_cutoff = datetime.now() - timedelta(days=ttl_days)
+
+            for url in property_urls:
+                normalized_url = self.individual_tracker.normalize_url(url)
+                url_hash = self.individual_tracker.generate_url_hash(normalized_url)
+
+                # Check if URL exists in database
+                cursor.execute('''
+                    SELECT scraped_at, data_quality_score, extraction_success
+                    FROM individual_properties_scraped
+                    WHERE url_hash = ? OR property_url = ?
+                ''', (url_hash, normalized_url))
+
+                result = cursor.fetchone()
+
+                if result is None:
+                    # Never scraped - definitely scrape it
+                    urls_to_scrape.append(url)
+                    stats['new'] += 1
+                    self.logger.debug(f"[NEW] {url}")
+                else:
+                    scraped_at_str, quality_score, extraction_success = result
+                    scraped_at = datetime.fromisoformat(scraped_at_str) if scraped_at_str else None
+
+                    # Check if extraction failed previously
+                    if not extraction_success:
+                        urls_to_scrape.append(url)
+                        stats['low_quality'] += 1
+                        self.logger.debug(f"[FAILED-EXTRACTION] {url}")
+                        continue
+
+                    # Check if quality score is below threshold
+                    if quality_score is not None and quality_score < quality_threshold:
+                        urls_to_scrape.append(url)
+                        stats['low_quality'] += 1
+                        self.logger.debug(f"[LOW-QUALITY] {url} (score: {quality_score:.1f}%)")
+                        continue
+
+                    # Check if data is stale (older than TTL)
+                    if scraped_at and scraped_at < ttl_cutoff:
+                        urls_to_scrape.append(url)
+                        stats['stale'] += 1
+                        days_old = (datetime.now() - scraped_at).days
+                        self.logger.debug(f"[STALE] {url} (age: {days_old} days)")
+                        continue
+
+                    # Good quality and fresh - skip it
+                    stats['skipped_good'] += 1
+                    self.logger.debug(f"[SKIP-GOOD] {url} (quality: {quality_score:.1f}%, age: {(datetime.now() - scraped_at).days if scraped_at else 0} days)")
+
+            # Log summary
+            self.logger.info(f"\n[SMART-FILTER] Results:")
+            self.logger.info(f"   🆕 New (never scraped): {stats['new']}")
+            self.logger.info(f"   ⚠️  Low quality (< {quality_threshold}%): {stats['low_quality']}")
+            self.logger.info(f"   📅 Stale (> {ttl_days} days): {stats['stale']}")
+            self.logger.info(f"   ✅ Skipped (good & fresh): {stats['skipped_good']}")
+            self.logger.info(f"   📊 Total to scrape: {len(urls_to_scrape)} / {len(property_urls)} ({len(urls_to_scrape)/len(property_urls)*100:.1f}%)")
+            self.logger.info(f"   💾 Volume reduction: {stats['skipped_good']} URLs saved ({stats['skipped_good']/len(property_urls)*100:.1f}%)")
+
+            return urls_to_scrape
+
+        except Exception as e:
+            self.logger.error(f"[SMART-FILTER] Error: {e}")
+            # Fall back to simple filtering
+            return [url for url in property_urls if not self.individual_tracker.is_property_scraped(url, session_id)]
+        finally:
+            self.individual_tracker.db_manager.close_connection()
 
     def _scrape_individual_pages_concurrent_enhanced(self, property_urls: List[str], batch_size: int,
                                                    progress_callback: Optional[Callable] = None,

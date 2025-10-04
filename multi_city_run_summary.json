@@ -1,0 +1,36 @@
+{
+  "started_at": "2025-10-04T20:19:08.336408",
+  "cities": {
+    "gurgaon": {
+      "success": true,
+      "pages_scraped": 50,
+      "properties_scraped": 1500,
+      "duration_seconds": 261
+    },
+    "mumbai": {
+      "success": true,
+      "pages_scraped": 50,
+      "properties_scraped": 1500,
+      "duration_seconds": 282
+    },
+    "bangalore": {
+      "success": true,
+      "pages_scraped": 50,
+      "properties_scraped": 1500,
+      "duration_seconds": 296
+    },
+    "pune": {
+      "success": true,
+      "pages_scraped": 50,
+      "properties_scraped": 1500,
+      "duration_seconds": 284
+    },
+    "hyderabad": {
+      "success": true,
+      "pages_scraped": 50,
+      "properties_scraped": 1500,
+      "duration_seconds": 288
+    }
+  },
+  "finished_at": "2025-10-04T20:42:39.205290"
+}

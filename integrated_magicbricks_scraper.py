@@ -2226,6 +2226,10 @@ class IntegratedMagicBricksScraper:
 
         # Delegate to individual_scraper module
         use_concurrent = self.config.get('concurrent_enabled', True)
+        smart_filtering = self.config.get('smart_filtering', True)  # P0-1: Smart PDP filtering
+        quality_threshold = self.config.get('quality_threshold', 60.0)
+        ttl_days = self.config.get('ttl_days', 30)
+
         return self.individual_scraper.scrape_individual_property_pages(
             property_urls=property_urls,
             batch_size=batch_size,
@@ -2233,7 +2237,10 @@ class IntegratedMagicBricksScraper:
             progress_data=progress_data,
             force_rescrape=force_rescrape,
             use_concurrent=use_concurrent,
-            session_id=session_id
+            session_id=session_id,
+            smart_filtering=smart_filtering,
+            quality_threshold=quality_threshold,
+            ttl_days=ttl_days
         )
 
     def _scrape_individual_pages_concurrent_enhanced(self, property_urls: List[str], batch_size: int,
