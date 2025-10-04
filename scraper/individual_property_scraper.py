@@ -557,10 +557,15 @@ class IndividualPropertyScraper:
                 self.restart_requested = True  # Signal concurrent workers to abort
                 self.restart_callback()
                 # Note: Parent must call update_driver() after creating new driver
+                # Defensive: Ensure flag is reset even if update_driver() wasn't called
+                self.restart_requested = False
+                self.logger.info(f"[DRIVER-RESTART] Restart flag cleared")
             else:
                 self.logger.warning("Driver restart requested but no restart_callback provided")
+                self.restart_requested = False  # Reset flag even if no callback
         except Exception as e:
             self.logger.error(f"Driver restart failed: {e}")
+            self.restart_requested = False  # Reset flag on error too
 
 
     def _record_url_failure(self, url: str, soft: bool = False) -> None:
