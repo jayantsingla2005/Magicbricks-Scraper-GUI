@@ -48,6 +48,8 @@ class IndividualPropertyScraper:
         # Segment-aware pacing data
         self.segment_failures: Dict[str, int] = {}
         self.segment_cooldowns: Dict[str, float] = {}
+        # P1-2: Referer header management
+        self.last_listing_page_url: Optional[str] = None
         # Thread-safe driver access for concurrent mode
         self.driver_lock = threading.Lock()
         self.restart_requested = False
@@ -383,6 +385,17 @@ class IndividualPropertyScraper:
                         return None
                     driver = self.driver
 
+                # P1-2: Set Referer header before navigation (makes navigation chain look natural)
+                if self.last_listing_page_url:
+                    try:
+                        # Use CDP to set Referer header for this navigation
+                        driver.execute_cdp_cmd('Network.setExtraHTTPHeaders', {
+                            'headers': {'Referer': self.last_listing_page_url}
+                        })
+                        self.logger.debug(f"   [P1-2] Referer set: {self.last_listing_page_url[:50]}...")
+                    except Exception as e:
+                        self.logger.debug(f"   [P1-2] Failed to set Referer: {e}")
+
                 # Navigate to property page
                 driver.get(property_url)
 
@@ -484,6 +497,16 @@ class IndividualPropertyScraper:
                     return None
 
         return None
+
+    def set_listing_page_url(self, url: str):
+        """
+        P1-2: Set the listing page URL to use as Referer for individual page navigation
+
+        Args:
+            url: The listing page URL (e.g., search results page)
+        """
+        self.last_listing_page_url = url
+        self.logger.debug(f"[P1-2] Listing page URL set for Referer: {url[:50]}...")
 
     def update_driver(self, new_driver):
         """

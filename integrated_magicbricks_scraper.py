@@ -783,6 +783,11 @@ class IntegratedMagicBricksScraper:
                     if progress_callback:
                         progress_callback(progress_data)
 
+                    # P1-2: Set the last listing page URL as Referer for individual page navigation
+                    # Use the base URL with page 1 as a reasonable Referer
+                    listing_referer = base_url if hasattr(self, 'base_url') else f"https://www.magicbricks.com/property-for-sale-in-{city.lower()}-pppfs"
+                    self.individual_scraper.set_listing_page_url(listing_referer)
+
                     # Scrape individual property pages with enhanced anti-scraping and progress tracking
                     detailed_properties = self.scrape_individual_property_pages(
                         property_urls,
