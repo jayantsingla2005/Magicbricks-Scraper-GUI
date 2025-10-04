@@ -433,6 +433,10 @@ class IntegratedMagicBricksScraper:
                 if self.config.get('block_third_party_resources', True):
                     self._enable_resource_blocking()
 
+                # P1-1: Enable realistic HTTP headers via CDP
+                if self.config.get('realistic_headers', True):
+                    self._enable_realistic_headers()
+
                 # Test connection
                 self.driver.get("https://www.google.com")
 
@@ -499,6 +503,44 @@ class IntegratedMagicBricksScraper:
         except Exception as e:
             self.logger.warning(f"[P0-3] Failed to enable resource blocking: {e}")
             # Non-fatal - continue without blocking
+
+    def _enable_realistic_headers(self):
+        """
+        P1-1: Enable realistic HTTP headers via Chrome DevTools Protocol
+        Sets Accept, Accept-Encoding, Accept-Language, sec-ch-ua headers matching User-Agent
+        """
+        try:
+            # Get current user agent to match headers
+            ua = self.driver.execute_script("return navigator.userAgent")
+
+            # Determine browser version from UA
+            import re
+            chrome_version_match = re.search(r'Chrome/(\d+)', ua)
+            chrome_version = chrome_version_match.group(1) if chrome_version_match else '120'
+
+            # Realistic headers matching the User-Agent
+            headers = {
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'sec-ch-ua': f'"Chromium";v="{chrome_version}", "Google Chrome";v="{chrome_version}", "Not=A?Brand";v="99"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-ch-ua-platform': '"Windows"',
+                'Upgrade-Insecure-Requests': '1'
+            }
+
+            # Enable Network domain
+            self.driver.execute_cdp_cmd('Network.enable', {})
+
+            # Set extra HTTP headers
+            self.driver.execute_cdp_cmd('Network.setExtraHTTPHeaders', {'headers': headers})
+
+            self.logger.info(f"[P1-1] Realistic headers enabled (Chrome v{chrome_version})")
+            self.logger.debug(f"[P1-1] Headers: Accept, Accept-Encoding, Accept-Language, sec-ch-ua")
+
+        except Exception as e:
+            self.logger.warning(f"[P1-1] Failed to enable realistic headers: {e}")
+            # Non-fatal - continue without custom headers
 
     def start_scraping_session(self, city: str, mode: ScrapingMode = ScrapingMode.INCREMENTAL,
                              custom_config: Dict[str, Any] = None) -> bool:
