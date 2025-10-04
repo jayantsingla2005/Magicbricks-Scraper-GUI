@@ -512,3 +512,11 @@ Test run summary
 
 Version control
 - Committed locally: 94b8669 (Priority‑0 fixes + tests). Not pushing to remote per policy unless requested.
+
+Update 01:45 IST — Anti-bot Improvements (Phase 3)
+- Task 5: Per-URL cooldown with skip-after-N — COMPLETE
+  - Implemented exponential cooldowns on repeated failures; skip-after-3 threshold
+  - Applied in both sequential and concurrent flows; covered by unit test tests/test_url_cooldown.py
+- Task 6: Segment-aware pacing — PENDING (next)
+- Task 7: Concurrency staggering + jitter — PENDING
+- Task 8: Centralized UA rotation — PENDING

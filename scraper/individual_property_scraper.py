@@ -40,6 +40,9 @@ class IndividualPropertyScraper:
         self.url_failures: Dict[str, int] = {}
         self.url_cooldowns: Dict[str, float] = {}
         self.max_url_failures: int = 3  # skip-after-N policy
+        # Segment-aware pacing data
+        self.segment_failures: Dict[str, int] = {}
+        self.segment_cooldowns: Dict[str, float] = {}
 
     def scrape_individual_property_pages(self, property_urls: List[str], batch_size: int = 10,
                                         progress_callback: Optional[Callable] = None,
@@ -219,6 +222,14 @@ class IndividualPropertyScraper:
 
         for attempt in range(max_retries):
             try:
+                # Pre-request jitter and segment-aware pacing
+                time.sleep(random.uniform(0.2, 0.9))  # Task 7: jitter
+                seg = self._segment_key_from_url(property_url)
+                now = time.time()
+                if seg and self.segment_cooldowns.get(seg, 0) > now:
+                    extra = max(0, self.segment_cooldowns[seg] - now)
+                    self.logger.info(f"   [SEGMENT-PAUSE] {seg} cooling for {extra:.0f}s")
+                    time.sleep(min(extra, 15))  # cap per-attempt extra wait
                 # Navigate to property page
                 self.driver.get(property_url)
                 time.sleep(random.uniform(2.0, 4.0))
@@ -301,6 +312,34 @@ class IndividualPropertyScraper:
             self.logger.info(f"   [COOLDOWN] {url} for {backoff:.0f}s (failures={count})")
         except Exception:
             pass
+
+    def _segment_key_from_url(self, url: str) -> str:
+        """Extract a coarse segment key (e.g., locality) from property URL."""
+        try:
+            import re
+            # Capture patterns like santacruz-east-mumbai, goregaon-east-mumbai before pdpid
+            m = re.search(r'/([a-z0-9-]+)-(mumbai|gurgaon)[^/]*pdpid', url, re.I)
+            if m:
+                return m.group(1).lower()
+            # Fallback: use chunk between last two dashes
+            parts = url.split('-')
+            if len(parts) > 2:
+                return parts[-3].lower()
+        except Exception:
+            pass
+        return ''
+
+    def _record_segment_failure(self, url: str) -> None:
+        """Record failure for a segment and set cooldown."""
+        seg = self._segment_key_from_url(url)
+        if not seg:
+            return
+        count = self.segment_failures.get(seg, 0) + 1
+        self.segment_failures[seg] = count
+        # Base segment cooldown 90s, exponential up to 15 min
+        backoff = min(90 * (2 ** (count - 1)), 900)
+        self.segment_cooldowns[seg] = time.time() + backoff
+        self.logger.info(f"   [SEGMENT-COOLDOWN] {seg} for {backoff:.0f}s (failures={count})")
 
     def calculate_individual_page_delay(self, property_index: int) -> float:
         """
