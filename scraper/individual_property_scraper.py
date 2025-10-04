@@ -450,7 +450,33 @@ class IndividualPropertyScraper:
                         continue
 
             except Exception as e:
+                error_str = str(e).lower()
                 self.logger.error(f"   ❌ Attempt {attempt + 1}/{max_retries} failed: {str(e)}")
+
+                # P0-4: Expand restart triggers for connection errors
+                restart_triggers = [
+                    'invalid session id',
+                    'chrome not reachable',
+                    'actively refused',
+                    'connection refused',
+                    'session deleted',
+                    'no such window',
+                    'target window already closed',
+                    'disconnected',
+                    'dns',
+                    'network error',
+                    'timeout'
+                ]
+
+                if any(trigger in error_str for trigger in restart_triggers):
+                    self.logger.warning(f"   [P0-4] Connection error detected: {error_str[:100]}")
+                    self.logger.warning(f"   [P0-4] Triggering driver restart...")
+                    self._restart_driver()
+                    # After restart, retry this URL
+                    if attempt < max_retries - 1:
+                        time.sleep(random.uniform(5.0, 8.0))  # Longer wait after restart
+                        continue
+
                 if attempt < max_retries - 1:
                     time.sleep(random.uniform(3.0, 5.0))
                 else:
