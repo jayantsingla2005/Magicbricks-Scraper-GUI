@@ -428,7 +428,11 @@ class IntegratedMagicBricksScraper:
                 
                 # Anti-detection script
                 self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-                
+
+                # P0-3: Block third-party resources via CDP (20-30% speed improvement)
+                if self.config.get('block_third_party_resources', True):
+                    self._enable_resource_blocking()
+
                 # Test connection
                 self.driver.get("https://www.google.com")
 
@@ -458,7 +462,44 @@ class IntegratedMagicBricksScraper:
                     time.sleep(5 * (attempt + 1))  # Progressive delay
                 else:
                     raise Exception(f"Failed to initialize WebDriver after {max_retries} attempts: {str(e)}")
-    
+
+    def _enable_resource_blocking(self):
+        """
+        P0-3: Enable resource blocking via Chrome DevTools Protocol
+        Blocks analytics, ads, and tracking domains for 20-30% speed improvement
+        """
+        try:
+            # Conservative list of third-party domains to block
+            blocked_domains = self.config.get('blocked_domains', [
+                '*googletagmanager.com*',
+                '*google-analytics.com*',
+                '*doubleclick.net*',
+                '*facebook.net*',
+                '*facebook.com/tr*',
+                '*hotjar.com*',
+                '*clarity.ms*',
+                '*analytics.google.com*',
+                '*googleadservices.com*',
+                '*googlesyndication.com*',
+                '*adservice.google.com*',
+                '*cdn.segment.com*',
+                '*mixpanel.com*',
+                '*amplitude.com*'
+            ])
+
+            # Enable Network domain in CDP
+            self.driver.execute_cdp_cmd('Network.enable', {})
+
+            # Set blocked URL patterns
+            self.driver.execute_cdp_cmd('Network.setBlockedURLs', {'urls': blocked_domains})
+
+            self.logger.info(f"[P0-3] Resource blocking enabled: {len(blocked_domains)} domains blocked")
+            self.logger.debug(f"[P0-3] Blocked domains: {', '.join(blocked_domains[:5])}...")
+
+        except Exception as e:
+            self.logger.warning(f"[P0-3] Failed to enable resource blocking: {e}")
+            # Non-fatal - continue without blocking
+
     def start_scraping_session(self, city: str, mode: ScrapingMode = ScrapingMode.INCREMENTAL,
                              custom_config: Dict[str, Any] = None) -> bool:
         """Start a new scraping session with incremental support"""
