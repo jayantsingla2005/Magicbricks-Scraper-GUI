@@ -12,6 +12,10 @@ import threading
 from typing import List, Dict, Any, Optional, Callable
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from bs4 import BeautifulSoup
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 
 
 class IndividualPropertyScraper:
@@ -381,7 +385,25 @@ class IndividualPropertyScraper:
 
                 # Navigate to property page
                 driver.get(property_url)
-                time.sleep(random.uniform(2.0, 4.0))
+
+                # P0-2: Explicit wait for critical elements instead of unconditional sleep
+                # Wait for title OR price element to be present (whichever loads first)
+                try:
+                    wait = WebDriverWait(driver, 3)  # 3 second timeout
+                    # Try multiple selectors for robustness
+                    wait.until(
+                        lambda d: d.find_element(By.CSS_SELECTOR, 'h1, [data-testid*="title"], .mb-ldp__dtls__title') or
+                                 d.find_element(By.CSS_SELECTOR, '[data-testid*="price"], .mb-ldp__dtls__price')
+                    )
+                    self.logger.debug(f"   [P0-2] Page loaded (explicit wait)")
+                except TimeoutException:
+                    # If explicit wait times out, fall back to small settle time
+                    self.logger.debug(f"   [P0-2] Explicit wait timeout, using fallback settle")
+                    time.sleep(1.0)
+                except Exception as e:
+                    # If any error, use minimal settle time
+                    self.logger.debug(f"   [P0-2] Wait error: {e}, using minimal settle")
+                    time.sleep(0.5)
 
                 # Get page source
                 page_source = driver.page_source

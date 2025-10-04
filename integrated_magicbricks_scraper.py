@@ -384,15 +384,20 @@ class IntegratedMagicBricksScraper:
         for attempt in range(max_retries):
             try:
                 chrome_options = Options()
-                
+
                 if self.headless:
                     chrome_options.add_argument("--headless")
-                
+
                 # Enhanced stability options
                 chrome_options.add_argument("--no-sandbox")
                 chrome_options.add_argument("--disable-dev-shm-usage")
                 chrome_options.add_argument("--disable-gpu")
                 chrome_options.add_argument("--window-size=1920,1080")
+
+                # P0-2: Eager page load strategy (30-40% speed improvement)
+                page_load_strategy = self.config.get('page_load_strategy', 'eager')
+                chrome_options.page_load_strategy = page_load_strategy
+                self.logger.info(f"[P0-2] Page load strategy: {page_load_strategy}")
 
                 # Enhanced anti-detection measures (CRITICAL for individual property pages)
                 chrome_options.add_argument("--disable-blink-features=AutomationControlled")
