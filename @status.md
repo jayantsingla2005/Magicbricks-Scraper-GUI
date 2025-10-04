@@ -1123,3 +1123,168 @@ Implemented 4 high-impact, low-risk optimizations based on expert web scraping a
 1. ⚠️ **PRIORITY**: Re-run validation test with individual pages enabled to validate P0-1
 2. ✅ Proceed with P1 tasks (P0-2, P0-3, P0-4 are production-ready)
 3. ⚠️ Measure actual speed improvements with full test (listing + individual pages)
+
+---
+
+## 2025-10-04 — P1/P2 TASK IMPLEMENTATION COMPLETE
+
+### Executive Summary
+
+**Status**: ✅ **ALL P1/P2 TASKS IMPLEMENTED AND TESTED**
+
+Implemented 4 additional anti-detection and performance optimizations while P0 validation test runs in parallel:
+1. **P1-1**: Request Interception for Realistic Headers
+2. **P1-2**: Referer Header Management
+3. **P2-1**: Viewport Randomization
+4. **P2-2**: Mouse Movement Simulation
+
+**All tasks tested and committed** with proper version control.
+
+---
+
+### P1-1: Request Interception for Realistic Headers ✅ COMPLETE
+
+**Commit**: 30290b8
+
+**Implementation**:
+- CDP-based HTTP header customization via Network.setExtraHTTPHeaders
+- Headers set:
+  - Accept: text/html,application/xhtml+xml,application/xml;q=0.9...
+  - Accept-Encoding: gzip, deflate, br
+  - Accept-Language: en-US,en;q=0.9
+  - sec-ch-ua: Chromium version matching User-Agent
+  - sec-ch-ua-mobile: ?0
+  - sec-ch-ua-platform: "Windows"
+  - Upgrade-Insecure-Requests: 1
+- Auto-detects Chrome version from User-Agent
+- Configurable realistic_headers option (default True)
+
+**Benefits**:
+- Headers match User-Agent for consistency
+- Reduces browser fingerprinting surface
+- More realistic request profile
+- Harder to detect as automated browser
+
+**Tests**: 8/8 passing
+
+---
+
+### P1-2: Referer Header Management ✅ COMPLETE
+
+**Commit**: c528a2b
+
+**Implementation**:
+- Tracks last listing page URL in IndividualPropertyScraper
+- set_listing_page_url() method to set Referer source
+- CDP Network.setExtraHTTPHeaders before each PDP navigation
+- Parent scraper sets listing URL before Phase 2
+
+**Benefits**:
+- More realistic navigation pattern (listing → PDP)
+- Proper HTTP Referer chain
+- Harder to detect as bot
+- Mimics real user behavior
+
+**Tests**: 8/8 passing
+
+---
+
+### P2-1: Viewport Randomization ✅ COMPLETE
+
+**Commit**: aab06d5
+
+**Implementation**:
+- Randomized browser viewport dimensions per session
+- Width: 1920 ± 50px (1870-1970)
+- Height: 1080 ± 50px (1030-1130)
+- Configurable randomize_viewport option (default True)
+
+**Benefits**:
+- Reduces browser fingerprinting
+- Each session has slightly different viewport
+- Harder to track across sessions
+- More realistic variation
+
+**Tests**: 8/8 passing
+
+---
+
+### P2-2: Mouse Movement Simulation ✅ COMPLETE
+
+**Commit**: b075424
+
+**Implementation**:
+- JavaScript injection via execute_script
+- Random mouse movements across viewport (MouseEvent)
+- Smooth scrolling to random positions
+- Executed before extracting data from each PDP
+- Configurable simulate_mouse_movement flag (default True)
+
+**Benefits**:
+- Mimics human browsing behavior
+- Triggers mouse event handlers
+- More realistic interaction pattern
+- Harder to detect as automated scraper
+
+**Tests**: 8/8 passing
+
+---
+
+### Combined Anti-Detection Stack
+
+**Now Active** (P0 + P1 + P2):
+1. ✅ User-Agent rotation (existing)
+2. ✅ Eager page load strategy (P0-2)
+3. ✅ Resource blocking via CDP (P0-3)
+4. ✅ Realistic HTTP headers (P1-1)
+5. ✅ Referer header management (P1-2)
+6. ✅ Viewport randomization (P2-1)
+7. ✅ Mouse movement simulation (P2-2)
+8. ✅ Disable automation flags (existing)
+9. ✅ WebDriver property hiding (existing)
+10. ✅ Smart filtering (P0-1)
+11. ✅ Expand restart triggers (P0-4)
+
+**Result**: **11-layer anti-detection system** with performance optimizations
+
+---
+
+### Commits Summary
+
+1. **30290b8**: P1-1 Request Interception for Realistic Headers
+2. **c528a2b**: P1-2 Referer Header Management
+3. **aab06d5**: P2-1 Viewport Randomization
+4. **b075424**: P2-2 Mouse Movement Simulation
+
+---
+
+### Configuration Options
+
+All optimizations are configurable:
+```python
+config = {
+    # P0 optimizations
+    'smart_filtering': True,
+    'quality_threshold': 60.0,
+    'ttl_days': 30,
+    'page_load_strategy': 'eager',
+    'block_third_party_resources': True,
+
+    # P1 optimizations
+    'realistic_headers': True,
+    # Referer management (automatic)
+
+    # P2 optimizations
+    'randomize_viewport': True,
+    # Mouse simulation (automatic via simulate_mouse_movement flag)
+}
+```
+
+---
+
+### Next Steps
+
+1. ⏳ **IN PROGRESS**: P0 validation test running (Terminal 259)
+2. ⚠️ **PENDING**: Analyze validation test results
+3. ⚠️ **PENDING**: Create comprehensive validation report
+4. ✅ **READY**: Push all commits to GitHub
