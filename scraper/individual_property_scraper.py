@@ -381,35 +381,46 @@ class IndividualPropertyScraper:
                     time.sleep(min(extra, 15))  # cap per-attempt extra wait
 
                 # Thread-safe driver access (critical for concurrent mode)
+                # IMPORTANT: Always use self.driver directly, never cache in local variable
+                # This ensures we always use the latest driver reference after restarts
                 with self.driver_lock:
                     if self.restart_requested:
                         self.logger.info(f"   [ABORT] Restart in progress, aborting {property_url}")
                         return None
-                    driver = self.driver
+                    # Check driver is valid
+                    if not self.driver:
+                        self.logger.error(f"   [ERROR] Driver is None, cannot proceed")
+                        return None
 
                 # P1-2: Set Referer header before navigation (makes navigation chain look natural)
                 if self.last_listing_page_url:
                     try:
                         # Use CDP to set Referer header for this navigation
-                        driver.execute_cdp_cmd('Network.setExtraHTTPHeaders', {
-                            'headers': {'Referer': self.last_listing_page_url}
-                        })
+                        # CRITICAL: Use self.driver directly to get latest driver after restart
+                        with self.driver_lock:
+                            self.driver.execute_cdp_cmd('Network.setExtraHTTPHeaders', {
+                                'headers': {'Referer': self.last_listing_page_url}
+                            })
                         self.logger.debug(f"   [P1-2] Referer set: {self.last_listing_page_url[:50]}...")
                     except Exception as e:
                         self.logger.debug(f"   [P1-2] Failed to set Referer: {e}")
 
                 # Navigate to property page
-                driver.get(property_url)
+                # CRITICAL: Use self.driver directly to get latest driver after restart
+                with self.driver_lock:
+                    self.driver.get(property_url)
 
                 # P0-2: Explicit wait for critical elements instead of unconditional sleep
                 # Wait for title OR price element to be present (whichever loads first)
                 try:
-                    wait = WebDriverWait(driver, 3)  # 3 second timeout
-                    # Try multiple selectors for robustness
-                    wait.until(
-                        lambda d: d.find_element(By.CSS_SELECTOR, 'h1, [data-testid*="title"], .mb-ldp__dtls__title') or
-                                 d.find_element(By.CSS_SELECTOR, '[data-testid*="price"], .mb-ldp__dtls__price')
-                    )
+                    # CRITICAL: Use self.driver directly to get latest driver after restart
+                    with self.driver_lock:
+                        wait = WebDriverWait(self.driver, 3)  # 3 second timeout
+                        # Try multiple selectors for robustness
+                        wait.until(
+                            lambda d: d.find_element(By.CSS_SELECTOR, 'h1, [data-testid*="title"], .mb-ldp__dtls__title') or
+                                     d.find_element(By.CSS_SELECTOR, '[data-testid*="price"], .mb-ldp__dtls__price')
+                        )
                     self.logger.debug(f"   [P0-2] Page loaded (explicit wait)")
                 except TimeoutException:
                     # If explicit wait times out, fall back to small settle time
@@ -441,14 +452,18 @@ class IndividualPropertyScraper:
                             behavior: 'smooth'
                         });
                         """
-                        driver.execute_script(mouse_script)
+                        # CRITICAL: Use self.driver directly to get latest driver after restart
+                        with self.driver_lock:
+                            self.driver.execute_script(mouse_script)
                         self.logger.debug(f"   [P2-2] Simulated mouse movement and scroll")
                     except Exception as e:
                         self.logger.debug(f"   [P2-2] Failed to simulate mouse: {e}")
 
                 # Get page source
-                page_source = driver.page_source
-                current_url = driver.current_url
+                # CRITICAL: Use self.driver directly to get latest driver after restart
+                with self.driver_lock:
+                    page_source = self.driver.page_source
+                    current_url = self.driver.current_url
 
                 # Check for bot detection
                 if self.bot_handler.detect_bot_detection(page_source, current_url):
