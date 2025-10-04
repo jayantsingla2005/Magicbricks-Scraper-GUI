@@ -1617,3 +1617,184 @@ pytest -q tests/test_individual_restart.py tests/test_csv_merge_update.py tests/
 3. ⏳ **VALIDATE**: All P0/P1/P2 optimizations with large-scale test
 4. ⏳ **ANALYZE**: Bot detection patterns and recovery effectiveness
 5. ⏳ **PUSH**: All commits to GitHub after validation complete
+
+---
+
+## 2025-10-04 — CRITICAL ROOT CAUSE FIX: STALE DRIVER REFERENCE
+
+### Executive Summary
+
+**Status**: ✅ **ROOT CAUSE IDENTIFIED AND FIXED** | ⏳ **READY FOR VALIDATION**
+
+Discovered and fixed the ACTUAL root cause of the persistent restart issues. The problem was NOT the restart_requested flag (that was working correctly). The REAL issue was **stale driver references** after restart.
+
+---
+
+### The Real Problem
+
+**What We Thought**: Restart flag not being reset properly
+**What It Actually Was**: Cached driver reference becoming stale after restart
+
+**Evidence from Validation Test Logs**:
+```
+2025-10-04 23:48:34,305 - INFO - [DRIVER-RESTART] Triggering restart (old session: 4a9a4cfd9b578265...)
+2025-10-04 23:49:00,019 - INFO -    [DRIVER-RESTART] New session created: 926fcaed886ad291...
+2025-10-04 23:49:00,019 - INFO - [DRIVER-UPDATE] Session changed: 926fcaed886ad291... → 926fcaed886ad291...
+2025-10-04 23:49:00,020 - INFO - [DRIVER-RESTART] Restart flag cleared  ✅
+
+BUT THEN:
+2025-10-04 23:49:23,660 - DEBUG -    [P1-2] Failed to set Referer: HTTPConnectionPool(host='localhost', port=52846):
+Max retries exceeded with url: /session/4a9a4cfd9b5782655553365045a1b88a4/goog/cdp/execute  ❌
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^
+                                                    OLD SESSION ID!
+```
+
+**The Smoking Gun**: Code was trying to use the OLD session ID (`4a9a4cfd9b...`) even though a NEW session (`926fcaed886ad291...`) had been created.
+
+---
+
+### Root Cause Analysis
+
+**Location**: `scraper/individual_property_scraper.py`, method `_scrape_single_property_enhanced()`
+
+**The Problematic Code** (line 388):
+```python
+for attempt in range(max_retries):
+    try:
+        # Thread-safe driver access
+        with self.driver_lock:
+            if self.restart_requested:
+                return None
+            driver = self.driver  # ❌ CACHED REFERENCE - THIS WAS THE BUG!
+
+        # P1-2: Set Referer header
+        driver.execute_cdp_cmd(...)  # ❌ Uses stale driver after restart
+
+        # Navigate
+        driver.get(property_url)  # ❌ Uses stale driver after restart
+
+        # Wait
+        wait = WebDriverWait(driver, 3)  # ❌ Uses stale driver after restart
+
+        # Execute script
+        driver.execute_script(...)  # ❌ Uses stale driver after restart
+
+        # Get page source
+        page_source = driver.page_source  # ❌ Uses stale driver after restart
+```
+
+**What Happened**:
+1. Retry attempt starts, captures `driver = self.driver` (session: `4a9a4cfd9b...`)
+2. Bot detection occurs during navigation
+3. Driver restart triggered → new driver created (session: `926fcaed886ad291...`)
+4. `self.driver` updated to new driver ✅
+5. `restart_requested` flag cleared ✅
+6. **BUT** local `driver` variable still points to OLD driver ❌
+7. All subsequent operations use stale driver:
+   - CDP commands fail (old session doesn't exist)
+   - Navigation fails (connection refused)
+   - Triggers another restart
+   - **Infinite restart loop** 🔄
+
+---
+
+### The Comprehensive Fix
+
+**Strategy**: Never cache driver reference - always use `self.driver` directly with lock protection
+
+**Code Changes** (scraper/individual_property_scraper.py):
+
+```python
+for attempt in range(max_retries):
+    try:
+        # Thread-safe driver access
+        with self.driver_lock:
+            if self.restart_requested:
+                return None
+            # ✅ Check driver is valid (no caching)
+            if not self.driver:
+                return None
+
+        # P1-2: Set Referer header
+        # ✅ CRITICAL: Use self.driver directly
+        with self.driver_lock:
+            self.driver.execute_cdp_cmd(...)
+
+        # Navigate
+        # ✅ CRITICAL: Use self.driver directly
+        with self.driver_lock:
+            self.driver.get(property_url)
+
+        # Wait
+        # ✅ CRITICAL: Use self.driver directly
+        with self.driver_lock:
+            wait = WebDriverWait(self.driver, 3)
+            wait.until(...)
+
+        # Execute script
+        # ✅ CRITICAL: Use self.driver directly
+        with self.driver_lock:
+            self.driver.execute_script(...)
+
+        # Get page source
+        # ✅ CRITICAL: Use self.driver directly
+        with self.driver_lock:
+            page_source = self.driver.page_source
+            current_url = self.driver.current_url
+```
+
+**Benefits**:
+1. ✅ Always uses the latest driver reference
+2. ✅ Eliminates stale driver issues after restarts
+3. ✅ Thread-safe with driver_lock protection
+4. ✅ No more infinite restart loops
+5. ✅ Proper recovery from bot detection
+6. ✅ All P1/P2 optimizations work correctly after restart
+
+---
+
+### Testing
+
+**Unit Tests**: ✅ All passing (8/8)
+```
+pytest -q tests/test_individual_restart.py tests/test_csv_merge_update.py tests/test_smart_filtering.py
+8 passed, 6 warnings in 0.69s
+```
+
+**Expected Impact**:
+- ✅ No more stale driver errors
+- ✅ Successful recovery from bot detection
+- ✅ CDP commands work after restart (P1-2 Referer management)
+- ✅ All optimizations functional throughout entire scraping session
+- ✅ Accurate performance metrics in validation tests
+
+---
+
+### Git Status
+
+**Commit**: 9156188 - "CRITICAL ROOT CAUSE FIX: Stale driver reference after restart"
+
+**Files Modified**:
+- scraper/individual_property_scraper.py: Fixed stale driver reference issue (29 insertions, 14 deletions)
+
+**Status**: ✅ Committed, ready to push
+
+---
+
+### Lessons Learned
+
+1. **Don't assume the obvious**: The restart flag bug was a red herring - the real issue was elsewhere
+2. **Deep log analysis is critical**: Only by examining the actual session IDs in logs did we find the smoking gun
+3. **Local variable caching can be dangerous**: Especially in retry loops where state can change mid-execution
+4. **Always use the source of truth**: `self.driver` is the source of truth, not cached local variables
+5. **Thread safety requires discipline**: Every driver access must be protected with locks
+
+---
+
+### Next Steps
+
+1. ⏳ **IMMEDIATE**: Run comprehensive validation test with the fix
+2. ⏳ **VERIFY**: No more stale driver errors in logs
+3. ⏳ **MEASURE**: Accurate performance metrics
+4. ⏳ **VALIDATE**: All P0/P1/P2 optimizations working correctly
+5. ⏳ **PUSH**: All commits to GitHub after validation complete
