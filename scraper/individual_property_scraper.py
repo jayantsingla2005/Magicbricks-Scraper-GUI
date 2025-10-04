@@ -18,23 +18,25 @@ class IndividualPropertyScraper:
     Handles individual property page scraping with concurrent and sequential modes
     """
     
-    def __init__(self, driver, property_extractor, bot_handler, individual_tracker=None, logger=None):
+    def __init__(self, driver, property_extractor, bot_handler, individual_tracker=None, logger=None, restart_callback=None):
         """
         Initialize individual property scraper
-        
+
         Args:
             driver: Selenium WebDriver instance
             property_extractor: PropertyExtractor instance
             bot_handler: BotDetectionHandler instance
             individual_tracker: IndividualPropertyTracker instance (optional)
             logger: Logger instance
+            restart_callback: Callable to restart the browser session (provided by parent)
         """
         self.driver = driver
         self.property_extractor = property_extractor
         self.bot_handler = bot_handler
         self.individual_tracker = individual_tracker
         self.logger = logger or logging.getLogger(__name__)
-    
+        self.restart_callback = restart_callback
+
     def scrape_individual_property_pages(self, property_urls: List[str], batch_size: int = 10,
                                         progress_callback: Optional[Callable] = None, 
                                         progress_data: Optional[Dict] = None,
@@ -249,9 +251,16 @@ class IndividualPropertyScraper:
         return None
     
     def _restart_driver(self):
-        """Restart driver (placeholder - should be implemented by parent class)"""
-        self.logger.warning("Driver restart requested but not implemented in this module")
-    
+        """Restart driver using callback provided by parent class"""
+        try:
+            if callable(getattr(self, 'restart_callback', None)):
+                self.logger.info("[RESTART] Restarting driver via parent callback...")
+                self.restart_callback()
+            else:
+                self.logger.warning("Driver restart requested but no restart_callback provided")
+        except Exception as e:
+            self.logger.error(f"Driver restart failed: {e}")
+
     def calculate_individual_page_delay(self, property_index: int) -> float:
         """
         Calculate delay for individual property page scraping

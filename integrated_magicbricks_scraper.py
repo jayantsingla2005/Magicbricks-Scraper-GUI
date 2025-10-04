@@ -431,7 +431,8 @@ class IntegratedMagicBricksScraper:
                     property_extractor=self.property_extractor,
                     bot_handler=self.bot_handler,
                     individual_tracker=self.individual_tracker if self.incremental_enabled else None,
-                    logger=self.logger
+                    logger=self.logger,
+                    restart_callback=self._restart_browser_session
                 )
 
                 self.logger.info(f"Chrome WebDriver initialized successfully (attempt {attempt + 1})")
@@ -3311,8 +3312,12 @@ class IntegratedMagicBricksScraper:
             # Read existing CSV
             df = pd.read_csv(csv_file)
 
-            # Create a mapping of URL to detailed data
-            detailed_data_map = {prop['url']: prop for prop in detailed_properties}
+            # Create a mapping of URL to detailed data (tolerant to missing keys)
+            detailed_data_map = {}
+            for prop in detailed_properties:
+                key = prop.get('url') or prop.get('property_url')
+                if key:
+                    detailed_data_map[key] = prop
 
             # Add new columns for detailed data
             new_columns = ['amenities', 'description', 'builder_name', 'location_address', 'specifications']
@@ -3327,7 +3332,12 @@ class IntegratedMagicBricksScraper:
                     detailed_data = detailed_data_map[property_url]
 
                     # Update with detailed information
-                    df.at[index, 'amenities'] = ', '.join(detailed_data.get('amenities', []))
+                    amenities_val = detailed_data.get('amenities', [])
+                    if isinstance(amenities_val, list):
+                        amenities_str = ', '.join(amenities_val)
+                    else:
+                        amenities_str = str(amenities_val)
+                    df.at[index, 'amenities'] = amenities_str
                     df.at[index, 'description'] = detailed_data.get('description', '')
                     df.at[index, 'builder_name'] = detailed_data.get('builder_info', {}).get('name', '')
                     df.at[index, 'location_address'] = detailed_data.get('location_details', {}).get('address', '')

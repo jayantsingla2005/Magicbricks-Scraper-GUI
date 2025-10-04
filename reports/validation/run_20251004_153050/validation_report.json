@@ -1,0 +1,2693 @@
+{
+  "report": {
+    "timestamp": "20251004_153050",
+    "gurgaon_csv": "D:\\real estate\\Scrapers\\Magicbricks\\magicbricks_gurgaon_full_20251002_193730.csv",
+    "mumbai_csv": "D:\\real estate\\Scrapers\\Magicbricks\\magicbricks_mumbai_full_20251002_233131.csv",
+    "totals": {
+      "urls": 30
+    },
+    "completeness_percent": {
+      "title": 0.0,
+      "price": 80.0,
+      "area": 73.33333333333333,
+      "property_type": 100.0,
+      "bathrooms": 100.0,
+      "balcony": 100.0,
+      "furnishing": 100.0,
+      "floor_details": 0.0,
+      "locality": 93.33333333333333,
+      "society": 100.0,
+      "status": 100.0,
+      "facing": 35.714285714285715,
+      "parking": 100.0,
+      "owner_name": 73.33333333333333,
+      "contact_options": 0.0,
+      "description": 0.0,
+      "photo_count": 0.0
+    },
+    "mismatch_examples": {
+      "title": [
+        {
+          "url": "https://www.magicbricks.com/space-residency-mira-road-mumbai-pdpid-4d4235313135303433",
+          "csv": "1 BHK Apartment for Sale in Mira Road Area Mumbai"
+        },
+        {
+          "url": "https://www.magicbricks.com/ansal-c2-block-palam-vihar-pocket-c-gurgaon-pdpid-4d4235343038343737",
+          "csv": "3 BHK Apartment for Sale in Pocket C Palam Vihar Gurgaon"
+        },
+        {
+          "url": "https://www.magicbricks.com/mvn-athens-sector-5-gurgaon-pdpid-4d4235303830303438",
+          "csv": "2 BHK Apartment for Sale in Sector 5 Gurgaon"
+        }
+      ],
+      "price": [
+        {
+          "url": "https://www.magicbricks.com/hero-homes-sector-104-gurgaon-pdpid-4d4235313139323831",
+          "csv": "1.90 Cr"
+        },
+        {
+          "url": "https://www.magicbricks.com/conscient-heritage-max-sector-102-gurgaon-pdpid-4d4235303232393339",
+          "csv": "2.75 Cr"
+        },
+        {
+          "url": "https://www.magicbricks.com/rustomjee-crown-prabhadevi-mumbai-pdpid-4d4235313230313935",
+          "csv": "18.50 Cr"
+        }
+      ],
+      "area": [
+        {
+          "url": "https://www.magicbricks.com/ansal-valley-view-estate-faridabad-gurgaon-road-gurgaon-pdpid-4d4235303031323039",
+          "csv": "729 sqft"
+        },
+        {
+          "url": "https://www.magicbricks.com/shree-krishna-eastern-winds-qureshi-nagar-mumbai-pdpid-4d4235303733383036",
+          "csv": "434 sqft"
+        },
+        {
+          "url": "https://www.magicbricks.com/paras-floret-sector-59-gurgaon-pdpid-4d4235343233313539",
+          "csv": "1200 sqft"
+        }
+      ],
+      "property_type": [],
+      "bathrooms": [],
+      "balcony": [],
+      "furnishing": [],
+      "floor_details": [
+        {
+          "url": "https://www.magicbricks.com/space-residency-mira-road-mumbai-pdpid-4d4235313135303433",
+          "csv": "5 out of 5"
+        },
+        {
+          "url": "https://www.magicbricks.com/ansal-c2-block-palam-vihar-pocket-c-gurgaon-pdpid-4d4235343038343737",
+          "csv": "2 out of 4"
+        },
+        {
+          "url": "https://www.magicbricks.com/mvn-athens-sector-5-gurgaon-pdpid-4d4235303830303438",
+          "csv": "2 out of 15"
+        }
+      ],
+      "locality": [
+        {
+          "url": "https://www.magicbricks.com/ansal-c2-block-palam-vihar-pocket-c-gurgaon-pdpid-4d4235343038343737",
+          "csv": "Pocket C Palam Vihar"
+        },
+        {
+          "url": "https://www.magicbricks.com/hero-homes-shankar-vihar-gurgaon-pdpid-4d4235313139323831",
+          "csv": "Shankar Vihar Sector 104"
+        }
+      ],
+      "society": [],
+      "status": [],
+      "facing": [
+        {
+          "url": "https://www.magicbricks.com/ansal-valley-view-estate-faridabad-gurgaon-road-gurgaon-pdpid-4d4235303031323039",
+          "csv": "South -West"
+        },
+        {
+          "url": "https://www.magicbricks.com/lokhandwala-galaxy-byculla-mumbai-pdpid-4d4235303932363836",
+          "csv": "North - East"
+        },
+        {
+          "url": "https://www.magicbricks.com/paras-floret-sector-59-gurgaon-pdpid-4d4235343233313539",
+          "csv": "East"
+        }
+      ],
+      "parking": [],
+      "owner_name": [
+        {
+          "url": "https://www.magicbricks.com/paras-floret-sector-59-gurgaon-pdpid-4d4235343233313539",
+          "csv": "Owner: Yash"
+        },
+        {
+          "url": "https://www.magicbricks.com/hero-homes-sector-104-gurgaon-pdpid-4d4235313139323831",
+          "csv": "Owner: A"
+        },
+        {
+          "url": "https://www.magicbricks.com/conscient-heritage-max-sector-102-gurgaon-pdpid-4d4235303232393339",
+          "csv": "Owner: Sunita Batra"
+        }
+      ],
+      "contact_options": [
+        {
+          "url": "https://www.magicbricks.com/space-residency-mira-road-mumbai-pdpid-4d4235313135303433",
+          "csv": "Contact Owner, Get Phone No."
+        },
+        {
+          "url": "https://www.magicbricks.com/ansal-c2-block-palam-vihar-pocket-c-gurgaon-pdpid-4d4235343038343737",
+          "csv": "Contact Owner, Get Phone No."
+        },
+        {
+          "url": "https://www.magicbricks.com/mvn-athens-sector-5-gurgaon-pdpid-4d4235303830303438",
+          "csv": "Contact Owner, Get Phone No."
+        }
+      ],
+      "description": [
+        {
+          "url": "https://www.magicbricks.com/space-residency-mira-road-mumbai-pdpid-4d4235313135303433",
+          "csv": "1 BHK Apartment for Sale in Mira Road Area Mumbai. Priced at ₹60 Lac. Area: 540 sqft. Status: Ready to Move. Located in Mira Road Area. Project: Space Residency"
+        },
+        {
+          "url": "https://www.magicbricks.com/ansal-c2-block-palam-vihar-pocket-c-gurgaon-pdpid-4d4235343038343737",
+          "csv": "An Elegant 3 BHK flat located in Palam Vihar Pocket C, Gurgaon is now available for sale. This flat for resale is an attractive property. The ready to move flat in Palam Vihar Pocket C is all ready for sale at the budget of ₹1.25 Cr. It is a semi-furnished apartment for sale. Available on 2 floor, this apartment covers carpet area 1000 sqft. The apartment is provided with reserved parking, security.View Property"
+        },
+        {
+          "url": "https://www.magicbricks.com/mvn-athens-sector-5-gurgaon-pdpid-4d4235303830303438",
+          "csv": "2 BHK Apartment for Sale in Sector 5 Gurgaon. Priced at ₹45 Lac. Area: 457 sqft. Status: Ready to Move. Located in Sector 5. Project: MVN Athens"
+        }
+      ],
+      "photo_count": [
+        {
+          "url": "https://www.magicbricks.com/space-residency-mira-road-mumbai-pdpid-4d4235313135303433",
+          "csv": "11+Photos"
+        },
+        {
+          "url": "https://www.magicbricks.com/ansal-c2-block-palam-vihar-pocket-c-gurgaon-pdpid-4d4235343038343737",
+          "csv": "7+Photos"
+        },
+        {
+          "url": "https://www.magicbricks.com/mvn-athens-sector-5-gurgaon-pdpid-4d4235303830303438",
+          "csv": "3+Photos"
+        }
+      ]
+    }
+  },
+  "results": [
+    {
+      "city": "mumbai",
+      "property_url": "https://www.magicbricks.com/space-residency-mira-road-mumbai-pdpid-4d4235313135303433",
+      "screenshot": "reports\\validation\\run_20251004_153050\\01_mumbai.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\01_mumbai.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "1 BHK Apartment for Sale in Mira Road Area Mumbai",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "60 Lac",
+          "found": true
+        },
+        "area": {
+          "csv_value": "540 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "1 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "2",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "5 out of 5",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Mira Road Area",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Space Residency",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: Sumit Loyal",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "1 BHK Apartment for Sale in Mira Road Area Mumbai. Priced at ₹60 Lac. Area: 540 sqft. Status: Ready to Move. Located in Mira Road Area. Project: Space Residency",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "11+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "gurgaon",
+      "property_url": "https://www.magicbricks.com/ansal-c2-block-palam-vihar-pocket-c-gurgaon-pdpid-4d4235343038343737",
+      "screenshot": "reports\\validation\\run_20251004_153050\\02_gurgaon.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\02_gurgaon.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "3 BHK Apartment for Sale in Pocket C Palam Vihar Gurgaon",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "1.25 Cr",
+          "found": true
+        },
+        "area": {
+          "csv_value": "1000 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "3 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "2",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "1",
+          "found": true
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "2 out of 4",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Pocket C Palam Vihar",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "society": {
+          "csv_value": "Ansal C2 Block",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: Sumit",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "An Elegant 3 BHK flat located in Palam Vihar Pocket C, Gurgaon is now available for sale. This flat for resale is an attractive property. The ready to move flat in Palam Vihar Pocket C is all ready for sale at the budget of ₹1.25 Cr. It is a semi-furnished apartment for sale. Available on 2 floor, this apartment covers carpet area 1000 sqft. The apartment is provided with reserved parking, security.View Property",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "7+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "gurgaon",
+      "property_url": "https://www.magicbricks.com/mvn-athens-sector-5-gurgaon-pdpid-4d4235303830303438",
+      "screenshot": "reports\\validation\\run_20251004_153050\\03_gurgaon.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\03_gurgaon.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "2 BHK Apartment for Sale in Sector 5 Gurgaon",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "45 Lac",
+          "found": true
+        },
+        "area": {
+          "csv_value": "457 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "2 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "2",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "2 out of 15",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Sector 5",
+          "found": true
+        },
+        "society": {
+          "csv_value": "MVN Athens",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: LALIT RAJPUT LALIT RAJPUT",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "2 BHK Apartment for Sale in Sector 5 Gurgaon. Priced at ₹45 Lac. Area: 457 sqft. Status: Ready to Move. Located in Sector 5. Project: MVN Athens",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "3+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "mumbai",
+      "property_url": "https://www.magicbricks.com/express-view-apartment-kurla-east-mumbai-pdpid-4d4235333937393333",
+      "screenshot": "reports\\validation\\run_20251004_153050\\04_mumbai.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\04_mumbai.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "1 BHK Apartment for Sale in Kurla East Mumbai",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "85 Lac",
+          "found": true
+        },
+        "area": {
+          "csv_value": "450 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "1 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "1",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "5 out of 7",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Kurla East",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Express View Apartment",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "East",
+          "found": true
+        },
+        "parking": {
+          "csv_value": "1 Open",
+          "found": true
+        },
+        "owner_name": {
+          "csv_value": "Owner: Demosh Rao",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "1 BHK Apartment for Sale in Kurla East Mumbai. Priced at ₹85 Lac. Area: 450 sqft. Status: Ready to Move. Located in Kurla East. Project: Express View Apartment",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "12+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "gurgaon",
+      "property_url": "https://www.magicbricks.com/ardee-city-sector-52-gurgaon-pdpid-4d4235303739393532",
+      "screenshot": "reports\\validation\\run_20251004_153050\\05_gurgaon.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\05_gurgaon.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "3 BHK Builder Floor for Sale in Sector 52 Gurgaon",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "2.10 Cr",
+          "found": true
+        },
+        "area": {
+          "csv_value": "240 sqyrd",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "3 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "3",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "2",
+          "found": true
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "Ground out of 3",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Sector 52",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Ardee City",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "North",
+          "found": true
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: Raj",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "3 BHK Builder Floor for Sale in Sector 52 Gurgaon. Priced at ₹2.10 Cr. Area: 240 sqyrd. Status: Ready to Move. Located in Sector 52. Project: Ardee City",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "7+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "gurgaon",
+      "property_url": "https://www.magicbricks.com/ansal-valley-view-estate-faridabad-gurgaon-road-gurgaon-pdpid-4d4235303031323039",
+      "screenshot": "reports\\validation\\run_20251004_153050\\06_gurgaon.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\06_gurgaon.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "2 BHK Apartment for Sale in Faridabad Gurgaon Road Gurgaon",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "1.10 Cr",
+          "found": true
+        },
+        "area": {
+          "csv_value": "729 sqft",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "property_type": {
+          "csv_value": "2 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "2",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "2",
+          "found": true
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "5 out of 18",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Faridabad",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Ansal Valley View Estate",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "South -West",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "parking": {
+          "csv_value": "1 Open",
+          "found": true
+        },
+        "owner_name": {
+          "csv_value": "Owner: Amitabh",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "Valley View Estate is surrounded by lush green forests which make for pleasant viewing throughout the year. The society has full power backup and water is available 24 hours. It has strong security with guards at the gates and the towers. All visitors to the apartments complex are recorded and approved by residents.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "15+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "mumbai",
+      "property_url": "https://www.magicbricks.com/lokhandwala-galaxy-byculla-mumbai-pdpid-4d4235303932363836",
+      "screenshot": "reports\\validation\\run_20251004_153050\\07_mumbai.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\07_mumbai.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "2 BHK Apartment for Sale in Byculla Mumbai",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "3.70 Cr",
+          "found": true
+        },
+        "area": {
+          "csv_value": "1065 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "2 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "2",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "2",
+          "found": true
+        },
+        "furnishing": {
+          "csv_value": "Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "7 out of 19",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Byculla",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Lokhandwala Galaxy",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "North - East",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "parking": {
+          "csv_value": "1 Open",
+          "found": true
+        },
+        "owner_name": {
+          "csv_value": "Owner: Mustansir A Rangwala",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "It's a 7th floor Multistorey Apartment in a building of total 19 floors. This spacious Multistorey Apartment was constructed approx. 10 to 15 years years back. Prime facilities are easily accessible from this place with Patanwala Night High School (0 km ). Other key neighbourhood are Eugenic Maternity Home (1 km ).",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "6+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "mumbai",
+      "property_url": "https://www.magicbricks.com/bindra-complex-andheri-east-mumbai-pdpid-4d4235303937363337",
+      "screenshot": "reports\\validation\\run_20251004_153050\\08_mumbai.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\08_mumbai.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "1 BHK Apartment for Sale in Andheri East Mumbai",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "85 Lac",
+          "found": true
+        },
+        "area": {
+          "csv_value": "223 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "1 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "2",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "10 out of 14",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Andheri East",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Bindra Complex",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: Shraddha Borde",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "1 BHK Apartment for Sale in Andheri East Mumbai. Priced at ₹85 Lac. Area: 223 sqft. Status: Ready to Move. Located in Andheri East. Project: Bindra Complex",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "7+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "mumbai",
+      "property_url": "https://www.magicbricks.com/shree-krishna-eastern-winds-qureshi-nagar-mumbai-pdpid-4d4235303733383036",
+      "screenshot": "reports\\validation\\run_20251004_153050\\09_mumbai.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\09_mumbai.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "1 BHK House for Sale in Qureshi Nagar Mumbai",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "21.9 Lac",
+          "found": true
+        },
+        "area": {
+          "csv_value": "434 sqft",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "property_type": {
+          "csv_value": "1 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "1",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "furnishing": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "floor_details": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "locality": {
+          "csv_value": "Qureshi Nagar",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Shree Krishna Eastern Winds",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: Pratima Patil",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "1 BHK  House for Sale in Qureshi Nagar Mumbai. Priced at ₹21.9 Lac. Area: 434 sqft. Status: Ready to Move. Located in Qureshi Nagar. Project: Shree Krishna Eastern Winds",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "13+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "gurgaon",
+      "property_url": "https://www.magicbricks.com/paras-floret-sector-59-gurgaon-pdpid-4d4235343233313539",
+      "screenshot": "reports\\validation\\run_20251004_153050\\10_gurgaon.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\10_gurgaon.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "3 BHK Builder Floor for Sale in Sector 59 Gurgaon",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "3.50 Cr",
+          "found": true
+        },
+        "area": {
+          "csv_value": "1200 sqft",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "property_type": {
+          "csv_value": "3 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "3",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "3",
+          "found": true
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "2 out of 4",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Sector 59",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Paras Floret",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Under Construction",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "East",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "parking": {
+          "csv_value": "2 Covered,",
+          "found": true
+        },
+        "owner_name": {
+          "csv_value": "Owner: Yash",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "This property is located at prime location of golf course extension road",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "2+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "gurgaon",
+      "property_url": "https://www.magicbricks.com/hero-homes-sector-104-gurgaon-pdpid-4d4235313139323831",
+      "screenshot": "reports\\validation\\run_20251004_153050\\11_gurgaon.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\11_gurgaon.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "3 BHK Apartment for Sale in Sector 104 Gurgaon",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "1.90 Cr",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "area": {
+          "csv_value": "861 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "3 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "2",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "2",
+          "found": true
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "34 out of 36",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Sector 104",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Hero Homes",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "parking": {
+          "csv_value": "1 Covered",
+          "found": true
+        },
+        "owner_name": {
+          "csv_value": "Owner: A",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "3 BHK Apartment for Sale in Sector 104 Gurgaon. Priced at ₹1.90 Cr. Area: 861 sqft. Status: Ready to Move. Located in Sector 104. Project: Hero Homes",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "9+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "mumbai",
+      "property_url": "https://www.magicbricks.com/pratiksha-chs-bhandup-east-mumbai-pdpid-4d4235303436383334",
+      "screenshot": "reports\\validation\\run_20251004_153050\\12_mumbai.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\12_mumbai.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "1 BHK Apartment for Sale in Bhandup East Mumbai",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "82 Lac",
+          "found": true
+        },
+        "area": {
+          "csv_value": "367 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "1 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "1",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "2 out of 4",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Bhandup East",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Pratiksha CHS",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: Manoj Kumar",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "1 BHK Apartment for Sale in Bhandup East Mumbai. Priced at ₹82 Lac. Area: 367 sqft. Status: Ready to Move. Located in Bhandup East. Project: Pratiksha CHS",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "15+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "gurgaon",
+      "property_url": "https://www.magicbricks.com/sare-crescent-parc-royal-greens-phase-2-sector-92-gurgaon-pdpid-4d4235313639333933",
+      "screenshot": "reports\\validation\\run_20251004_153050\\13_gurgaon.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\13_gurgaon.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "4 BHK Apartment for Sale in Sector 92 Gurgaon",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "1.74 Cr",
+          "found": true
+        },
+        "area": {
+          "csv_value": "1460 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "4 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "4",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "3",
+          "found": true
+        },
+        "furnishing": {
+          "csv_value": "Unfurnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "7 out of 14",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Sector 92",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Sare Crescent Parc Royal Greens Phase 2",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "East",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: Saurabh",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "4 BHK Apartment for Sale in Sector 92 Gurgaon. Priced at ₹1.74 Cr. Area: 1460 sqft. Status: Ready to Move. Located in Sector 92. Project: Sare Crescent Parc Royal Greens Phase 2",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "14+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "gurgaon",
+      "property_url": "https://www.magicbricks.com/ocus-24k-sector-68-gurgaon-pdpid-4d4235303238333232",
+      "screenshot": "reports\\validation\\run_20251004_153050\\14_gurgaon.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\14_gurgaon.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "Apartment for Sale in Sector 68 Gurgaon",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "80 Lac",
+          "found": true
+        },
+        "area": {
+          "csv_value": "674 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "Apartment",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "1",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "1",
+          "found": true
+        },
+        "furnishing": {
+          "csv_value": "Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "15 out of 20",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Sector 68",
+          "found": true
+        },
+        "society": {
+          "csv_value": "OCUS 24K",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "South - East",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: Vijay Pal Singh",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "Its a 15th floor 1BHK Apartment in a building of total 20 floors",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "10+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "mumbai",
+      "property_url": "https://www.magicbricks.com/awesome-heights-marol-mumbai-pdpid-4d4235303433323839",
+      "screenshot": "reports\\validation\\run_20251004_153050\\15_mumbai.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\15_mumbai.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "2 BHK Apartment for Sale in Marol Mumbai",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "1.80 Cr",
+          "found": true
+        },
+        "area": {
+          "csv_value": "720 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "2 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "2",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "3 out of 13",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Marol",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Awesome Heights",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: Mamta Pimple",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "2 BHK Apartment for Sale in Marol Mumbai. Priced at ₹1.80 Cr. Area: 720 sqft. Status: Ready to Move. Located in Marol. Project: Awesome Heights",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "10+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "gurgaon",
+      "property_url": "https://www.magicbricks.com/ambience-lagoon-ambience-island-gurgaon-pdpid-4d4235303239383730",
+      "screenshot": "reports\\validation\\run_20251004_153050\\16_gurgaon.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\16_gurgaon.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "3 BHK Apartment for Sale in Ambience Island, Sector 24, Delhi Gurgaon Expressway Gurgaon",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "5.49 Cr",
+          "found": true
+        },
+        "area": {
+          "csv_value": "2800 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "3 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "4",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "4",
+          "found": true
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "4 out of 4",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Sector 24",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Ambience Lagoon",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "East",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "parking": {
+          "csv_value": "2 Covered",
+          "found": true
+        },
+        "owner_name": {
+          "csv_value": "Owner: Neeraj",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "Ambience Lagoon is more than just a residence it offers a plethora of amenities and facilities that cater to every aspect of a luxurious lifestyle. Residents have access to a well-equipped fitness center, rejuvenating swimming pools, meticulously maintained gardens, jogging tracks, and exclusive clubhouse facilities. Additionally, round-the-clock security, power backup, and concierge services ensure a safe, convenient, and hassle free living experience",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "8+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "mumbai",
+      "property_url": "https://www.magicbricks.com/ankur-enclave-mira-road-mumbai-pdpid-4d4235303631323735",
+      "screenshot": "reports\\validation\\run_20251004_153050\\17_mumbai.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\17_mumbai.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "2 BHK Apartment for Sale in Mira Road Area Mumbai",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "80 Lac",
+          "found": true
+        },
+        "area": {
+          "csv_value": "654 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "2 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "2",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "2 out of 8",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Mira Road Area",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Ankur Enclave",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: Naresh Chavan",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "2 BHK Apartment for Sale in Mira Road Area Mumbai. Priced at ₹80 Lac. Area: 654 sqft. Status: Ready to Move. Located in Mira Road Area. Project: Ankur Enclave",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "8+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "gurgaon",
+      "property_url": "https://www.magicbricks.com/conscient-heritage-max-sector-102-gurgaon-pdpid-4d4235303232393339",
+      "screenshot": "reports\\validation\\run_20251004_153050\\18_gurgaon.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\18_gurgaon.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "3 BHK Apartment for Sale in Sector 102 Gurgaon",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "2.75 Cr",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "area": {
+          "csv_value": "1942 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "3 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "4",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "4",
+          "found": true
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "1 out of 22",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Sector 102",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Conscient Heritage Max",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "East",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: Sunita Batra",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "3 BHK Apartment for Sale in Sector 102 Gurgaon. Priced at ₹2.75 Cr. Area: 1942 sqft. Status: Ready to Move. Located in Sector 102. Project: Conscient Heritage Max",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "1Photo",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "mumbai",
+      "property_url": "https://www.magicbricks.com/rustomjee-crown-prabhadevi-mumbai-pdpid-4d4235313230313935",
+      "screenshot": "reports\\validation\\run_20251004_153050\\19_mumbai.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\19_mumbai.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "4 BHK Apartment for Sale in Prabhadevi Mumbai",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "18.50 Cr",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "area": {
+          "csv_value": "2156 sqft",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "property_type": {
+          "csv_value": "4 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "5",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "1",
+          "found": true
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "55 out of 63",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Prabhadevi",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Rustomjee Crown",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "East",
+          "found": true
+        },
+        "parking": {
+          "csv_value": "4 Covered",
+          "found": true
+        },
+        "owner_name": {
+          "csv_value": "Owner: Shah",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "Ultra luxurious, vastu compliant 4 BHK apartment on 55th floor of a landmark project called Rustomjee Crown. Enjoy amazing sea views and loads of amenities. The apartment comes up with Italian marble flooring, fully done up kitchen, central air conditioning and branded fittings.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "5+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "gurgaon",
+      "property_url": "https://www.magicbricks.com/signature-global-city-92-sector-92-gurgaon-pdpid-4d4235333132373533",
+      "screenshot": "reports\\validation\\run_20251004_153050\\20_gurgaon.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\20_gurgaon.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "2 BHK Apartment for Sale in Sector 92 Gurgaon",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "1.25 Cr",
+          "found": true
+        },
+        "area": {
+          "csv_value": "1010 sqft",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "property_type": {
+          "csv_value": "2 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "2",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "2",
+          "found": true
+        },
+        "furnishing": {
+          "csv_value": "Unfurnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "3 out of 4",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Sector 92",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Signature Global City 92",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Under Construction",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: Vishal Vikram",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "2 BHK Apartment for Sale in Sector 92 Gurgaon. Priced at ₹1.25 Cr. Area: 1010 sqft. Status: Under Construction. Located in Sector 92. Project: Signature Global City 92",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "6+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "gurgaon",
+      "property_url": "https://www.magicbricks.com/hero-homes-shankar-vihar-gurgaon-pdpid-4d4235313139323831",
+      "screenshot": "reports\\validation\\run_20251004_153050\\21_gurgaon.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\21_gurgaon.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "4 BHK Apartment for Sale in Shankar Vihar Sector 104 Gurgaon",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "3.79 Cr",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "area": {
+          "csv_value": "1527 sqft",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "property_type": {
+          "csv_value": "4 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "4",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "11 out of 35",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Shankar Vihar Sector 104",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "society": {
+          "csv_value": "Hero Homes",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Under Construction",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "East",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "parking": {
+          "csv_value": "2 Covered",
+          "found": true
+        },
+        "owner_name": {
+          "csv_value": "Owner: Radiant Gain",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "Prime east facing flat in Hero Homes  Sector 104, Dwarka Expressway. Semi-furnished, well maintained apartment with full power backup and excellent cross ventilation. Live in a secure, family friendly gated community boasting 54 premium amenities badminton court, swimming pool, WiFi zone, kids rock climbing, tennis court, cycling  jogging track, health caf, juice bar, community organic farming, and many more lifestyle sports facilities. Ideal for families and professionals seeking convenience li",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "6+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "mumbai",
+      "property_url": "https://www.magicbricks.com/rag-megh-malhar-yashodham-mumbai-pdpid-4d4235303532363338",
+      "screenshot": "reports\\validation\\run_20251004_153050\\22_mumbai.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\22_mumbai.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "5 BHK Apartment for Sale in Yashodham Mumbai",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "6.50 Cr",
+          "found": true
+        },
+        "area": {
+          "csv_value": "2664 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "5 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "5",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "furnishing": {
+          "csv_value": "Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "8 out of 22",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Yashodham",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Rag Megh Malhar",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: Mohit Jathan",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "5 BHK Apartment for Sale in Yashodham Mumbai. Priced at ₹6.50 Cr. Area: 2664 sqft. Status: Ready to Move. Located in Yashodham. Project: Rag Megh Malhar",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "12+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "mumbai",
+      "property_url": "https://www.magicbricks.com/vithal-chs-ltd-dahisar-west-mumbai-pdpid-4d4235303530313135",
+      "screenshot": "reports\\validation\\run_20251004_153050\\23_mumbai.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\23_mumbai.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "1 BHK Apartment for Sale in Dahisar West Mumbai",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "96 Lac",
+          "found": true
+        },
+        "area": {
+          "csv_value": "389 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "1 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "1",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "5 out of 7",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Dahisar West",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Vithal CHS Ltd",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: MINAL HARNE",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "1 BHK Apartment for Sale in Dahisar West Mumbai. Priced at ₹96 Lac. Area: 389 sqft. Status: Ready to Move. Located in Dahisar West. Project: Vithal CHS Ltd",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "12+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "mumbai",
+      "property_url": "https://www.magicbricks.com/sai-leela-tower-nalasopara-west-mumbai-pdpid-4d4235303837383538",
+      "screenshot": "reports\\validation\\run_20251004_153050\\24_mumbai.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\24_mumbai.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "1 BHK Apartment for Sale in Nalasopara West Mumbai",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "33 Lac",
+          "found": true
+        },
+        "area": {
+          "csv_value": "375 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "1 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "1",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "2",
+          "found": true
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "7 out of 7",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Nalasopara West",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Sai Leela Tower",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "East",
+          "found": true
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: Nikhil Raj Singh",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "1 BHK, Multistorey Apartment is available for Sale in Nalasopara West, Mumbai for 33.0 Lac(s)",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "13+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "mumbai",
+      "property_url": "https://www.magicbricks.com/midas-enclave-chs-malad-west-mumbai-pdpid-4d4235303933383937",
+      "screenshot": "reports\\validation\\run_20251004_153050\\25_mumbai.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\25_mumbai.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "1 BHK Apartment for Sale in Malad West Mumbai",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "50 Lac",
+          "found": true
+        },
+        "area": {
+          "csv_value": "234 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "1 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "1",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "5 out of 7",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Malad West",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Midas Enclave CHS",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: Shalini Srivastava",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "1 BHK Apartment for Sale in Malad West Mumbai. Priced at ₹50 Lac. Area: 234 sqft. Status: Ready to Move. Located in Malad West. Project: Midas Enclave CHS",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "10+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "gurgaon",
+      "property_url": "https://www.magicbricks.com/central-park-flower-valley-sohna-sector-32-gurgaon-pdpid-4d4235313136323537",
+      "screenshot": "reports\\validation\\run_20251004_153050\\26_gurgaon.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\26_gurgaon.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "4 BHK Apartment for Sale in Sector 32 Sohna Gurgaon",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "4.20 Cr",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "area": {
+          "csv_value": "1800 sqft",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "property_type": {
+          "csv_value": "4 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "3",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "3",
+          "found": true
+        },
+        "furnishing": {
+          "csv_value": "Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "8 out of 13",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Sector 32 Sohna",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Central Park Flower Valley",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: nthkmr",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "4 BHK Apartment for Sale in Sector 32 Sohna Gurgaon. Priced at ₹4.20 Cr. Area: 1800 sqft. Status: Ready to Move. Located in Sector 32 Sohna. Project: Central Park Flower Valley",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "9+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "mumbai",
+      "property_url": "https://www.magicbricks.com/hdil-premier-residences-kurla-west-mumbai-pdpid-4d4235303538343934",
+      "screenshot": "reports\\validation\\run_20251004_153050\\27_mumbai.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\27_mumbai.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "1 BHK Apartment for Sale in Kurla West Mumbai",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "79 Lac",
+          "found": true
+        },
+        "area": {
+          "csv_value": "536 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "1 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "2",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "12 out of 12",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Kurla West",
+          "found": true
+        },
+        "society": {
+          "csv_value": "HDIL Premier Residences",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: N. D. Agarawal",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "1 BHK Apartment for Sale in Kurla West Mumbai. Priced at ₹79 Lac. Area: 536 sqft. Status: Ready to Move. Located in Kurla West. Project: HDIL Premier Residences",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "11+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "mumbai",
+      "property_url": "https://www.magicbricks.com/ekta-tripolis-goregaon-west-mumbai-pdpid-4d4235303031303039",
+      "screenshot": "reports\\validation\\run_20251004_153050\\28_mumbai.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\28_mumbai.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "3 BHK Apartment for Sale in Goregaon West Mumbai",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "4.07 Cr",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "area": {
+          "csv_value": "1084 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "3 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "3",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "1",
+          "found": true
+        },
+        "furnishing": {
+          "csv_value": "Unfurnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "13 out of 36",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Goregaon West",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Ekta Tripolis",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "East",
+          "found": true
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: maneesh br",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "Discover this 3 BHK flat in Goregaon West, Mumbai. This well designed apartment is located within Ekta Tripolis. This flat for resale is the perfect property for you. This ready to move flat in Goregaon West can be availed at a price of ₹4.07 Cr. You will find it unfurnished. This property sits on 13 floor with a total carpet area of 1084 sqft.View Property",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "5+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "gurgaon",
+      "property_url": "https://www.magicbricks.com/mapsko-royale-ville-sector-82-gurgaon-pdpid-4d4235303030363838",
+      "screenshot": "reports\\validation\\run_20251004_153050\\29_gurgaon.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\29_gurgaon.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "4 BHK Apartment for Sale in Sector 82 Gurgaon",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "4 Cr",
+          "found": true
+        },
+        "area": {
+          "csv_value": "2700 sqft",
+          "found": true
+        },
+        "property_type": {
+          "csv_value": "4 BHK",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "5",
+          "found": true
+        },
+        "balcony": {
+          "csv_value": "3",
+          "found": true
+        },
+        "furnishing": {
+          "csv_value": "Semi-Furnished",
+          "found": true
+        },
+        "floor_details": {
+          "csv_value": "4 out of 13",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "locality": {
+          "csv_value": "Sector 82",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Mapsko Royale Ville",
+          "found": true
+        },
+        "status": {
+          "csv_value": "Ready to Move",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "East",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "parking": {
+          "csv_value": "2 Covered,",
+          "found": true
+        },
+        "owner_name": {
+          "csv_value": "Owner: Raj",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "4 BHK Apartment for Sale in Sector 82 Gurgaon. Priced at ₹4 Cr. Area: 2700 sqft. Status: Ready to Move. Located in Sector 82. Project: Mapsko Royale Ville",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "4+Photos",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    },
+    {
+      "city": "gurgaon",
+      "property_url": "https://www.magicbricks.com/unitech-cedar-crest-nirvana-country-nirvana-country-gurgaon-pdpid-4d4235303331393234",
+      "screenshot": "reports\\validation\\run_20251004_153050\\30_gurgaon.png",
+      "html_snapshot": "reports\\validation\\run_20251004_153050\\30_gurgaon.html",
+      "comparisons": {
+        "title": {
+          "csv_value": "Plot/Land for Sale in Nirvana Country, Sector 50 Gurgaon",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "price": {
+          "csv_value": "12.50 Cr",
+          "found": true
+        },
+        "area": {
+          "csv_value": "318 sqft",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "property_type": {
+          "csv_value": "Plot",
+          "found": true
+        },
+        "bathrooms": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "balcony": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "furnishing": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "floor_details": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "locality": {
+          "csv_value": "Sector 50",
+          "found": true
+        },
+        "society": {
+          "csv_value": "Unitech Cedar Crest Nirvana Country",
+          "found": true
+        },
+        "status": {
+          "csv_value": "New Launch",
+          "found": true
+        },
+        "facing": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "parking": {
+          "csv_value": "",
+          "found": null,
+          "notes": "CSV empty"
+        },
+        "owner_name": {
+          "csv_value": "Owner: Manoj Duggal",
+          "found": true
+        },
+        "contact_options": {
+          "csv_value": "Contact Owner, Get Phone No.",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "description": {
+          "csv_value": "Plot/Land for Sale in Nirvana Country, Sector 50 Gurgaon. Priced at ₹12.50 Cr. Area: 318 sqft. Status: New Launch. Located in Sector 50. Project: Unitech Cedar Crest Nirvana Country",
+          "found": false,
+          "notes": "value not found in page text"
+        },
+        "photo_count": {
+          "csv_value": "1Photo",
+          "found": false,
+          "notes": "value not found in page text"
+        }
+      }
+    }
+  ]
+}

@@ -1067,6 +1067,7 @@ class PropertyExtractor:
             'h1.mb-ldp__dtls__title',
             'h1[class*="title"]',
             '.property-title',
+            '[data-testid*="title" i]',
             'h1',
             '[class*="heading"]',
             '[class*="name"]'
@@ -1091,6 +1092,7 @@ class PropertyExtractor:
             '.mb-ldp__dtls__price',
             '[class*="price"]',
             '.property-price',
+            '[data-testid*="price" i]',
             '[class*="cost"]',
             '[class*="amount"]'
         ]

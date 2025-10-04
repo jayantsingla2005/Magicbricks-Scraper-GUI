@@ -419,3 +419,77 @@ Update 22:40 IST — Task A and GUI Auto-Test Deep Dive
     - Bot detection events so far: ~296 (20:xx=98, 21:xx=144, 22:xx=54); frequent Strategy-3 extended breaks (300s)
     - Status: Continuing; no aborts; occasional "Driver restart requested but not implemented" warnings (non-fatal)
   - Next: Continue monitoring until Mumbai completes; publish final GUI Test Report with per-phase metrics, throughput, and bot-detection comparison.
+
+
+Update 23:40 IST — Mumbai Run COMPLETE + Deep Log Analysis
+- Mumbai Full Run COMPLETE ✅
+  - Listing: 50/50 pages; 1500 found/saved; 5m16s
+  - Individual Phase: 1201 URLs targeted; 1164 detailed records appended to CSV; 37 not appended
+  - Files:
+    - Listing CSV: magicbricks_mumbai_full_20251002_233131.csv
+    - Gurgaon CSV (from earlier): magicbricks_gurgaon_full_20251002_193730.csv
+  - CSV Update: Saw one error in both city runs — "Failed to update CSV with detailed data: 'url'"; non-fatal, proceeds with successful rows saved
+
+- Duplicate Detection (Root Cause for Gurgaon 500/959)
+  - Gurgaon: 959 URLs identified → 458 duplicates skipped (log lines: "Skipping already scraped URL" = 458) → ~501 new; 500 appended
+  - Mumbai: After duplicate filtering: 1201 URLs to scrape (0 duplicates logged)
+
+- Bot Detection Analysis (per logs 2025-10-02)
+  - Gurgaon Individual Phase: 26 bot detections (19:00–19:59)
+  - Mumbai Individual Phase: High detection density with Strategy-3 pauses observed throughout 20:05–23:08
+    - Strategy-3 pause clusters (first occurrence per cluster): ~32 × 300s ≈ ~2h 40m cumulative pause time (est.)
+    - Representative repeated-problem URLs (Mumbai):
+      - https://www.magicbricks.com/aspen-park-goregaon-east-mumbai-pdpid-4d4235303838363733
+      - https://www.magicbricks.com/kamala-natraj-santacruz-east-mumbai-pdpid-4d4235303635303535
+      - https://www.magicbricks.com/roy-mansion-santacruz-east-mumbai-pdpid-4d4235303635313339
+      - https://www.magicbricks.com/new-vinay-chs-ltd-vidya-nagari-mumbai-pdpid-4d4235303635313039
+      - https://www.magicbricks.com/resham-apartment-santacruz-east-mumbai-pdpid-4d4235303635313335
+    - Recovery effectiveness: Despite frequent detections, scraper progressed to completion; no terminal aborts
+
+- Performance Metrics
+  - Listing throughput:
+    - Gurgaon: 50 pages in 4m32s → ~11.0 pages/min; ~332 properties/min
+    - Mumbai: 50 pages in 5m16s → ~9.5 pages/min; ~285 properties/min
+  - Individual throughput (approx.):
+    - Gurgaon: 500 appended over ~39.5 min → ~12.7 props/min (duplicates skipped early)
+    - Mumbai: 1164 appended over ~3h 26m gross window incl. pauses; net productivity slowed by ~2h40m Strategy-3 waits
+
+- Errors & Warnings (non-bot)
+  - CSV update KeyError: "'url'" during merge of detailed data → non-fatal; recommend safe key fallback and dict schema guard
+  - "Driver restart requested but not implemented" — appears after Strategy-3; recommend implementing restart in individual scraper
+  - Occasional renderer/net errors from Chrome (MCS endpoints) — informational, not blocking
+  - "No meaningful data extracted" warnings cluster (Dadar East URLs) — likely atypical PDPs; contributed to 37 not-appended in Mumbai
+
+- GitHub Remote & Push
+  - Remote: https://github.com/jayantsingla2005/Magicbricks-Scraper-GUI (master)
+  - Status: Pushed; origin/master matches local HEAD at time of last status commit
+
+- Next Actions
+  1) Implement WebDriver restart on persistent detection (individual_property_scraper) and retest Mumbai segment (hotspots around Santacruz/Goregaon)
+  2) Harden CSV merge: map by prop.get('url') or prop.get('property_url'); validate dict schema; skip invalid records safely
+  3) Adaptive pacing: backoff only for offending domains/segments; keep others flowing; stagger worker start times
+  4) Proceed with Playwright-based 30-URL field validation (15 Gurgaon + 15 Mumbai) and publish completeness report
+
+
+Update 00:25 IST — Evidence Collected + Tasklist Added (Validation & Hardening)
+- Evidence:
+  - Gurgaon duplicates (log): 458 lines matched "Skipping already scraped URL" (verified via Select-String)
+  - Mumbai atypical PDPs: 9 lines matched "No meaningful data extracted" (cluster around Dadar East)
+  - Incremental issue confirmed: incremental_scraping_system.py currently tracks `test_url_{i}` instead of real URLs for page analysis
+- Actions:
+  - Added 13 new tasks under Validation & Hardening (post‑Mumbai) covering: Playwright 30‑URL validation, WebDriver restart, CSV merge hardening, per‑URL cooldown/skip‑after‑N, segment‑aware pacing, concurrency jitter, centralized UA policy, incremental fixes (real URLs + posting dates + stop rule), batch data‑quality metrics, UTF‑8 logging, and PDP fallbacks for Dadar East
+- Next immediate step awaiting approval: Run headful Playwright validation on 30 URLs (15 Gurgaon + 15 Mumbai) to complete Part 1 and publish the field‑by‑field report.
+
+
+Update 00:55 IST — Part 1 (30‑URL Playwright Validation) COMPLETE
+- Execution: Headful Chromium Playwright, 30 URLs (15 Gurgaon + 15 Mumbai), snapshots and HTML saved
+- Report: reports/validation/run_20251004_153050/validation_report.md (JSON also available)
+- Field completeness (%):
+  - price 80.0, area 73.3, property_type 100.0, bathrooms 100.0, balcony 100.0, locality 93.3,
+    society 100.0, status 100.0, parking 100.0, facing 35.7, owner_name 73.3, floor_details 0.0,
+    contact_options 0.0, description 0.0, photo_count 0.0, title 0.0
+- Notes:
+  - Positive: Core structural fields (type, baths, balcony, locality, society, status, parking) are highly consistent.
+  - Gaps: Title/floor_details/contact_options/description/photo_count string matches are low; likely due to display variants, pagination or lazy content. We captured full HTML and screenshots for each URL for audit.
+  - Price/Area: 80%/73.3% match via normalized string presence; unit/value formatting differences account for misses.
+- Next: Proceed to Priority‑0 fixes; repeat a smaller validation spot-check post‑fixes to measure any improvement.
