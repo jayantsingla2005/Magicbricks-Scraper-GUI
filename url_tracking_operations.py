@@ -206,9 +206,34 @@ class URLTrackingOperations:
             url = url_info.get('url', '')
             title = url_info.get('title', '')
             city = url_info.get('city', '')
-            
+            posting_text = url_info.get('posting_date_text')
+            parsed_posting = url_info.get('parsed_posting_date')
+
             result = self.track_property_url(url, title, city, session_id)
-            
+
+            # Persist posting dates when available
+            if result.get('success') and (posting_text or parsed_posting):
+                try:
+                    conn2 = self.connect_db()
+                    if conn2:
+                        cur2 = conn2.cursor()
+                        cur2.execute('''
+                            INSERT INTO property_posting_dates
+                            (property_url, posting_date_text, parsed_posting_date, extraction_date, confidence_score, parsing_method)
+                            VALUES (?, ?, ?, ?, ?, ?)
+                        ''', (
+                            result.get('url') or url,
+                            posting_text or '',
+                            parsed_posting if isinstance(parsed_posting, str) else (parsed_posting.isoformat() if parsed_posting else None),
+                            datetime.now(),
+                            1.0,
+                            'extractor'
+                        ))
+                        conn2.commit()
+                        conn2.close()
+                except Exception:
+                    pass
+
             if result['success']:
                 if result['is_new_url']:
                     batch_results['new_urls'] += 1
@@ -216,13 +241,13 @@ class URLTrackingOperations:
                     batch_results['duplicate_urls'] += 1
             else:
                 batch_results['errors'] += 1
-            
+
             batch_results['url_results'].append(result)
-            
+
             # Progress reporting every 100 URLs
             if (i + 1) % 100 == 0:
                 print(f"   [SUCCESS] Processed {i + 1}/{len(url_data)} URLs")
-        
+
         batch_results['processing_time'] = (
             datetime.now() - start_time
         ).total_seconds()

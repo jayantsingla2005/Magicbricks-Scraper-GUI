@@ -772,6 +772,8 @@ class IntegratedMagicBricksScraper:
             page_properties = []
             property_texts = []
             property_urls_page = []
+            posting_date_texts_page = []
+            parsed_posting_dates_page = []
 
             for i, card in enumerate(property_cards):
                 try:
@@ -786,6 +788,8 @@ class IntegratedMagicBricksScraper:
                             property_texts.append(card.get_text())
                             if cleaned_property_data.get('property_url'):
                                 property_urls_page.append(cleaned_property_data['property_url'])
+                                posting_date_texts_page.append(cleaned_property_data.get('posting_date_text'))
+                                parsed_posting_dates_page.append(cleaned_property_data.get('parsed_posting_date'))
                             self.data_validator.update_filter_stats(filtered=True)
                         else:
                             # Property was excluded by filters
@@ -806,7 +810,9 @@ class IntegratedMagicBricksScraper:
                 'properties_found': len(property_cards),
                 'properties_saved': len(page_properties),
                 'property_texts': property_texts,
-                'property_urls': property_urls_page
+                'property_urls': property_urls_page,
+                'posting_date_texts': posting_date_texts_page,
+                'parsed_posting_dates': parsed_posting_dates_page
             }
 
         except Exception as e:
@@ -1923,7 +1929,9 @@ class IntegratedMagicBricksScraper:
                 self.session_stats['session_id'],
                 page_number,
                 self.session_stats['last_scrape_date'],
-                property_urls=property_urls
+                property_urls=property_urls,
+                posting_date_texts=page_result.get('posting_date_texts', []),
+                parsed_posting_dates=page_result.get('parsed_posting_dates', [])
             )
 
             return {

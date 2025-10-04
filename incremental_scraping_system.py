@@ -108,7 +108,9 @@ class IncrementalScrapingSystem:
     def analyze_page_for_incremental_decision(self, property_texts: List[str],
                                             session_id: int, page_number: int,
                                             last_scrape_date: datetime,
-                                            property_urls: List[str] | None = None) -> Dict[str, Any]:
+                                            property_urls: List[str] | None = None,
+                                            posting_date_texts: List[str] | None = None,
+                                            parsed_posting_dates: List[datetime] | None = None) -> Dict[str, Any]:
         """Analyze a page to determine if incremental scraping should continue"""
 
         # Use smart stopping logic to analyze the page
@@ -118,10 +120,18 @@ class IncrementalScrapingSystem:
 
         # Track URLs for validation using real URLs when available
         if property_urls:
-            url_data = [
-                {'url': u, 'title': (property_texts[i][:50] if i < len(property_texts) else ''), 'city': 'test'}
-                for i, u in enumerate(property_urls)
-            ]
+            url_data = []
+            for i, u in enumerate(property_urls):
+                entry = {
+                    'url': u,
+                    'title': (property_texts[i][:50] if i < len(property_texts) else ''),
+                    'city': 'test'
+                }
+                if posting_date_texts and i < len(posting_date_texts) and posting_date_texts[i]:
+                    entry['posting_date_text'] = posting_date_texts[i]
+                if parsed_posting_dates and i < len(parsed_posting_dates) and parsed_posting_dates[i]:
+                    entry['parsed_posting_date'] = parsed_posting_dates[i]
+                url_data.append(entry)
         else:
             url_data = [
                 {'url': f'test_url_{i}', 'title': text[:50], 'city': 'test'}
