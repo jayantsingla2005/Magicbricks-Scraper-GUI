@@ -17,6 +17,7 @@ from datetime import datetime
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from integrated_magicbricks_scraper import IntegratedMagicBricksScraper
+from user_mode_options import ScrapingMode
 
 
 def run_comprehensive_validation():
@@ -75,7 +76,7 @@ def run_comprehensive_validation():
     print(f"\n🚀 Initializing scraper...")
     
     # Initialize scraper
-    scraper = IntegratedMagicBricksScraper(config=config)
+    scraper = IntegratedMagicBricksScraper(headless=False, custom_config=config)
     
     # Start timer
     start_time = time.time()
@@ -88,7 +89,7 @@ def run_comprehensive_validation():
     try:
         scraper.scrape_properties_with_incremental(
             city=city,
-            mode='incremental',
+            mode=ScrapingMode.INCREMENTAL,
             include_individual_pages=True
         )
     except Exception as e:
