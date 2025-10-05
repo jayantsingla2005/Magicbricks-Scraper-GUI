@@ -1,5 +1,22 @@
 # MagicBricks Scraper Project Status
 
+## 2025-10-05 — Navigation Hardening + Bot Detection Update (P0)
+- Symptom: Browser appeared to "only open Google" during validation.
+- Verified: `integrated_magicbricks_scraper.setup_driver()` intentionally opens Google once to validate connectivity; this is expected and not an error.
+- Root Cause for wrong content on property pages: Magicbricks often serves the "About Magicbricks" page content on PDP URLs under bot pressure; our earlier logic could mistake this as success.
+- Fixes implemented today:
+  1) URL sanitization before any navigation (force scheme, expand relative paths, strip quotes/whitespace) to prevent Chrome search fallback to Google.
+  2) Detailed navigation logging: `[NAVIGATE] ... URL=...` and `[AFTER-NAV] ... current_url=` with domain checks and warnings if Google/unexpected domain.
+  3) Bot detection heuristic expanded to treat "About Magicbricks" content as bot detection on PDP loads (triggers recovery instead of false success).
+- Quick Test Evidence (Mumbai, headful, 4-page quick run start):
+  - Bot detection surfaced early on listing page; recovery executed with restart and UA rotation.
+  - Navigation logs present; no unintended Google redirects after sanitization.
+- Commits:
+  - dd264ba BOT DETECTION: Treat 'About Magicbricks' content as bot detection on individual pages
+  - a812ee0 NAVIGATION HARDENING: Sanitize URLs + detailed navigation logging
+- Next: Run 3 short spot tests (5–8 PDPs each) post-recovery to confirm correct domain and no false positives; expand heuristics if needed.
+
+
 ## Orchestrator Tasklist (2025-10-02)
 
 ## 2025-10-04 — Task List Audit and Cleanup (Part 1)
