@@ -406,9 +406,15 @@ class IndividualPropertyScraper:
                         self.logger.debug(f"   [P1-2] Failed to set Referer: {e}")
 
                 # Navigate to property page
+                # Sanitize URL to avoid Chrome interpreting as a search and opening Google
+                nav_url = self._sanitize_url(property_url)
+                # Log session and target URL before navigation
+                with self.driver_lock:
+                    sid = getattr(self.driver, 'session_id', 'unknown')
+                self.logger.debug(f"   [NAVIGATE] Session={str(sid)[:16]}... URL={nav_url}")
                 # CRITICAL: Use self.driver directly to get latest driver after restart
                 with self.driver_lock:
-                    self.driver.get(property_url)
+                    self.driver.get(nav_url)
 
                 # P0-2: Explicit wait for critical elements instead of unconditional sleep
                 # Wait for title OR price element to be present (whichever loads first)
@@ -459,11 +465,22 @@ class IndividualPropertyScraper:
                     except Exception as e:
                         self.logger.debug(f"   [P2-2] Failed to simulate mouse: {e}")
 
+
                 # Get page source
                 # CRITICAL: Use self.driver directly to get latest driver after restart
                 with self.driver_lock:
                     page_source = self.driver.page_source
                     current_url = self.driver.current_url
+
+                # Log post-navigation URL for diagnosis
+                dom = (current_url or '').lower()
+                if 'google.' in dom:
+                    self.logger.warning(f"   [AFTER-NAV] Landed on Google instead of target: {current_url}")
+                elif 'magicbricks.com' not in dom:
+                    self.logger.warning(f"   [AFTER-NAV] Unexpected domain: {current_url}")
+                else:
+                    self.logger.debug(f"   [AFTER-NAV] On Magicbricks URL: {current_url}")
+
 
                 # Check for bot detection
                 if self.bot_handler.detect_bot_detection(page_source, current_url):
@@ -476,6 +493,8 @@ class IndividualPropertyScraper:
                         self.logger.warning(f"   🚫 Skip-after-N for {property_url} (failures={self.url_failures.get(property_url)})")
                         return None
                     continue
+
+
 
                 # Parse with BeautifulSoup
                 soup = BeautifulSoup(page_source, 'html.parser')
@@ -550,6 +569,36 @@ class IndividualPropertyScraper:
         """
         self.last_listing_page_url = url
         self.logger.debug(f"[P1-2] Listing page URL set for Referer: {url[:50]}...")
+
+    def _sanitize_url(self, url: str) -> str:
+        """Ensure URL is absolute, has scheme, and is clean to avoid search-engine fallback.
+        Returns a safe-to-navigate URL and logs any transformations.
+        """
+        try:
+            if not url:
+                return url
+            original = url
+            # Strip whitespace and surrounding quotes
+            url = str(url).strip().strip('"').strip("'")
+            # If relative, prefix Magicbricks domain
+            if url.startswith('/') and not url.startswith('//'):
+                url = f"https://www.magicbricks.com{url}"
+            # Ensure scheme exists; if missing, prepend https://
+            from urllib.parse import urlparse
+            parsed = urlparse(url)
+            if not parsed.scheme:
+                url = f"https://{url.lstrip('/')}"
+                parsed = urlparse(url)
+            # Final basic validation
+            if not parsed.netloc:
+                self.logger.warning(f"[URL] Invalid netloc after sanitize: {url}")
+            if url != original:
+                self.logger.debug(f"[URL] Sanitized navigation URL:\n   from: {original}\n     to: {url}")
+            return url
+        except Exception as e:
+            self.logger.warning(f"[URL] Sanitize failed for {url}: {e}")
+            return url
+
 
     def update_driver(self, new_driver):
         """
