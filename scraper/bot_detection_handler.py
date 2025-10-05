@@ -45,9 +45,10 @@ class BotDetectionHandler:
         bot_indicators = [
             'captcha', 'robot', 'bot detection', 'access denied',
             'cloudflare', 'please verify', 'security check',
-            'unusual traffic', 'automated requests'
+            'unusual traffic', 'automated requests',
+            'about magicbricks'  # Many blocks redirect property URLs to About page content
         ]
-        
+
         page_lower = page_source.lower()
         url_lower = current_url.lower()
         
