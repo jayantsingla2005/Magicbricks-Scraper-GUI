@@ -449,15 +449,21 @@ class IntegratedMagicBricksScraper:
                 # Test connection
                 self.driver.get("https://www.google.com")
 
-                # Initialize individual scraper now that driver is ready
-                self.individual_scraper = IndividualPropertyScraper(
-                    driver=self.driver,
-                    property_extractor=self.property_extractor,
-                    bot_handler=self.bot_handler,
-                    individual_tracker=self.individual_tracker if self.incremental_enabled else None,
-                    logger=self.logger,
-                    restart_callback=self._restart_browser_session
-                )
+                # Initialize or update IndividualPropertyScraper with current driver
+                if self.individual_scraper is None:
+                    self.individual_scraper = IndividualPropertyScraper(
+                        driver=self.driver,
+                        property_extractor=self.property_extractor,
+                        bot_handler=self.bot_handler,
+                        individual_tracker=self.individual_tracker if self.incremental_enabled else None,
+                        logger=self.logger,
+                        restart_callback=self._restart_browser_session
+                    )
+                else:
+                    # IMPORTANT: Do not replace the existing instance while it may be mid-scrape
+                    # Just update its driver reference to avoid stale-driver/session issues
+                    self.individual_scraper.update_driver(self.driver)
+                    self.logger.info("[DRIVER-UPDATE] Reused existing IndividualPropertyScraper instance with new driver")
 
                 self.logger.info(f"Chrome WebDriver initialized successfully (attempt {attempt + 1})")
                 return
