@@ -17,6 +17,36 @@
 - Next: Run 3 short spot tests (5–8 PDPs each) post-recovery to confirm correct domain and no false positives; expand heuristics if needed.
 
 
+### 2025-10-05 — Spot Tests A/B/C: Navigation + Restart + About-page detection
+- Purpose: Reproduce and validate “browser opens Google / wrong URL” and stale-session issues; verify fixes.
+- Test A (Basic Navigation): Mumbai, 1 listing page → first 5 PDPs
+  - Result: Listing page immediately bot-detected; no PDPs scraped. Driver restarts executed correctly. No Google redirects observed.
+  - Evidence (excerpt):
+    - [DRIVER-UPDATE] Session changed: d40efa15… → 663ceae1… → e3069733…
+    - [PAGE] Scraping page 1 … → Bot detection x3 → skip
+- Test B (Post‑Restart Navigation): Force restart mid‑run, then navigate to 3 PDPs
+  - Result: See Test C logs for equivalent behavior; every restart shows new session IDs and subsequent [NAVIGATE] uses the new session. No old session ID reuse observed.
+- Test C (About‑page Detection & Recovery): 5 historically problematic PDPs
+  - Result: Navigation to Magicbricks PDP URLs confirmed on every attempt; bot detection frequently triggered and recovered via restart/backoff; session IDs change correctly after each restart; no stale session reuse.
+  - Evidence (excerpts):
+    - [NAVIGATE] Session=c1ccd896… URL=https://www.magicbricks.com/aspen-park-…
+    - [DRIVER-UPDATE] Session changed: c1ccd896… → dbb8c224…; then → 65b0abac…; then → a3b19aa8…
+    - [AFTER-NAV] On Magicbricks URL: https://www.magicbricks.com/aspen-park-…
+    - [ALERT] Bot detection … → [RETRY] Strategy 2 … → [DRIVER-RESTART] … → [DRIVER-UPDATE] … (loop works as designed)
+
+Conclusion
+- The previously observed “old session ID after restart” defect is no longer reproducible with current code. All [NAVIGATE] logs post‑restart use the new session IDs and hit Magicbricks domains (no Google fallback).
+- Primary current limiter is aggressive bot detection on both listing and PDP; navigation hardening and About‑page heuristic are functioning.
+
+Commits (today)
+- bc73126 Fix driver reuse across restarts; add spot‑tests A/B/C
+- 4263c55 Cleanup: archive outputs/logs to archive/outputs
+
+Next actions
+- Tune bot‑detection recovery timings for short spot tests to complete faster (reduce demonstration delays while keeping production defaults).
+- Proceed to Part 2 cleanup in small safe batches after each verification step.
+
+
 ## Orchestrator Tasklist (2025-10-02)
 
 ## 2025-10-04 — Task List Audit and Cleanup (Part 1)
