@@ -1,0 +1,32 @@
+{
+  "test_date": "2025-10-04T23:38:09.898039",
+  "city": "Mumbai",
+  "max_pages": 34,
+  "config": {
+    "smart_filtering": true,
+    "quality_threshold": 60.0,
+    "ttl_days": 30,
+    "page_load_strategy": "eager",
+    "block_third_party_resources": true,
+    "realistic_headers": true,
+    "randomize_viewport": true,
+    "concurrent_enabled": false,
+    "include_individual_pages": true,
+    "max_pages": 34
+  },
+  "listing_pages_scraped": 0,
+  "listing_properties_found": 0,
+  "listing_duration": 0,
+  "individual_urls_total": 0,
+  "individual_urls_scraped": 0,
+  "individual_success_rate": 0,
+  "smart_filtering_enabled": true,
+  "urls_skipped": 0,
+  "volume_reduction_pct": 0,
+  "total_duration_seconds": 6.434818983078003,
+  "total_duration_minutes": 0.10724698305130005,
+  "avg_time_per_property": 0,
+  "throughput_properties_per_min": 0.0,
+  "test_status": "COMPLETE",
+  "restart_flag_bug_fixed": true
+}

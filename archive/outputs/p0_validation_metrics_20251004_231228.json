@@ -1,0 +1,51 @@
+{
+  "start_time": "2025-10-04T22:58:12.931739",
+  "city": "Mumbai",
+  "config": {
+    "smart_filtering": true,
+    "quality_threshold": 60.0,
+    "ttl_days": 30,
+    "page_load_strategy": "eager",
+    "block_third_party_resources": true,
+    "concurrent_enabled": false,
+    "include_individual_pages": true,
+    "max_pages": 20
+  },
+  "listing_phase": {
+    "pages_scraped": 3,
+    "properties_found": 90,
+    "duration_seconds": 256.807235956192,
+    "properties_per_minute": 21.02744488446256
+  },
+  "individual_phase": {
+    "total_urls": 90,
+    "urls_scraped": 20,
+    "urls_skipped": 70,
+    "duration_seconds": 599.2168838977814,
+    "avg_time_per_url": 29.96084419488907,
+    "throughput_per_minute": 2.002613798520244
+  },
+  "smart_filtering": {
+    "total_urls": 90,
+    "urls_scraped": 20,
+    "urls_skipped": 70,
+    "skip_percentage": 77.77777777777779,
+    "volume_reduction": 77.77777777777779
+  },
+  "performance": {
+    "avg_time_per_pdp_seconds": 29.96084419488907,
+    "baseline_time_per_pdp_seconds": 8.0,
+    "speed_improvement_percentage": -274.51055243611336,
+    "throughput_properties_per_minute": 2.002613798520244
+  },
+  "resilience": {},
+  "data_quality": {
+    "total_scraped": 20,
+    "successful_extractions": 18,
+    "extraction_success_rate": 90.0
+  },
+  "overall": {
+    "total_duration_seconds": 856.0241198539734,
+    "total_duration_minutes": 14.26706866423289
+  }
+}

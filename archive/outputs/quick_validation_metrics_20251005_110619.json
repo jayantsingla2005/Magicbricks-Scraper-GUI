@@ -1,0 +1,19 @@
+{
+  "test_date": "2025-10-05T11:06:19.958783",
+  "test_type": "quick_validation_stale_driver_fix",
+  "city": "Mumbai",
+  "max_pages": 4,
+  "listing_pages_scraped": 0,
+  "listing_properties_found": 0,
+  "individual_urls_total": 0,
+  "individual_urls_scraped": 0,
+  "individual_urls_failed": 0,
+  "success_rate": 0,
+  "total_duration_seconds": 528.1525685787201,
+  "total_duration_minutes": 8.802542809645335,
+  "avg_time_per_property": 0,
+  "throughput_properties_per_min": 0.0,
+  "stale_driver_errors": 0,
+  "restart_count": 0,
+  "fix_validated": true
+}
