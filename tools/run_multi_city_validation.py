@@ -5,6 +5,8 @@ import time
 import logging
 import threading
 from contextlib import contextmanager
+import os
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from integrated_magicbricks_scraper import IntegratedMagicBricksScraper
 from user_mode_options import ScrapingMode

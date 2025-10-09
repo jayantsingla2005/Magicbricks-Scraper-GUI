@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import sys
 import time
+import os
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from integrated_magicbricks_scraper import IntegratedMagicBricksScraper
 from user_mode_options import ScrapingMode
 
