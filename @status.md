@@ -1,4 +1,15 @@
 # MagicBricks Scraper Project Status
+## 2025-10-09 — Phase 1 Kickoff: Anti‑Bot Fixes + DB Read‑Only Hardening
+- Applied targeted anti-bot detection fixes:
+  - UA pool restricted to Windows Chrome only (122/123/124); removed Safari entries
+  - Stopped forging sec-ch-ua headers; now only setting Accept/Accept-Encoding/Accept-Language/Upgrade-Insecure-Requests via CDP
+  - Kept all existing anti-detection measures (viewport randomization, mouse/scroll sim, PDP resource blocking, referer chain)
+- GUI City Panel DB access hardened:
+  - Read-only open with SQLite URI (mode=ro) and short busy timeout
+  - Safe fallbacks and missing-table guards
+- Next: Run a short headful smoke test (Gurgaon, 1 listing page, no PDPs). If clean, start multi-city large validation (5 cities × ≥50 pages, with PDPs) headful.
+
+
 
 ## 2025-10-05 — Navigation Hardening + Bot Detection Update (P0)
 - Symptom: Browser appeared to "only open Google" during validation.

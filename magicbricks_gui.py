@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 MagicBricks Scraper GUI Application
 Modern, professional interface for property data extraction with advanced features.
@@ -10,9 +10,10 @@ import threading
 import queue
 import json
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Any, Optional
+import sqlite3
 
 # Import our integrated scraper and multi-city system
 from integrated_magicbricks_scraper import IntegratedMagicBricksScraper
@@ -31,7 +32,7 @@ class MagicBricksGUI:
 
         # Create main window with enhanced configuration
         self.root = tk.Tk()
-        self.root.title("🏠 MagicBricks Property Scraper - Professional Edition v2.0")
+        self.root.title("ðŸ  MagicBricks Property Scraper - Professional Edition v2.0")
         self.root.geometry("1450x950")
         self.root.minsize(1250, 850)
 
@@ -69,6 +70,11 @@ class MagicBricksGUI:
         self.last_update_time = None
         self.progress_history = []
 
+        # City status tracking
+        self.city_status_data_map = {}
+        self.city_status_selected_city = None
+        self.city_status_refresh_job = None
+
         # Multi-city system
         self.city_system = MultiCitySystem()
         self.selected_cities = ['gurgaon']  # Default selection
@@ -100,6 +106,9 @@ class MagicBricksGUI:
 
         # Start message processing
         self.process_messages()
+
+        # Schedule initial city status refresh
+        self.root.after(1500, self.refresh_city_status)
 
         # Auto-test hook for automated GUI testing (non-invasive)
         try:
@@ -134,9 +143,9 @@ class MagicBricksGUI:
         except Exception as e:
             print(f"[AUTO-TEST] Setup failed: {e}")
 
-        print("🎮 MagicBricks GUI v2.0 Initialized")
-        print(f"   🏙️ Multi-city system: {len(self.city_system.cities)} cities available")
-        print(f"   🎨 Modern interface with scrollable panels")
+        print("ðŸŽ® MagicBricks GUI v2.0 Initialized")
+        print(f"   ðŸ™ï¸ Multi-city system: {len(self.city_system.cities)} cities available")
+        print(f"   ðŸŽ¨ Modern interface with scrollable panels")
 
     def setup_modern_styles(self):
         """Setup modern, professional styling for the GUI with enhanced visual appeal"""
@@ -370,7 +379,7 @@ class MagicBricksGUI:
         icon_frame = ttk.Frame(title_frame)
         icon_frame.pack(side=tk.LEFT)
 
-        icon_label = ttk.Label(icon_frame, text="🏠", font=('Segoe UI', 28))
+        icon_label = ttk.Label(icon_frame, text="ðŸ ", font=('Segoe UI', 28))
         icon_label.pack()
 
         # Title section with better typography
@@ -384,13 +393,13 @@ class MagicBricksGUI:
 
         # Subtitle with better description
         subtitle = ttk.Label(title_text_frame,
-                            text="Professional Edition v2.0 • Advanced Property Data Extraction",
+                            text="Professional Edition v2.0 â€¢ Advanced Property Data Extraction",
                             style='Subtitle.TLabel')
         subtitle.pack(anchor=tk.W, pady=(2, 0))
 
         # Feature highlights
         features = ttk.Label(title_text_frame,
-                            text="⚡ Incremental Scraping • 🏙️ Multi-City Support • 📊 Advanced Analytics",
+                            text="âš¡ Incremental Scraping â€¢ ðŸ™ï¸ Multi-City Support â€¢ ðŸ“Š Advanced Analytics",
                             style='Muted.TLabel')
         features.pack(anchor=tk.W, pady=(5, 0))
 
@@ -403,12 +412,12 @@ class MagicBricksGUI:
         status_frame.pack(anchor=tk.E)
 
         # System status
-        system_status = ttk.Label(status_frame, text="🟢 System Ready",
+        system_status = ttk.Label(status_frame, text="ðŸŸ¢ System Ready",
                                  style='Success.TLabel', font=('Segoe UI', 10, 'bold'))
         system_status.pack(anchor=tk.E)
 
         # Version badge
-        version_badge = ttk.Label(status_frame, text="v2.0.0 • Build 2024",
+        version_badge = ttk.Label(status_frame, text="v2.0.0 â€¢ Build 2024",
                                  style='Info.TLabel')
         version_badge.pack(anchor=tk.E, pady=(3, 0))
 
@@ -421,7 +430,7 @@ class MagicBricksGUI:
         """Create enhanced scrollable control panel with reliable scrolling"""
 
         # Control panel container with modern styling
-        control_container = ttk.LabelFrame(parent, text="📋 Scraping Configuration",
+        control_container = ttk.LabelFrame(parent, text="ðŸ“‹ Scraping Configuration",
                                          padding="15", style='Modern.TLabelframe')
         control_container.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), padx=(0, 15))
         control_container.columnconfigure(0, weight=1)
@@ -528,7 +537,7 @@ class MagicBricksGUI:
         current_row += 1
 
         # === CITY SELECTION SECTION ===
-        city_section = ttk.LabelFrame(parent, text="🏙️ City Selection",
+        city_section = ttk.LabelFrame(parent, text="ðŸ™ï¸ City Selection",
                                     padding="20", style='Modern.TLabelframe')
         city_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 20))
         city_section.columnconfigure(1, weight=1)
@@ -547,12 +556,12 @@ class MagicBricksGUI:
                                         style='Info.TLabel', relief='solid', padding="12")
         selected_cities_label.grid(row=0, column=0, sticky=(tk.W, tk.E), padx=(0, 15))
 
-        select_cities_btn = ttk.Button(cities_frame, text="🌍 Select Cities",
+        select_cities_btn = ttk.Button(cities_frame, text="ðŸŒ Select Cities",
                                      command=self.open_city_selector, style='Secondary.TButton')
         select_cities_btn.grid(row=0, column=1)
 
         # === SCRAPING MODE SECTION ===
-        mode_section = ttk.LabelFrame(parent, text="⚙️ Scraping Mode",
+        mode_section = ttk.LabelFrame(parent, text="âš™ï¸ Scraping Mode",
                                     padding="20", style='Modern.TLabelframe')
         mode_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 20))
         mode_section.columnconfigure(1, weight=1)
@@ -575,21 +584,21 @@ class MagicBricksGUI:
         mode_desc_label.grid(row=1, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 10))
 
         # === BASIC SETTINGS SECTION ===
-        basic_section = ttk.LabelFrame(parent, text="📊 Basic Settings",
+        basic_section = ttk.LabelFrame(parent, text="ðŸ“Š Basic Settings",
                                      padding="20", style='Modern.TLabelframe')
         basic_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 20))
         basic_section.columnconfigure(1, weight=1)
         current_row += 1
 
         # Max pages with icon
-        ttk.Label(basic_section, text="📄 Max Pages:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 8))
+        ttk.Label(basic_section, text="ðŸ“„ Max Pages:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 8))
         self.max_pages_var = tk.StringVar(value=str(self.config['max_pages']))
         max_pages_entry = ttk.Entry(basic_section, textvariable=self.max_pages_var,
                                   width=15, style='Modern.TEntry')
         max_pages_entry.grid(row=0, column=1, sticky=tk.W, pady=(0, 15), padx=(15, 0))
 
         # Output directory with icon
-        ttk.Label(basic_section, text="📁 Output Directory:", style='Heading.TLabel').grid(row=1, column=0, sticky=tk.W, pady=(0, 8))
+        ttk.Label(basic_section, text="ðŸ“ Output Directory:", style='Heading.TLabel').grid(row=1, column=0, sticky=tk.W, pady=(0, 8))
         output_frame = ttk.Frame(basic_section)
         output_frame.grid(row=1, column=1, sticky=(tk.W, tk.E), pady=(0, 15), padx=(15, 0))
         output_frame.columnconfigure(0, weight=1)
@@ -598,7 +607,7 @@ class MagicBricksGUI:
         output_entry = ttk.Entry(output_frame, textvariable=self.output_dir_var, style='Modern.TEntry')
         output_entry.grid(row=0, column=0, sticky=(tk.W, tk.E), padx=(0, 15))
 
-        browse_btn = ttk.Button(output_frame, text="📂 Browse", command=self.browse_output_directory,
+        browse_btn = ttk.Button(output_frame, text="ðŸ“‚ Browse", command=self.browse_output_directory,
                               style='Secondary.TButton')
         browse_btn.grid(row=0, column=1)
 
@@ -623,13 +632,13 @@ class MagicBricksGUI:
 
         # Incremental enabled
         self.incremental_var = tk.BooleanVar(value=self.config['incremental_enabled'])
-        incremental_check = ttk.Checkbutton(checkbox_frame, text="⚡ Incremental Scraping (60-75% faster)",
+        incremental_check = ttk.Checkbutton(checkbox_frame, text="âš¡ Incremental Scraping (60-75% faster)",
                                           variable=self.incremental_var)
         incremental_check.grid(row=0, column=1, sticky=tk.W, pady=2)
 
         # Individual property pages
         self.individual_pages_var = tk.BooleanVar(value=self.config['individual_pages'])
-        individual_check = ttk.Checkbutton(checkbox_frame, text="📄 Individual Property Details (⚠️ 10x slower)",
+        individual_check = ttk.Checkbutton(checkbox_frame, text="ðŸ“„ Individual Property Details (âš ï¸ 10x slower)",
                                          variable=self.individual_pages_var,
                                          command=self.on_individual_pages_changed)
         individual_check.grid(row=1, column=0, columnspan=2, sticky=tk.W, pady=2)
@@ -642,7 +651,7 @@ class MagicBricksGUI:
         individual_info_label.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
 
         # === INDIVIDUAL PROPERTY MANAGEMENT SECTION ===
-        individual_mgmt_section = ttk.LabelFrame(parent, text="🏠 Individual Property Management",
+        individual_mgmt_section = ttk.LabelFrame(parent, text="ðŸ  Individual Property Management",
                                                padding="20", style='Modern.TLabelframe')
         individual_mgmt_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 20))
         individual_mgmt_section.columnconfigure(1, weight=1)
@@ -688,14 +697,14 @@ class MagicBricksGUI:
         scraped_count_label = ttk.Label(scraped_info_frame, textvariable=self.scraped_count_var, style='Success.TLabel')
         scraped_count_label.grid(row=0, column=1, sticky=tk.W, padx=(10, 0))
 
-        refresh_count_btn = ttk.Button(scraped_info_frame, text="🔄 Refresh",
+        refresh_count_btn = ttk.Button(scraped_info_frame, text="ðŸ”„ Refresh",
                                      command=self.refresh_scraped_count, style='Secondary.TButton')
         refresh_count_btn.grid(row=0, column=2, padx=(10, 0))
 
         # Force re-scrape option
         self.force_rescrape_var = tk.BooleanVar(value=False)
         force_rescrape_check = ttk.Checkbutton(individual_mgmt_section,
-                                             text="🔄 Force re-scrape already scraped properties",
+                                             text="ðŸ”„ Force re-scrape already scraped properties",
                                              variable=self.force_rescrape_var)
         force_rescrape_check.grid(row=4, column=0, columnspan=2, sticky=tk.W, pady=(10, 0))
 
@@ -720,18 +729,18 @@ class MagicBricksGUI:
 
         # JSON export
         self.export_json_var = tk.BooleanVar(value=self.config['export_json'])
-        json_check = ttk.Checkbutton(optional_frame, text="📋 JSON (structured data)",
+        json_check = ttk.Checkbutton(optional_frame, text="ðŸ“‹ JSON (structured data)",
                                    variable=self.export_json_var)
         json_check.grid(row=1, column=0, sticky=tk.W, pady=2)
 
         # Excel export
         self.export_excel_var = tk.BooleanVar(value=self.config['export_excel'])
-        excel_check = ttk.Checkbutton(optional_frame, text="📊 Excel (multi-sheet with summary)",
+        excel_check = ttk.Checkbutton(optional_frame, text="ðŸ“Š Excel (multi-sheet with summary)",
                                     variable=self.export_excel_var)
         excel_check.grid(row=1, column=1, sticky=tk.W, pady=2)
 
         # === TIMING SETTINGS SECTION ===
-        timing_section = ttk.LabelFrame(parent, text="⏱️ Timing & Performance", padding="15")
+        timing_section = ttk.LabelFrame(parent, text="â±ï¸ Timing & Performance", padding="15")
         timing_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
         timing_section.columnconfigure(1, weight=1)
         current_row += 1
@@ -808,7 +817,7 @@ class MagicBricksGUI:
         self.toggle_individual_delay_settings()
 
         # === PERFORMANCE SETTINGS SECTION ===
-        performance_section = ttk.LabelFrame(parent, text="⚡ Performance Settings", padding="15")
+        performance_section = ttk.LabelFrame(parent, text="âš¡ Performance Settings", padding="15")
         performance_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
         performance_section.columnconfigure(1, weight=1)
         current_row += 1
@@ -841,7 +850,7 @@ class MagicBricksGUI:
         self.create_tooltip(memory_check, "Reduces memory usage during scraping. Recommended for long scraping sessions.")
 
         # === BROWSER SPEED SETTINGS SECTION ===
-        browser_section = ttk.LabelFrame(parent, text="🌐 Browser Speed Settings", padding="15")
+        browser_section = ttk.LabelFrame(parent, text="ðŸŒ Browser Speed Settings", padding="15")
         browser_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
         browser_section.columnconfigure(1, weight=1)
         current_row += 1
@@ -873,7 +882,7 @@ class MagicBricksGUI:
         self.create_tooltip(js_check, "Don't run website scripts. Fastest option but may miss some property data that loads dynamically.")
 
         # === PROPERTY FILTERING SECTION ===
-        filtering_section = ttk.LabelFrame(parent, text="🔍 Property Filtering", padding="15")
+        filtering_section = ttk.LabelFrame(parent, text="ðŸ” Property Filtering", padding="15")
         filtering_section.grid(row=current_row, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
         filtering_section.columnconfigure(1, weight=1)
         current_row += 1
@@ -958,7 +967,7 @@ class MagicBricksGUI:
                                      command=self.start_scraping, style='Primary.TButton')
         self.start_button.grid(row=0, column=0, sticky=(tk.W, tk.E), padx=(0, 15), ipady=8)
 
-        self.stop_btn = ttk.Button(main_action_frame, text="⏹️ Stop Scraping",
+        self.stop_btn = ttk.Button(main_action_frame, text="â¹ï¸ Stop Scraping",
                                  command=self.stop_scraping, state='disabled', style='Danger.TButton')
         self.stop_btn.grid(row=0, column=1, sticky=(tk.W, tk.E), ipady=8)
 
@@ -970,13 +979,13 @@ class MagicBricksGUI:
         button_frame.columnconfigure(2, weight=1)
         button_frame.columnconfigure(3, weight=1)
 
-        ttk.Button(button_frame, text="📁 Open Output Folder",
+        ttk.Button(button_frame, text="ðŸ“ Open Output Folder",
                   command=self.open_output_folder, style='Secondary.TButton').grid(row=0, column=0, padx=(0, 8), sticky=(tk.W, tk.E), ipady=4)
 
-        ttk.Button(button_frame, text="📊 Advanced Dashboard",
+        ttk.Button(button_frame, text="ðŸ“Š Advanced Dashboard",
                   command=self.open_advanced_dashboard, style='Secondary.TButton').grid(row=0, column=1, padx=8, sticky=(tk.W, tk.E), ipady=4)
 
-        ttk.Button(button_frame, text="🔄 Reset Settings",
+        ttk.Button(button_frame, text="ðŸ”„ Reset Settings",
                   command=self.reset_settings, style='Secondary.TButton').grid(row=0, column=2, padx=8, sticky=(tk.W, tk.E), ipady=4)
 
         ttk.Button(button_frame, text="[SAVE] Save Config",
@@ -1000,6 +1009,562 @@ class MagicBricksGUI:
         except Exception as e:
             print(f"Warning: Could not update scroll region: {e}")
 
+    def create_city_status_section(self, parent):
+        """Create city status overview panel with metrics and controls."""
+        city_section = ttk.LabelFrame(parent, text="City Status Overview",
+                                      padding="20", style='Modern.TLabelframe')
+        city_section.grid(row=2, column=0, sticky=(tk.W, tk.E, tk.N), pady=(0, 15))
+        city_section.columnconfigure(0, weight=1)
+        city_section.rowconfigure(1, weight=1)
+
+        header_frame = ttk.Frame(city_section)
+        header_frame.grid(row=0, column=0, sticky=(tk.W, tk.E))
+        header_frame.columnconfigure(0, weight=1)
+
+        ttk.Label(header_frame, text="Per-City Snapshot", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W)
+        self.city_status_refresh_label = ttk.Label(header_frame, text="", style='Muted.TLabel')
+        self.city_status_refresh_label.grid(row=0, column=1, sticky=tk.E, padx=(10, 0))
+        self.city_status_refresh_button = ttk.Button(header_frame, text="Refresh", command=self.refresh_city_status,
+                                                    style='Secondary.TButton')
+        self.city_status_refresh_button.grid(row=0, column=2, sticky=tk.E)
+
+        table_frame = ttk.Frame(city_section)
+        table_frame.grid(row=1, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(10, 10))
+        table_frame.columnconfigure(0, weight=1)
+        table_frame.rowconfigure(0, weight=1)
+
+        columns = (
+            'city',
+            'last_run',
+            'last_full',
+            'new_urls',
+            'pdp_coverage',
+            'avg_quality',
+            'backlog',
+            'ttl_due'
+        )
+        self.city_status_tree = ttk.Treeview(table_frame, columns=columns, show='headings', height=8)
+        for col, width in zip(columns,
+                              (140, 190, 190, 180, 140, 120, 120, 90)):
+            self.city_status_tree.heading(col, text=col.replace('_', ' ').title())
+            self.city_status_tree.column(col, width=width, anchor=tk.W)
+
+        tree_scroll = ttk.Scrollbar(table_frame, orient=tk.VERTICAL, command=self.city_status_tree.yview)
+        self.city_status_tree.configure(yscrollcommand=tree_scroll.set)
+        self.city_status_tree.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        tree_scroll.grid(row=0, column=1, sticky=(tk.N, tk.S))
+        self.city_status_tree.bind('<<TreeviewSelect>>', self.on_city_status_select)
+
+        summary_frame = ttk.Frame(city_section)
+        summary_frame.grid(row=2, column=0, sticky=(tk.W, tk.E), pady=(5, 10))
+        summary_frame.columnconfigure(0, weight=1)
+
+        self.city_trend_var = tk.StringVar(value="Select a city to view trend details.")
+        ttk.Label(summary_frame, textvariable=self.city_trend_var,
+                  style='Info.TLabel', wraplength=650).grid(row=0, column=0, sticky=tk.W)
+
+        self.city_last_export_var = tk.StringVar(value="")
+        ttk.Label(summary_frame, textvariable=self.city_last_export_var,
+                  style='Muted.TLabel').grid(row=1, column=0, sticky=tk.W, pady=(4, 0))
+
+        control_frame = ttk.Frame(city_section)
+        control_frame.grid(row=3, column=0, sticky=(tk.W, tk.E))
+        control_frame.columnconfigure(1, weight=1)
+        control_frame.columnconfigure(2, weight=1)
+
+        ttk.Label(control_frame, text="Run Mode:").grid(row=0, column=0, sticky=tk.W)
+        self.city_run_mode_var = tk.StringVar(value='incremental')
+        self.city_run_mode_combo = ttk.Combobox(control_frame, textvariable=self.city_run_mode_var,
+                                               values=('incremental', 'full'), state='readonly', width=18,
+                                               style='Modern.TCombobox')
+        self.city_run_mode_combo.grid(row=0, column=1, sticky=tk.W)
+
+        self.city_include_pdp_var = tk.BooleanVar(value=False)
+        ttk.Checkbutton(control_frame, text="Include Individual PDP", variable=self.city_include_pdp_var).grid(
+            row=0, column=2, sticky=tk.W, padx=(15, 0))
+
+        button_bar = ttk.Frame(control_frame)
+        button_bar.grid(row=1, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(10, 0))
+        button_bar.columnconfigure(0, weight=1)
+        button_bar.columnconfigure(1, weight=1)
+
+        self.city_run_button = ttk.Button(button_bar, text="Run Selected Configuration",
+                                          command=self.run_city_status_action, state='disabled',
+                                          style='Primary.TButton')
+        self.city_run_button.grid(row=0, column=0, sticky=(tk.W, tk.E), padx=(0, 10))
+
+        self.city_open_export_btn = ttk.Button(button_bar, text="Open Last Export",
+                                               command=self.open_city_last_export, state='disabled',
+                                               style='Secondary.TButton')
+        self.city_open_export_btn.grid(row=0, column=1, sticky=(tk.W, tk.E))
+
+        return city_section
+
+    def refresh_city_status(self):
+        """Refresh city status data asynchronously."""
+        if getattr(self, '_city_status_refreshing', False):
+            return
+        self._city_status_refreshing = True
+        if hasattr(self, 'city_status_refresh_button'):
+            self.city_status_refresh_button.config(state='disabled')
+        if hasattr(self, 'city_status_refresh_label'):
+            self.city_status_refresh_label.config(text="Refreshing...")
+
+        thread = threading.Thread(target=self._load_city_status_data, daemon=True)
+        thread.start()
+
+    def _load_city_status_data(self):
+        payload = self.fetch_city_status_data()
+        self.root.after(0, lambda: self.update_city_status_ui(payload))
+
+    def fetch_city_status_data(self) -> Dict[str, Any]:
+        """Gather per-city status metrics from the database."""
+        data: List[Dict[str, Any]] = []
+        db_path = Path('magicbricks_enhanced.db')
+        meta = {'generated_at': datetime.now(), 'db_exists': db_path.exists()}
+
+        if not db_path.exists():
+            return {'data': data, 'meta': meta}
+
+        try:
+            # Open DB in read-only mode with short busy timeout
+            try:
+                con = sqlite3.connect("file:magicbricks_enhanced.db?mode=ro", uri=True, timeout=1.0)
+            except sqlite3.OperationalError:
+                # Fallback: if URI not supported, or DB locked; as last resort use normal open
+                con = sqlite3.connect(db_path, timeout=1.0)
+            con.row_factory = sqlite3.Row
+            cur = con.cursor()
+            try:
+                cur.execute("PRAGMA busy_timeout=500")
+            except Exception:
+                pass
+
+            # Collect city codes from configuration and database
+            known_cities = {code: info for code, info in self.city_system.cities.items()}
+            db_cities = set()
+            cur.execute("SELECT DISTINCT city FROM property_urls_seen WHERE city IS NOT NULL")
+            for row in cur.fetchall():
+                db_cities.add(row[0])
+            cur.execute("SELECT DISTINCT city FROM scrape_sessions WHERE city IS NOT NULL")
+            for row in cur.fetchall():
+                db_cities.add(row[0])
+
+            all_city_codes = sorted(set(list(known_cities.keys()) + list(db_cities)))
+
+            for city_code in all_city_codes:
+                display_info = known_cities.get(city_code)
+                display_name = display_info.name if display_info else (city_code.title() if city_code else 'Unknown')
+
+                city_entry = {
+                    'city': city_code,
+                    'city_name': display_name
+                }
+
+                # Session summaries
+                def get_last_session(mode: str):
+                    cur.execute(
+                        """
+                        SELECT start_timestamp, end_timestamp, pages_scraped, properties_saved
+                        FROM scrape_sessions
+                        WHERE city = ? AND status = 'completed' AND scrape_mode = ?
+                        ORDER BY datetime(COALESCE(end_timestamp, start_timestamp)) DESC
+                        LIMIT 1
+                        """,
+                        (city_code, mode)
+                    )
+                    row = cur.fetchone()
+                    if not row:
+                        return None
+                    start_dt = self._parse_datetime(row['start_timestamp'])
+                    end_dt = self._parse_datetime(row['end_timestamp'])
+                    duration = None
+                    if start_dt and end_dt:
+                        duration = end_dt - start_dt
+                    return {
+                        'start': start_dt,
+                        'end': end_dt,
+                        'pages': row['pages_scraped'] or 0,
+                        'properties': row['properties_saved'] or 0,
+                        'duration': duration
+                    }
+
+                last_full = get_last_session('full')
+                last_incremental = get_last_session('incremental')
+                city_entry['last_full'] = last_full
+                city_entry['last_incremental'] = last_incremental
+
+                # Determine most recent run regardless of mode
+                candidates = [s for s in (last_full, last_incremental) if s and s['end']]
+                latest_session = max(candidates, key=lambda x: x['end']) if candidates else None
+                city_entry['last_run'] = latest_session
+
+                # URL counts
+                cur.execute("SELECT COUNT(*) FROM property_urls_seen WHERE city = ?", (city_code,))
+                urls_seen_total = cur.fetchone()[0]
+                city_entry['urls_seen_total'] = urls_seen_total
+
+                last_end_time = latest_session['end'] if latest_session else None
+                if last_end_time:
+                    cur.execute(
+                        "SELECT COUNT(*) FROM property_urls_seen WHERE city = ? AND datetime(first_seen_date) > datetime(?)",
+                        (city_code, last_end_time.isoformat())
+                    )
+                    city_entry['new_urls_since_last'] = cur.fetchone()[0]
+                else:
+                    city_entry['new_urls_since_last'] = urls_seen_total
+
+                cur.execute(
+                    "SELECT COUNT(*) FROM property_urls_seen WHERE city = ? AND datetime(first_seen_date) >= datetime('now','-1 day')",
+                    (city_code,)
+                )
+                city_entry['new_urls_24h'] = cur.fetchone()[0]
+
+                cur.execute(
+                    "SELECT COUNT(*) FROM property_urls_seen WHERE city = ? AND datetime(first_seen_date) >= datetime('now','-7 day')",
+                    (city_code,)
+                )
+                city_entry['new_urls_7d'] = cur.fetchone()[0]
+
+                # PDP coverage and quality
+                cur.execute(
+                    """
+                    SELECT COUNT(DISTINCT s.property_url)
+                    FROM individual_properties_scraped s
+                    JOIN property_urls_seen p ON p.property_url = s.property_url
+                    WHERE p.city = ?
+                    """,
+                    (city_code,)
+                )
+                pdp_scraped_distinct = cur.fetchone()[0]
+                city_entry['pdp_scraped_distinct'] = pdp_scraped_distinct
+                city_entry['pdp_pending'] = max(urls_seen_total - pdp_scraped_distinct, 0)
+
+                cur.execute(
+                    """
+                    SELECT COUNT(*)
+                    FROM individual_properties_scraped s
+                    JOIN property_urls_seen p ON p.property_url = s.property_url
+                    WHERE p.city = ? AND s.extraction_success = 0
+                    """,
+                    (city_code,)
+                )
+                city_entry['pdp_failures'] = cur.fetchone()[0]
+
+                cur.execute(
+                    """
+                    SELECT COUNT(*)
+                    FROM individual_properties_scraped s
+                    JOIN property_urls_seen p ON p.property_url = s.property_url
+                    WHERE p.city = ? AND s.force_rescrape_after IS NOT NULL AND datetime(s.force_rescrape_after) <= datetime('now')
+                    """,
+                    (city_code,)
+                )
+                city_entry['ttl_due'] = cur.fetchone()[0]
+
+                cur.execute(
+                    """
+                    SELECT AVG(pd.data_quality_score)
+                    FROM property_details pd
+                    JOIN property_urls_seen p ON p.property_url = pd.property_url
+                    WHERE p.city = ? AND pd.data_quality_score IS NOT NULL AND pd.data_quality_score > 0
+                    """,
+                    (city_code,)
+                )
+                avg_quality = cur.fetchone()[0]
+                city_entry['avg_quality'] = avg_quality
+
+                coverage_pct = None
+                if urls_seen_total > 0:
+                    coverage_pct = (pdp_scraped_distinct / urls_seen_total) * 100
+                city_entry['pdp_coverage_pct'] = coverage_pct
+
+                # PDP activity last 7 days
+                cur.execute(
+                    """
+                    SELECT s.scraped_at
+                    FROM individual_properties_scraped s
+                    JOIN property_urls_seen p ON p.property_url = s.property_url
+                    WHERE p.city = ? AND s.scraped_at IS NOT NULL AND datetime(s.scraped_at) >= datetime('now','-7 day')
+                    ORDER BY s.scraped_at
+                    """,
+                    (city_code,)
+                )
+                pdp_times = [self._parse_datetime(row[0]) for row in cur.fetchall() if row[0]]
+                city_entry['pdp_count_7d'] = len(pdp_times)
+                avg_pdp_time = None
+                throughput = None
+                if len(pdp_times) >= 2:
+                    duration_seconds = (pdp_times[-1] - pdp_times[0]).total_seconds()
+                    if duration_seconds > 0:
+                        avg_pdp_time = duration_seconds / (len(pdp_times) - 1)
+                        throughput = 3600 / avg_pdp_time if avg_pdp_time > 0 else None
+                city_entry['avg_pdp_time_sec'] = avg_pdp_time
+                city_entry['pdp_throughput_per_hour'] = throughput
+
+                # Find latest export file if possible
+                approx_end = latest_session['end'] if latest_session else None
+                export_path = self.find_last_export_for_city(city_code, approx_end)
+                city_entry['last_export_path'] = str(export_path) if export_path else ''
+                city_entry['last_export_name'] = export_path.name if export_path else 'N/A'
+
+                data.append(city_entry)
+
+            # Sort by city display name
+            data.sort(key=lambda x: x['city_name'].lower())
+
+        except Exception as exc:
+            meta['error'] = str(exc)
+        finally:
+            try:
+                con.close()
+            except Exception:
+                pass
+
+        meta['generated_at'] = datetime.now()
+        return {'data': data, 'meta': meta}
+
+    def update_city_status_ui(self, payload: Dict[str, Any]):
+        """Update the city status tree and summary information."""
+        self._city_status_refreshing = False
+        if hasattr(self, 'city_status_refresh_button'):
+            self.city_status_refresh_button.config(state='normal')
+
+        data = payload.get('data', []) if isinstance(payload, dict) else []
+        meta = payload.get('meta', {}) if isinstance(payload, dict) else {}
+
+        if hasattr(self, 'city_status_tree'):
+            for item in self.city_status_tree.get_children():
+                self.city_status_tree.delete(item)
+
+        self.city_status_data_map = {}
+        for entry in data:
+            city_code = entry['city']
+            self.city_status_data_map[city_code] = entry
+            last_run_summary = self._format_session_summary(entry.get('last_run'))
+            last_full_summary = self._format_session_summary(entry.get('last_full'))
+            new_urls_text = f"{entry.get('urls_seen_total', 0)} | +24h {entry.get('new_urls_24h', 0)} | +7d {entry.get('new_urls_7d', 0)}"
+            if entry.get('new_urls_since_last') is not None:
+                new_urls_text += f" | +last {entry.get('new_urls_since_last', 0)}"
+            if entry.get('pdp_coverage_pct') is not None:
+                coverage_text = f"{entry['pdp_coverage_pct']:.1f}% ({entry.get('pdp_scraped_distinct', 0)}/{entry.get('urls_seen_total', 0)})"
+            else:
+                coverage_text = "N/A"
+            avg_quality = entry.get('avg_quality')
+            avg_quality_text = f"{avg_quality:.2f}" if avg_quality is not None else "N/A"
+            backlog_text = f"{entry.get('pdp_pending', 0)}"
+            failures = entry.get('pdp_failures', 0)
+            if failures:
+                backlog_text += f" (fail {failures})"
+            ttl_due = entry.get('ttl_due', 0)
+
+            values = (
+                entry['city_name'],
+                last_run_summary,
+                last_full_summary,
+                new_urls_text,
+                coverage_text,
+                avg_quality_text,
+                backlog_text,
+                str(ttl_due)
+            )
+            if hasattr(self, 'city_status_tree'):
+                self.city_status_tree.insert('', tk.END, iid=city_code or entry['city_name'], values=values)
+
+        timestamp = meta.get('generated_at')
+        if isinstance(timestamp, datetime):
+            label_text = f"Updated {timestamp.strftime('%H:%M:%S')}"
+        elif isinstance(timestamp, str):
+            label_text = f"Updated {timestamp}"
+        else:
+            label_text = ""
+        if hasattr(self, 'city_status_refresh_label'):
+            self.city_status_refresh_label.config(text=label_text)
+
+        # Reset selection details
+        self.city_status_selected_city = None
+        self.city_trend_var.set("Select a city to view trend details.")
+        self.city_last_export_var.set("")
+        if hasattr(self, 'city_run_button'):
+            self.city_run_button.config(state='disabled')
+        if hasattr(self, 'city_open_export_btn'):
+            self.city_open_export_btn.config(state='disabled')
+
+        # Auto-select first city if available
+        if data:
+            first_city = data[0]['city']
+            if hasattr(self, 'city_status_tree'):
+                self.city_status_tree.selection_set(first_city)
+                self.city_status_tree.focus(first_city)
+                self.on_city_status_select()
+
+    def on_city_status_select(self, event=None):
+        """Handle city selection in the status tree."""
+        if not hasattr(self, 'city_status_tree'):
+            return
+        selection = self.city_status_tree.selection()
+        if not selection:
+            self.city_status_selected_city = None
+            self.city_trend_var.set("Select a city to view trend details.")
+            self.city_last_export_var.set("")
+            if hasattr(self, 'city_run_button'):
+                self.city_run_button.config(state='disabled')
+            if hasattr(self, 'city_open_export_btn'):
+                self.city_open_export_btn.config(state='disabled')
+            return
+
+        city_code = selection[0]
+        entry = self.city_status_data_map.get(city_code)
+        if not entry:
+            return
+
+        self.city_status_selected_city = city_code
+
+        trend_parts = [
+            f"24h new listings: {entry.get('new_urls_24h', 0)}",
+            f"7d new listings: {entry.get('new_urls_7d', 0)}",
+            f"PDP scraped (7d): {entry.get('pdp_count_7d', 0)}"
+        ]
+        avg_pdp = entry.get('avg_pdp_time_sec')
+        throughput = entry.get('pdp_throughput_per_hour')
+        if avg_pdp:
+            trend_parts.append(f"Avg PDP time: {avg_pdp:.1f}s")
+        if throughput:
+            trend_parts.append(f"PDP throughput: {throughput:.1f}/hr")
+        self.city_trend_var.set(" | ".join(trend_parts))
+
+        export_path = entry.get('last_export_path')
+        if export_path:
+            export_file = Path(export_path)
+            if export_file.exists():
+                self.city_last_export_var.set(f"Last export: {export_file.name}")
+                self.city_open_export_btn.config(state='normal')
+            else:
+                self.city_last_export_var.set("Last export: Not found")
+                self.city_open_export_btn.config(state='disabled')
+        else:
+            self.city_last_export_var.set("Last export: N/A")
+            self.city_open_export_btn.config(state='disabled')
+
+        if hasattr(self, 'city_run_button'):
+            self.city_run_button.config(state='normal')
+
+    def run_city_status_action(self):
+        """Execute scraping for the selected city using chosen options."""
+        if self.is_scraping:
+            messagebox.showwarning("Busy", "Scraping is already in progress.")
+            return
+        city_code = self.city_status_selected_city
+        if not city_code:
+            messagebox.showinfo("Select City", "Please select a city first.")
+            return
+
+        # Update selected cities and display
+        self.selected_cities = [city_code]
+        self.update_selected_cities_display()
+
+        mode_value = self.city_run_mode_var.get()
+        self.mode_var.set(mode_value)
+        self.on_mode_changed()
+
+        include_pdp = self.city_include_pdp_var.get()
+        self.individual_pages_var.set(include_pdp)
+        self.on_individual_pages_changed()
+        if include_pdp:
+            self.individual_mode_var.set('with_listing')
+        else:
+            self.individual_mode_var.set('skip_individual')
+        self.update_individual_mode_description()
+
+        # Propagate configuration
+        self.config['city'] = city_code
+        self.config['selected_cities'] = [city_code]
+
+        # Start scraping using updated configuration
+        self.start_scraping()
+
+    def open_city_last_export(self):
+        """Open the most recent export file for the selected city."""
+        city_code = self.city_status_selected_city
+        if not city_code:
+            messagebox.showinfo("Select City", "Please select a city first.")
+            return
+        entry = self.city_status_data_map.get(city_code)
+        if not entry:
+            messagebox.showinfo("No Data", "No export information available for the selected city.")
+            return
+        export_path = entry.get('last_export_path')
+        if not export_path:
+            messagebox.showinfo("Not Available", "Could not find a recent export for this city.")
+            return
+        export_file = Path(export_path)
+        if not export_file.exists():
+            messagebox.showinfo("Not Found", f"The export file {export_file.name} could not be located.")
+            return
+        self.load_and_show_csv(export_file)
+
+    def find_last_export_for_city(self, city_code: str, approx_end: Optional[datetime] = None) -> Optional[Path]:
+        """Locate the most recent export file for a given city."""
+        output_dir = Path(self.config.get('output_directory', '.'))
+        if not output_dir.exists():
+            return None
+
+        # Prefer files tagged with city in filename
+        city_files = sorted(output_dir.glob(f"magicbricks_{city_code}_*.csv"),
+                            key=lambda f: f.stat().st_mtime,
+                            reverse=True)
+        if city_files:
+            return city_files[0]
+
+        if approx_end:
+            best_match = None
+            target_ts = approx_end.timestamp()
+            for csv_file in output_dir.glob('magicbricks_*.csv'):
+                diff = abs(csv_file.stat().st_mtime - target_ts)
+                if diff <= 300:  # within 5 minutes
+                    if best_match is None or diff < best_match[0]:
+                        best_match = (diff, csv_file)
+            if best_match:
+                return best_match[1]
+        return None
+
+    def _format_session_summary(self, session: Optional[Dict[str, Any]]) -> str:
+        if not session:
+            return "N/A"
+        end_dt = session.get('end')
+        pages = session.get('pages', 0)
+        props = session.get('properties', 0)
+        duration = session.get('duration')
+        end_str = self._format_datetime(end_dt)
+        if duration:
+            duration_str = f"{int(duration.total_seconds()//60)}m {int(duration.total_seconds()%60)}s"
+        else:
+            duration_str = "--"
+        return f"{end_str} ({pages}p/{props} props, {duration_str})"
+
+    def _format_datetime(self, value: Optional[datetime]) -> str:
+        if not value:
+            return "--"
+        return value.strftime('%Y-%m-%d %H:%M')
+
+    def _parse_datetime(self, value: Optional[str]) -> Optional[datetime]:
+        if not value:
+            return None
+        try:
+            return datetime.fromisoformat(value)
+        except Exception:
+            try:
+                return datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+            except Exception:
+                return None
+    def update_scroll_region(self):
+        """Force update of scroll region to ensure all content is accessible"""
+        try:
+            if hasattr(self, 'scrollable_panel'):
+                self.scrollable_panel.update_scroll_region()
+        except Exception as e:
+            print(f"Warning: Could not update scroll region: {e}")
+
     def toggle_individual_delay_settings(self):
         """Individual delay settings are now always visible - this function is deprecated"""
         # Individual delay settings are now always visible in the timing section
@@ -1013,9 +1578,9 @@ class MagicBricksGUI:
     def update_individual_pages_info(self):
         """Update individual pages information text"""
         if self.individual_pages_var.get():
-            self.individual_info_var.set("⚠️ Individual page scraping will significantly increase scraping time but provides detailed amenities, floor plans, and neighborhood data.")
+            self.individual_info_var.set("âš ï¸ Individual page scraping will significantly increase scraping time but provides detailed amenities, floor plans, and neighborhood data.")
         else:
-            self.individual_info_var.set("ℹ️ Using listing page data only (recommended for faster scraping)")
+            self.individual_info_var.set("â„¹ï¸ Using listing page data only (recommended for faster scraping)")
 
     def on_individual_mode_changed(self, event=None):
         """Handle individual scraping mode change"""
@@ -1025,9 +1590,9 @@ class MagicBricksGUI:
         """Update individual mode description"""
         mode = self.individual_mode_var.get()
         descriptions = {
-            'with_listing': "🔄 Standard Mode: First scrape listing pages, then individual property details",
-            'individual_only': "🏠 Individual Only: Skip listing scraping, only scrape individual property pages from existing URLs",
-            'skip_individual': "⚡ Listing Only: Skip individual property scraping, only get listing page data"
+            'with_listing': "ðŸ”„ Standard Mode: First scrape listing pages, then individual property details",
+            'individual_only': "ðŸ  Individual Only: Skip listing scraping, only scrape individual property pages from existing URLs",
+            'skip_individual': "âš¡ Listing Only: Skip individual property scraping, only get listing page data"
         }
         self.individual_mode_desc_var.set(descriptions.get(mode, "Unknown mode"))
 
@@ -1270,7 +1835,7 @@ class MagicBricksGUI:
         # Individual property pages scraping (use existing variable, don't recreate)
         if not hasattr(self, 'individual_pages_var'):
             self.individual_pages_var = tk.BooleanVar(value=False)
-        individual_check = ttk.Checkbutton(advanced_frame, text="Include Individual Property Details (⚠️ 10x slower)",
+        individual_check = ttk.Checkbutton(advanced_frame, text="Include Individual Property Details (âš ï¸ 10x slower)",
                                          variable=self.individual_pages_var, command=self.on_individual_pages_changed)
         individual_check.grid(row=2, column=0, columnspan=2, sticky=tk.W, pady=(0, 5))
 
@@ -1360,7 +1925,7 @@ class MagicBricksGUI:
         self.start_btn = ttk.Button(button_frame, text="[ROCKET] Start Scraping", command=self.start_scraping, style='Action.TButton')
         self.start_btn.pack(side=tk.LEFT, padx=(0, 10))
 
-        self.stop_btn = ttk.Button(button_frame, text="⏹️ Stop Scraping", command=self.stop_scraping, state='disabled', style='Warning.TButton')
+        self.stop_btn = ttk.Button(button_frame, text="â¹ï¸ Stop Scraping", command=self.stop_scraping, state='disabled', style='Warning.TButton')
         self.stop_btn.pack(side=tk.LEFT, padx=(0, 10))
 
         self.save_config_btn = ttk.Button(button_frame, text="[SAVE] Save Config", command=self.save_configuration)
@@ -1369,27 +1934,28 @@ class MagicBricksGUI:
         self.recommend_btn = ttk.Button(button_frame, text="[TARGET] Get Recommendations", command=self.get_mode_recommendations)
         self.recommend_btn.pack(side=tk.LEFT, padx=(0, 10))
 
-        self.schedule_btn = ttk.Button(button_frame, text="⏰ Schedule", command=self.open_scheduler)
+        self.schedule_btn = ttk.Button(button_frame, text="â° Schedule", command=self.open_scheduler)
         self.schedule_btn.pack(side=tk.LEFT)
 
     def create_monitoring_panel(self, parent):
         """Create modern monitoring panel with progress and logs"""
 
         # Monitoring panel container with modern styling
-        monitor_container = ttk.LabelFrame(parent, text="📊 Scraping Progress & Monitoring",
+        monitor_container = ttk.LabelFrame(parent, text="ðŸ“Š Scraping Progress & Monitoring",
                                          padding="20", style='Modern.TLabelframe')
         monitor_container.grid(row=0, column=1, sticky=(tk.W, tk.E, tk.N, tk.S))
         monitor_container.columnconfigure(0, weight=1)
         monitor_container.rowconfigure(2, weight=1)
+        monitor_container.rowconfigure(3, weight=1)
 
         # === PROGRESS SECTION ===
-        progress_section = ttk.LabelFrame(monitor_container, text="📈 Progress",
+        progress_section = ttk.LabelFrame(monitor_container, text="ðŸ“ˆ Progress",
                                         padding="20", style='Modern.TLabelframe')
         progress_section.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
         progress_section.columnconfigure(1, weight=1)
 
         # Progress information with modern cards
-        ttk.Label(progress_section, text="⚡ Progress:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 8))
+        ttk.Label(progress_section, text="âš¡ Progress:", style='Heading.TLabel').grid(row=0, column=0, sticky=tk.W, pady=(0, 8))
         self.progress_var = tk.DoubleVar()
         self.progress_bar = ttk.Progressbar(progress_section, variable=self.progress_var,
                                           maximum=100, length=350, style='Modern.Horizontal.TProgressbar')
@@ -1402,29 +1968,32 @@ class MagicBricksGUI:
         progress_label.grid(row=0, column=2, padx=(15, 0))
 
         # === STATISTICS SECTION ===
-        stats_section = ttk.LabelFrame(monitor_container, text="📊 Statistics",
+        stats_section = ttk.LabelFrame(monitor_container, text="ðŸ“Š Statistics",
                                      padding="20", style='Modern.TLabelframe')
         stats_section.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
         stats_section.columnconfigure(0, weight=1)
         stats_section.columnconfigure(1, weight=1)
         stats_section.columnconfigure(2, weight=1)
 
+        # === CITY STATUS SECTION ===
+        self.create_city_status_section(monitor_container)
+
         # Create modern statistics display with enhanced cards
         self.stats_labels = {}
         stats_info = [
-            ('session_id', '🆔 Session ID:', 'N/A'),
-            ('mode', '⚙️ Mode:', 'Not Started'),
-            ('current_phase', '🔄 Current Phase:', 'Ready'),
-            ('pages_scraped', '📄 Pages Scraped:', '0'),
-            ('properties_found', '🏠 Properties Found:', '0'),
+            ('session_id', 'ðŸ†” Session ID:', 'N/A'),
+            ('mode', 'âš™ï¸ Mode:', 'Not Started'),
+            ('current_phase', 'ðŸ”„ Current Phase:', 'Ready'),
+            ('pages_scraped', 'ðŸ“„ Pages Scraped:', '0'),
+            ('properties_found', 'ðŸ  Properties Found:', '0'),
             ('properties_saved', '[SAVE] Properties Saved:', '0'),
-            ('duration', '⏱️ Duration:', '0m 0s'),
-            ('estimated_remaining', '⏳ Est. Remaining:', 'N/A'),
-            ('scraping_speed', '⚡ Speed:', 'N/A props/min'),
-            ('avg_time_per_page', '📊 Avg Time/Page:', 'N/A'),
-            ('min_time_per_page', '⚡ Min Time/Page:', 'N/A'),
-            ('max_time_per_page', '🐌 Max Time/Page:', 'N/A'),
-            ('status', '📊 Status:', 'Ready')
+            ('duration', 'â±ï¸ Duration:', '0m 0s'),
+            ('estimated_remaining', 'â³ Est. Remaining:', 'N/A'),
+            ('scraping_speed', 'âš¡ Speed:', 'N/A props/min'),
+            ('avg_time_per_page', 'ðŸ“Š Avg Time/Page:', 'N/A'),
+            ('min_time_per_page', 'âš¡ Min Time/Page:', 'N/A'),
+            ('max_time_per_page', 'ðŸŒ Max Time/Page:', 'N/A'),
+            ('status', 'ðŸ“Š Status:', 'Ready')
         ]
 
         for i, (key, label_text, default_value) in enumerate(stats_info):
@@ -1447,9 +2016,9 @@ class MagicBricksGUI:
             self.stats_labels[key] = value_label
 
         # === LOG SECTION ===
-        log_section = ttk.LabelFrame(monitor_container, text="📝 Scraping Log",
+        log_section = ttk.LabelFrame(monitor_container, text="ðŸ“ Scraping Log",
                                    padding="15", style='Modern.TLabelframe')
-        log_section.grid(row=2, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        log_section.grid(row=3, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
         log_section.columnconfigure(0, weight=1)
         log_section.rowconfigure(0, weight=1)
 
@@ -1468,7 +2037,7 @@ class MagicBricksGUI:
         left_buttons = ttk.Frame(log_btn_frame)
         left_buttons.pack(side=tk.LEFT)
 
-        ttk.Button(left_buttons, text="🗑️ Clear Log", command=self.clear_log,
+        ttk.Button(left_buttons, text="ðŸ—‘ï¸ Clear Log", command=self.clear_log,
                   style='Danger.TButton').pack(side=tk.LEFT, padx=(0, 8))
 
         ttk.Button(left_buttons, text="[SAVE] Save Log", command=self.save_log,
@@ -1478,10 +2047,10 @@ class MagicBricksGUI:
         right_buttons = ttk.Frame(log_btn_frame)
         right_buttons.pack(side=tk.RIGHT)
 
-        ttk.Button(right_buttons, text="📊 View Results", command=self.open_results_viewer,
+        ttk.Button(right_buttons, text="ðŸ“Š View Results", command=self.open_results_viewer,
                   style='Success.TButton').pack(side=tk.LEFT, padx=(0, 8))
 
-        ttk.Button(right_buttons, text="🛡️ Error Log", command=self.open_error_log_viewer,
+        ttk.Button(right_buttons, text="ðŸ›¡ï¸ Error Log", command=self.open_error_log_viewer,
                   style='Secondary.TButton').pack(side=tk.LEFT)
 
     def create_modern_status_bar(self, parent):
@@ -1505,7 +2074,7 @@ class MagicBricksGUI:
         stats_center = ttk.Frame(status_container)
         stats_center.grid(row=0, column=1, pady=10)
 
-        self.quick_stats_var = tk.StringVar(value="🏙️ Cities: 0 | 📄 Pages: 0 | 🏠 Properties: 0")
+        self.quick_stats_var = tk.StringVar(value="ðŸ™ï¸ Cities: 0 | ðŸ“„ Pages: 0 | ðŸ  Properties: 0")
         quick_stats_label = ttk.Label(stats_center, textvariable=self.quick_stats_var, style='Info.TLabel')
         quick_stats_label.pack()
 
@@ -1527,7 +2096,7 @@ class MagicBricksGUI:
     def update_time(self):
         """Update the current time display"""
         current_time = datetime.now().strftime("%H:%M:%S")
-        self.time_var.set(f"🕐 {current_time}")
+        self.time_var.set(f"ðŸ• {current_time}")
         self.root.after(1000, self.update_time)  # Update every second
 
     def _format_duration(self, seconds):
@@ -1547,11 +2116,11 @@ class MagicBricksGUI:
         """Update the mode description based on selected mode"""
 
         descriptions = {
-            'incremental': '⚡ Smart incremental scraping (60-75% time savings)',
-            'full': '🔄 Complete scraping of all properties (100% coverage)',
-            'conservative': '🛡️ Extra safe incremental scraping (50-65% savings)',
-            'date_range': '📅 Scrape properties within specific date range',
-            'custom': '⚙️ User-defined parameters for specific needs'
+            'incremental': 'âš¡ Smart incremental scraping (60-75% time savings)',
+            'full': 'ðŸ”„ Complete scraping of all properties (100% coverage)',
+            'conservative': 'ðŸ›¡ï¸ Extra safe incremental scraping (50-65% savings)',
+            'date_range': 'ðŸ“… Scrape properties within specific date range',
+            'custom': 'âš™ï¸ User-defined parameters for specific needs'
         }
 
         mode = self.mode_var.get()
@@ -1574,14 +2143,14 @@ class MagicBricksGUI:
         """Handle individual pages option change"""
         self.update_individual_pages_info()
         if self.individual_pages_var.get():
-            self.log_message("⚠️ Individual property pages enabled - Scraping will be significantly slower")
+            self.log_message("âš ï¸ Individual property pages enabled - Scraping will be significantly slower")
         else:
             self.log_message("Individual property pages disabled - Using fast listing-only mode")
 
     def update_individual_pages_info(self):
         """Update the individual pages information text"""
         if self.individual_pages_var.get():
-            info_text = ("⚠️ SLOWER MODE: Will scrape detailed individual property pages including "
+            info_text = ("âš ï¸ SLOWER MODE: Will scrape detailed individual property pages including "
                         "amenities, descriptions, builder info, and specifications. "
                         "Expect 5-10x longer scraping time but much more comprehensive data.")
         else:
@@ -1855,7 +2424,7 @@ class MagicBricksGUI:
 
         # Add reasoning
         for reason in recommendations.get('reasoning', []):
-            reasoning_text.insert(tk.END, f"• {reason}\n")
+            reasoning_text.insert(tk.END, f"â€¢ {reason}\n")
 
         # Alternative recommendations
         alternatives = recommendations.get('alternative_recommendations', [])
@@ -1863,7 +2432,7 @@ class MagicBricksGUI:
             reasoning_text.insert(tk.END, f"\nAlternative Options:\n")
             for alt in alternatives:
                 time_savings = recommendations.get('estimated_time_savings', {}).get(alt, 'Unknown')
-                reasoning_text.insert(tk.END, f"• {alt.upper()}: {time_savings} time savings\n")
+                reasoning_text.insert(tk.END, f"â€¢ {alt.upper()}: {time_savings} time savings\n")
 
         reasoning_text.config(state=tk.DISABLED)
 
@@ -1995,7 +2564,7 @@ class MagicBricksGUI:
         title_frame = ttk.Frame(main_frame)
         title_frame.pack(fill=tk.X, pady=(0, 15))
 
-        ttk.Label(title_frame, text=f"📊 Results Viewer - {len(properties)} Properties", style='Title.TLabel').pack(side=tk.LEFT)
+        ttk.Label(title_frame, text=f"ðŸ“Š Results Viewer - {len(properties)} Properties", style='Title.TLabel').pack(side=tk.LEFT)
 
         # Filter frame
         filter_frame = ttk.LabelFrame(main_frame, text="Filters & Search", padding="10")
@@ -2128,9 +2697,9 @@ class MagicBricksGUI:
             except Exception as e:
                 messagebox.showerror("Error", f"Export failed: {str(e)}")
 
-        ttk.Button(export_frame, text="📄 Export CSV", command=export_csv).pack(side=tk.LEFT, padx=(0, 10))
-        ttk.Button(export_frame, text="📊 Export Excel", command=export_excel).pack(side=tk.LEFT, padx=(0, 10))
-        ttk.Button(export_frame, text="📋 Export JSON", command=export_json).pack(side=tk.LEFT, padx=(0, 10))
+        ttk.Button(export_frame, text="ðŸ“„ Export CSV", command=export_csv).pack(side=tk.LEFT, padx=(0, 10))
+        ttk.Button(export_frame, text="ðŸ“Š Export Excel", command=export_excel).pack(side=tk.LEFT, padx=(0, 10))
+        ttk.Button(export_frame, text="ðŸ“‹ Export JSON", command=export_json).pack(side=tk.LEFT, padx=(0, 10))
 
         ttk.Button(export_frame, text="Close", command=results_window.destroy).pack(side=tk.RIGHT)
 
@@ -2149,7 +2718,7 @@ class MagicBricksGUI:
         main_frame.pack(fill=tk.BOTH, expand=True)
 
         # Title
-        ttk.Label(main_frame, text="⏰ Scraping Scheduler", style='Title.TLabel').pack(pady=(0, 20))
+        ttk.Label(main_frame, text="â° Scraping Scheduler", style='Title.TLabel').pack(pady=(0, 20))
 
         # Schedule type selection
         schedule_frame = ttk.LabelFrame(main_frame, text="Schedule Type", padding="15")
@@ -2417,33 +2986,33 @@ class MagicBricksGUI:
 Scheduling Help
 
 PRESET SCHEDULES:
-• Daily: Runs incremental scraping every day at 2 AM
-• Weekly: Runs conservative scraping every Sunday at 1 AM
-• Monthly: Runs full scraping on the 1st of each month at midnight
-• Workdays: Runs incremental scraping on weekdays at 6 AM
+â€¢ Daily: Runs incremental scraping every day at 2 AM
+â€¢ Weekly: Runs conservative scraping every Sunday at 1 AM
+â€¢ Monthly: Runs full scraping on the 1st of each month at midnight
+â€¢ Workdays: Runs incremental scraping on weekdays at 6 AM
 
 CUSTOM SCHEDULES:
-• Set specific time and days
-• Choose scraping mode
-• Configure for current city
+â€¢ Set specific time and days
+â€¢ Choose scraping mode
+â€¢ Configure for current city
 
 SCHEDULING MODES:
-• Incremental: Fast, 60-75% time savings
-• Conservative: Safe, 50-65% time savings
-• Full: Complete, 100% coverage
-• Date Range: Targeted time periods
+â€¢ Incremental: Fast, 60-75% time savings
+â€¢ Conservative: Safe, 50-65% time savings
+â€¢ Full: Complete, 100% coverage
+â€¢ Date Range: Targeted time periods
 
 NOTES:
-• Schedules run in the background
-• Results are automatically saved
-• Email notifications can be configured
-• Multiple schedules can be active
+â€¢ Schedules run in the background
+â€¢ Results are automatically saved
+â€¢ Email notifications can be configured
+â€¢ Multiple schedules can be active
 
 For production deployment, schedules integrate with:
-• Windows Task Scheduler
-• Background service
-• Email notifications
-• Error handling and recovery
+â€¢ Windows Task Scheduler
+â€¢ Background service
+â€¢ Email notifications
+â€¢ Error handling and recovery
         """
 
         messagebox.showinfo("Scheduler Help", help_text)
@@ -2465,7 +3034,7 @@ For production deployment, schedules integrate with:
         main_frame.rowconfigure(1, weight=1)
 
         # Title
-        ttk.Label(main_frame, text="🏙️ City Selection", style='Title.TLabel').grid(row=0, column=0, columnspan=3, pady=(0, 20))
+        ttk.Label(main_frame, text="ðŸ™ï¸ City Selection", style='Title.TLabel').grid(row=0, column=0, columnspan=3, pady=(0, 20))
 
         # Left panel - Filters
         filter_frame = ttk.LabelFrame(main_frame, text="Filters", padding="15")
@@ -2554,8 +3123,8 @@ For production deployment, schedules integrate with:
                     selected_city_codes.append(city_code)
             update_selected_display()
 
-        ttk.Button(control_frame, text="Add Selected →", command=add_selected).pack(side=tk.LEFT, padx=(0, 5))
-        ttk.Button(control_frame, text="Add All →", command=add_all).pack(side=tk.LEFT)
+        ttk.Button(control_frame, text="Add Selected â†’", command=add_selected).pack(side=tk.LEFT, padx=(0, 5))
+        ttk.Button(control_frame, text="Add All â†’", command=add_all).pack(side=tk.LEFT)
 
         # Right panel - Selected cities
         selected_frame = ttk.LabelFrame(main_frame, text="Selected Cities", padding="15")
@@ -2591,8 +3160,8 @@ For production deployment, schedules integrate with:
             selected_city_codes.clear()
             update_selected_display()
 
-        ttk.Button(selected_control_frame, text="← Remove Selected", command=remove_selected).pack(side=tk.LEFT, padx=(0, 5))
-        ttk.Button(selected_control_frame, text="← Remove All", command=remove_all).pack(side=tk.LEFT)
+        ttk.Button(selected_control_frame, text="â† Remove Selected", command=remove_selected).pack(side=tk.LEFT, padx=(0, 5))
+        ttk.Button(selected_control_frame, text="â† Remove All", command=remove_all).pack(side=tk.LEFT)
 
         # Initialize data
         city_codes = []
@@ -2654,7 +3223,7 @@ For production deployment, schedules integrate with:
             validation = self.city_system.validate_city_selection(selected_city_codes)
             validation_text = f"Selected: {len(selected_city_codes)} cities"
             if validation['warnings']:
-                validation_text += f" ⚠️ {len(validation['warnings'])} warnings"
+                validation_text += f" âš ï¸ {len(validation['warnings'])} warnings"
             validation_label.config(text=validation_text)
 
         # Bind filter events
@@ -2769,10 +3338,10 @@ For production deployment, schedules integrate with:
 
         # Configure based on severity
         severity_config = {
-            'info': {'color': '#17a2b8', 'icon': 'ℹ️'},
-            'warning': {'color': '#ffc107', 'icon': '⚠️'},
-            'error': {'color': '#dc3545', 'icon': '❌'},
-            'critical': {'color': '#6f42c1', 'icon': '🚨'}
+            'info': {'color': '#17a2b8', 'icon': 'â„¹ï¸'},
+            'warning': {'color': '#ffc107', 'icon': 'âš ï¸'},
+            'error': {'color': '#dc3545', 'icon': 'âŒ'},
+            'critical': {'color': '#6f42c1', 'icon': 'ðŸš¨'}
         }
 
         config = severity_config.get(error_info.severity.value, severity_config['error'])
@@ -2804,7 +3373,7 @@ For production deployment, schedules integrate with:
         message_text.config(state=tk.DISABLED)
 
         # Suggestion
-        suggestion_frame = ttk.LabelFrame(main_frame, text="💡 Suggested Solution", padding="15")
+        suggestion_frame = ttk.LabelFrame(main_frame, text="ðŸ’¡ Suggested Solution", padding="15")
         suggestion_frame.pack(fill=tk.X, pady=(0, 15))
 
         suggestion_text = tk.Text(suggestion_frame, height=3, wrap=tk.WORD, font=('Arial', 10), bg='#d4edda')
@@ -2844,11 +3413,11 @@ For production deployment, schedules integrate with:
         def send_report():
             self.send_error_report(error_info)
 
-        ttk.Button(button_frame, text="📋 Copy Details", command=copy_error).pack(side=tk.LEFT, padx=(0, 10))
-        ttk.Button(button_frame, text="📊 View Error Log", command=view_error_log).pack(side=tk.LEFT, padx=(0, 10))
+        ttk.Button(button_frame, text="ðŸ“‹ Copy Details", command=copy_error).pack(side=tk.LEFT, padx=(0, 10))
+        ttk.Button(button_frame, text="ðŸ“Š View Error Log", command=view_error_log).pack(side=tk.LEFT, padx=(0, 10))
 
         if self.error_system.notification_config.get('email_enabled'):
-            ttk.Button(button_frame, text="📧 Send Report", command=send_report).pack(side=tk.LEFT, padx=(0, 10))
+            ttk.Button(button_frame, text="ðŸ“§ Send Report", command=send_report).pack(side=tk.LEFT, padx=(0, 10))
 
         ttk.Button(button_frame, text="Close", command=error_dialog.destroy, style='Action.TButton').pack(side=tk.RIGHT)
 
@@ -2871,7 +3440,7 @@ For production deployment, schedules integrate with:
         title_frame = ttk.Frame(main_frame)
         title_frame.pack(fill=tk.X, pady=(0, 15))
 
-        ttk.Label(title_frame, text="📊 Error Log Viewer", style='Title.TLabel').pack(side=tk.LEFT)
+        ttk.Label(title_frame, text="ðŸ“Š Error Log Viewer", style='Title.TLabel').pack(side=tk.LEFT)
 
         # Summary
         summary = self.error_system.get_error_summary()
@@ -3014,9 +3583,9 @@ For production deployment, schedules integrate with:
         def refresh_log():
             update_error_list()
 
-        ttk.Button(control_frame, text="🔄 Refresh", command=refresh_log).pack(side=tk.LEFT, padx=(0, 10))
-        ttk.Button(control_frame, text="📁 Export", command=export_log).pack(side=tk.LEFT, padx=(0, 10))
-        ttk.Button(control_frame, text="🗑️ Clear Log", command=clear_log).pack(side=tk.LEFT, padx=(0, 10))
+        ttk.Button(control_frame, text="ðŸ”„ Refresh", command=refresh_log).pack(side=tk.LEFT, padx=(0, 10))
+        ttk.Button(control_frame, text="ðŸ“ Export", command=export_log).pack(side=tk.LEFT, padx=(0, 10))
+        ttk.Button(control_frame, text="ðŸ—‘ï¸ Clear Log", command=clear_log).pack(side=tk.LEFT, padx=(0, 10))
         ttk.Button(control_frame, text="Close", command=log_window.destroy).pack(side=tk.RIGHT)
 
         # Initial population
@@ -3047,7 +3616,7 @@ For production deployment, schedules integrate with:
         main_frame.pack(fill=tk.BOTH, expand=True)
 
         # Title
-        ttk.Label(main_frame, text="📧 Error Notification Settings", style='Title.TLabel').pack(pady=(0, 20))
+        ttk.Label(main_frame, text="ðŸ“§ Error Notification Settings", style='Title.TLabel').pack(pady=(0, 20))
 
         # Email settings
         email_frame = ttk.LabelFrame(main_frame, text="Email Configuration", padding="15")
@@ -3136,7 +3705,7 @@ For production deployment, schedules integrate with:
                 messagebox.showerror("Test Failed", f"Failed to send test email: {str(e)}")
 
         ttk.Button(button_frame, text="[SAVE] Save Settings", command=save_config, style='Action.TButton').pack(side=tk.LEFT, padx=(0, 10))
-        ttk.Button(button_frame, text="📧 Test Email", command=test_email).pack(side=tk.LEFT, padx=(0, 10))
+        ttk.Button(button_frame, text="ðŸ“§ Test Email", command=test_email).pack(side=tk.LEFT, padx=(0, 10))
         ttk.Button(button_frame, text="Cancel", command=config_window.destroy).pack(side=tk.RIGHT)
 
     def start_scraping(self):
@@ -3426,6 +3995,7 @@ For production deployment, schedules integrate with:
         self.start_button.config(state='normal')
         self.stop_btn.config(state='disabled')
         self.update_status("Ready to start scraping")
+        self.root.after(500, self.refresh_city_status)
 
     def create_tooltip(self, widget, text):
         """Create a tooltip for a widget"""
