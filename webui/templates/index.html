@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MagicBricks Scraper</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>MagicBricks Scraper Control Panel</h1>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Run Configuration</h2>
+      <form id="run-form">
+        <div class="row">
+          <label>Cities</label>
+          <div class="chips">
+            <label><input type="checkbox" name="cities" value="gurgaon" checked /> Gurgaon</label>
+            <label><input type="checkbox" name="cities" value="mumbai" /> Mumbai</label>
+            <label><input type="checkbox" name="cities" value="bangalore" /> Bangalore</label>
+            <label><input type="checkbox" name="cities" value="delhi" /> Delhi</label>
+            <label><input type="checkbox" name="cities" value="pune" /> Pune</label>
+          </div>
+        </div>
+
+        <div class="row">
+          <label>Mode</label>
+          <div>
+            <label><input type="radio" name="mode" value="full" checked /> Full</label>
+            <label><input type="radio" name="mode" value="incremental" /> Incremental</label>
+          </div>
+        </div>
+
+        <div class="row">
+          <label>Headless</label>
+          <input type="checkbox" id="headless" />
+        </div>
+
+        <div class="row">
+          <label>Pages (per city)</label>
+          <input type="number" id="pages" value="50" min="1" max="1000" />
+        </div>
+
+        <div class="row">
+          <label>Individual Pages</label>
+          <input type="checkbox" id="include_pdp" checked />
+        </div>
+
+        <div class="actions">
+          <button type="button" id="start-btn">Start</button>
+          <button type="button" id="stop-btn" class="secondary">Stop</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Live Logs</h2>
+      <pre id="logs" class="logs"></pre>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
+
