@@ -9,6 +9,11 @@
   - Safe fallbacks and missing-table guards
 - Next: Run a short headful smoke test (Gurgaon, 1 listing page, no PDPs). If clean, start multi-city large validation (5 cities × ≥50 pages, with PDPs) headful.
 
+- Smoke Test (Gurgaon 1-page, headful): Listing page immediately bot-detected twice; session restarted; still detected; pages scraped=0. Confirms header/UA alignment alone is insufficient; proceeding to large validation with auto-stop safeguards while we collect broader evidence across cities.
+- Kicked off Multi-City Validation Runner (tools/run_multi_city_validation.py) in background; logs streaming. Will abort per-city if ≥3 consecutive listing bot detections observed.
+- Parallel: Web UI scaffold created (webui/). NOTE: Requires Flask install to run.
+
+
 
 
 ## 2025-10-05 — Navigation Hardening + Bot Detection Update (P0)
