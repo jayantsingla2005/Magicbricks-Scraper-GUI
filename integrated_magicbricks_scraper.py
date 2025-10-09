@@ -31,6 +31,7 @@ from date_parsing_system import DateParsingSystem
 from smart_stopping_logic import SmartStoppingLogic
 from url_tracking_system import URLTrackingSystem
 from individual_property_tracking_system import IndividualPropertyTracker
+from behavior_mimicry import BehaviorMimicry
 
 # Import refactored scraper modules
 from scraper import (
@@ -152,6 +153,9 @@ class IntegratedMagicBricksScraper:
         # Setup incremental system if enabled
         if self.incremental_enabled:
             self.setup_incremental_system()
+
+        if self.config.get('behavior_mimicry', {}).get('enabled', False):
+            self.behavior_mimicry = BehaviorMimicry()
         
         print("[ROCKET] Integrated MagicBricks Scraper Initialized")
         print(f"   [STATS] Incremental scraping: {'Enabled' if incremental_enabled else 'Disabled'}")
@@ -438,9 +442,9 @@ class IntegratedMagicBricksScraper:
                 # Anti-detection script
                 self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 
-                # P0-3: Block third-party resources via CDP (20-30% speed improvement)
-                if self.config.get('block_third_party_resources', True):
-                    self._enable_resource_blocking()
+                # P0-3: Resource blocking is now DISABLED for listing pages to match normal consumer traffic
+                # It will be enabled ONLY for individual property (PDP) pages in IndividualPropertyScraper
+                # This prevents immediate bot detection on listing pages
 
                 # P1-1: Enable realistic HTTP headers via CDP
                 if self.config.get('realistic_headers', True):
@@ -844,6 +848,12 @@ class IntegratedMagicBricksScraper:
 
             # Navigate to page
             self.driver.get(page_url)
+
+            if hasattr(self, 'behavior_mimicry'):
+                self.behavior_mimicry.random_mouse_movement(self.driver)
+                self.behavior_mimicry.random_scroll(self.driver)
+                time.sleep(self.behavior_mimicry.human_delay())
+
 
             # Check for bot detection
             page_source = self.driver.page_source

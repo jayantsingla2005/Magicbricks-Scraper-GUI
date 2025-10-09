@@ -392,6 +392,32 @@ class IndividualPropertyScraper:
                         self.logger.error(f"   [ERROR] Driver is None, cannot proceed")
                         return None
 
+                # P0-3: Enable resource blocking for PDP pages ONLY (not listing pages)
+                # This speeds up PDP loading by 20-30% without affecting listing page traffic profile
+                try:
+                    with self.driver_lock:
+                        blocked_domains = [
+                            '*googletagmanager.com*',
+                            '*google-analytics.com*',
+                            '*doubleclick.net*',
+                            '*facebook.net*',
+                            '*facebook.com/tr*',
+                            '*hotjar.com*',
+                            '*clarity.ms*',
+                            '*mixpanel.com*',
+                            '*segment.com*',
+                            '*amplitude.com*',
+                            '*intercom.io*',
+                            '*drift.com*',
+                            '*fullstory.com*',
+                            '*logrocket.com*'
+                        ]
+                        self.driver.execute_cdp_cmd('Network.enable', {})
+                        self.driver.execute_cdp_cmd('Network.setBlockedURLs', {'urls': blocked_domains})
+                    self.logger.debug(f"   [P0-3-PDP] Resource blocking enabled for PDP: {len(blocked_domains)} domains")
+                except Exception as e:
+                    self.logger.debug(f"   [P0-3-PDP] Failed to enable resource blocking: {e}")
+
                 # P1-2: Set Referer header before navigation (makes navigation chain look natural)
                 if self.last_listing_page_url:
                     try:
